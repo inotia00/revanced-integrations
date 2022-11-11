@@ -172,7 +172,7 @@ class GeneralBytecodeAdsPatch extends Filter {
             "video_display_full",
             "_ad",
             "active_view_display_container",
-            "ad_",
+            "|ad_",
             "ads_video_with_context",
             "cell_divider",
             "reels_player_overlay",
@@ -216,16 +216,8 @@ class GeneralBytecodeAdsPatch extends Filter {
     public boolean filter(final String path, final String identifier) {
         // Do not block on these
         if (Extensions.containsAny(path,
-            "home_video_with_context",
-            "related_video_with_context",
-            "search_video_with_context",
-            "download_",
-            "library_recent_shelf",
-            "menu",
-            "root",
-            "-count",
-            "-space",
-            "-button"
+            "comment_thread"
+            "horizontal_shelf"
         )) return false;
 
         for (var rule : register) {
