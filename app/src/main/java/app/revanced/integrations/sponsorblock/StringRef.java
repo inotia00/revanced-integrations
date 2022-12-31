@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 
-import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class StringRef {
@@ -96,12 +95,7 @@ public class StringRef {
             resolved = true;
             if (resources != null) {
                 final int identifier = resources.getIdentifier(value, "string", packageName);
-                if (identifier == 0)
-                    LogHelper.printException(() -> ("Resource not found: " + value));
-                else
-                    value = resources.getString(identifier);
-            } else {
-                LogHelper.printException(() -> ("Could not resolve resources!"));
+                if (identifier != 0) value = resources.getString(identifier);
             }
         }
         return value;
