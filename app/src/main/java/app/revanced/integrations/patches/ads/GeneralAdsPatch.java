@@ -96,7 +96,6 @@ public final class GeneralAdsPatch extends Filter {
                 selfSponsor,
                 joinMembership,
                 chapterTeaser,
-                artistCard,	
                 subscribersCommunityGuidelines,
                 channelMemberShelf
         );
@@ -154,7 +153,6 @@ public final class GeneralAdsPatch extends Filter {
      */	
     private static void hideView(SettingsEnum condition, View view) {	
         if (!condition.getBoolean()) return;	
-        log("Hiding view with setting: " + condition);	
         AdRemoverAPI.HideViewWithLayout1dp(view);	
     }	
     /**	
