@@ -17,7 +17,6 @@ public enum SettingsEnum {
     ADREMOVER_COMMUNITY_POSTS("revanced_adremover_community_posts", false, ReturnType.BOOLEAN),
     ADREMOVER_COMPACT_BANNER("revanced_adremover_compact_banner", true, ReturnType.BOOLEAN),
     ADREMOVER_MOVIE_SHELF("revanced_adremover_movie_shelf", false, ReturnType.BOOLEAN),
-    ADREMOVER_MOVIE_REMOVAL("revanced_adremover_movie", false, ReturnType.BOOLEAN),
     ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL("revanced_adremover_channel_member_shelf_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_CHAPTER_TEASER_REMOVAL("revanced_adremover_chapter_teaser", true, ReturnType.BOOLEAN),	
     ADREMOVER_FEED_SURVEY("revanced_adremover_feed_survey", true, ReturnType.BOOLEAN),
