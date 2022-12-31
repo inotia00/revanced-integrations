@@ -156,7 +156,7 @@ public class ReturnYouTubeDislike {
             long fetchStartTime = 0;
             try {
                 Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-                if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
+                if (!fetchFuture.isDone()) {
                     fetchStartTime = System.currentTimeMillis();
                 }
                 votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
@@ -452,7 +452,7 @@ public class ReturnYouTubeDislike {
     private static volatile long totalTimeUIWaitedOnNetworkCalls;
 
     private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
-        if (timeUIWaitStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
+        if (timeUIWaitStarted == 0) {
             return;
         }
         final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
