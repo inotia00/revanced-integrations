@@ -22,6 +22,7 @@ public final class GeneralAdsPatch extends Filter {
     );
 
     public GeneralAdsPatch() {
+        var channelMemberShelf = new BlockRule(SettingsEnum.ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL, "member_recognition_shelf");
         var communityPosts = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_POSTS, "post_base_wrapper");
         var communityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES, "community_guidelines");
         var subscribersCommunityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_SUBSCRIBERS_COMMUNITY_GUIDELINES, "sponsorships_comments_upsell");
@@ -38,6 +39,7 @@ public final class GeneralAdsPatch extends Filter {
         var officialCard = new BlockRule(SettingsEnum.ADREMOVER_OFFICIAL_CARDS, "official_card");
         var selfSponsor = new BlockRule(SettingsEnum.ADREMOVER_SELF_SPONSOR, "cta_shelf_card");
         var joinMembership = new BlockRule(SettingsEnum.ADREMOVER_CHANNELBAR_JOIN_BUTTON, "compact_sponsor_button");
+        var artistCard = new BlockRule(SettingsEnum.HIDE_ARTIST_CARD, "official_card");	
         var graySeparator = new BlockRule(SettingsEnum.ADREMOVER_GRAY_SEPARATOR,
                 "cell_divider",
                 "member_recognition_shelf"
@@ -56,12 +58,14 @@ public final class GeneralAdsPatch extends Filter {
                 "|ads_",
                 "_ad_with",
                 "ads_video_with_context",
+                "banner_text_icon",	
                 "legal_disclosure_cell",
                 "primetime_promo",
                 "brand_video_shelf",
                 "statement_banner",
                 "square_image_layout",
                 "watch_metadata_app_promo"
+                "video_display_full_layout"	
         );
         var movieAds = new BlockRule(
                 SettingsEnum.ADREMOVER_MOVIE_SHELF,
@@ -91,14 +95,23 @@ public final class GeneralAdsPatch extends Filter {
                 officialCard,
                 selfSponsor,
                 joinMembership,
-                subscribersCommunityGuidelines
+                chapterTeaser,
+                artistCard,	
+                subscribersCommunityGuidelines,
+                channelMemberShelf
         );
 
         var carouselAd = new BlockRule(SettingsEnum.ADREMOVER_GENERAL_ADS,
-                "carousel_ad"
+                "carousel_ad");	
+        var shorts = new BlockRule(SettingsEnum.ADREMOVER_SHORTS_REMOVAL,	
+                "reels_player_overlay",	
+                "shorts_shelf",	
+                "inline_shorts",	
+                "shorts_grid"
         );
 
         this.identifierRegister.registerAll(
+                shorts,	
                 graySeparator,
                 carouselAd
         );
@@ -133,9 +146,19 @@ public final class GeneralAdsPatch extends Filter {
             this.message = message;
         }
     }
-
     /**
-     * Hide the specific view, which shows ads in the homepage.
+     * Hide a view.	
+     *	
+     * @param condition The setting to check for hiding the view.	
+     * @param view      The view to hide.	
+     */	
+    private static void hideView(SettingsEnum condition, View view) {	
+        if (!condition.getBoolean()) return;	
+        log("Hiding view with setting: " + condition);	
+        AdRemoverAPI.HideViewWithLayout1dp(view);	
+    }	
+    /**	
+     * Hide the view, which shows ads in the homepage.
      *
      * @param view The view, which shows ads.
      */
@@ -152,5 +175,14 @@ public final class GeneralAdsPatch extends Filter {
     public static void hideAlbumCards(View view) {
         if (!SettingsEnum.ADREMOVER_ALBUM_CARDS.getBoolean()) return;
         AdRemoverAPI.HideViewWithLayout1dp(view);
+    }
+    
+     /**	
+     * Hide the view, which shows reels in the homepage.	
+     *	
+     * @param view The view, which shows reels.	
+     */	
+    public static void hideReelView(View view) {	
+        hideView(SettingsEnum.ADREMOVER_SHORTS_REMOVAL, view);	
     }
 }
