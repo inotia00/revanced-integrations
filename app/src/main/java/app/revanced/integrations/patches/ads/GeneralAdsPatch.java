@@ -64,7 +64,7 @@ public final class GeneralAdsPatch extends Filter {
                 "brand_video_shelf",
                 "statement_banner",
                 "square_image_layout",
-                "watch_metadata_app_promo"
+                "watch_metadata_app_promo",
                 "video_display_full_layout"	
         );
         var movieAds = new BlockRule(
