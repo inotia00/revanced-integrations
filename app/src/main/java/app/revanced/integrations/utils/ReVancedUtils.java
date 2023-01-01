@@ -2,15 +2,17 @@ package app.revanced.integrations.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.text.Bidi;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.text.Bidi;
 
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 
