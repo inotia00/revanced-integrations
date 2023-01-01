@@ -1,6 +1,6 @@
 package app.revanced.integrations.utils;
 
-public class ThemeHelper {
+public class ThemeHelperClass {
     private static int themeValue;
 
     public static void setTheme(int value) {
