@@ -138,7 +138,6 @@ public class ReturnYouTubeDislikeApi {
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
             final long amountOfTimeToWaste = (long) (Math.random() * maximumTimeToWait);
             final long timeCalculationStarted = System.currentTimeMillis();
-            LogHelper.printDebug(() -> "Artificially creating network delay of: " + amountOfTimeToWaste + " ms");
 
             long meaninglessValue = 0;
             while (System.currentTimeMillis() - timeCalculationStarted < amountOfTimeToWaste) {
