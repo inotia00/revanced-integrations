@@ -32,6 +32,12 @@ class ScreenBrightnessController(
     fun restoreDefaultBrightness() {
         rawScreenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
     }
+    
+    /**
+     * is the screen brightness set to device- default?
+     */
+    val isDefaultBrightness
+        get() = (rawScreenBrightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE)
 
     /**
      * save the current screen brightness, to be brought back using [restore]
