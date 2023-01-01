@@ -40,9 +40,7 @@ public final class GeneralAdsPatch extends Filter {
         var selfSponsor = new BlockRule(SettingsEnum.ADREMOVER_SELF_SPONSOR, "cta_shelf_card");
         var chapterTeaser = new BlockRule(SettingsEnum.ADREMOVER_CHAPTER_TEASER, "expandable_metadata");
         var joinMembership = new BlockRule(SettingsEnum.ADREMOVER_CHANNELBAR_JOIN_BUTTON, "compact_sponsor_button");
-        var graySeparator = new BlockRule(SettingsEnum.ADREMOVER_GRAY_SEPARATOR,
-                "cell_divider",
-        );
+        var graySeparator = new BlockRule(SettingsEnum.ADREMOVER_GRAY_SEPARATOR, "cell_divider");
         var buttonedAd = new BlockRule(SettingsEnum.ADREMOVER_BUTTON_ADS,
                 "video_display_full_buttoned_layout",
                 "full_width_square_image_layout",
