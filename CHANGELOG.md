@@ -1,37 +1,3 @@
-# [0.43.0](https://github.com/YT-Advanced/revanced-integrations/compare/v0.42.1...v0.43.0) (2023-01-01)
-
-
-### Bug Fixes
-
-* amoled theme error ([64eac17](https://github.com/YT-Advanced/revanced-integrations/commit/64eac171ac2fff2c83afab7dbdbaa7c891875dc7))
-* **general ads patch:** added new UI comment box removal ([522f832](https://github.com/YT-Advanced/revanced-integrations/commit/522f83233e6de1830956e506149e66516534dbaf))
-* hide chaptercard not working sometimes ([2b6d89a](https://github.com/YT-Advanced/revanced-integrations/commit/2b6d89af7d6bd4efbf9f7589d0d0a6e58ebe8ebe))
-* hide comment spoiler not working ([99d3804](https://github.com/YT-Advanced/revanced-integrations/commit/99d3804701505e3b08e2b7b6bc6dafe9e03f154e))
-* invert wrong switch ([b63bad5](https://github.com/YT-Advanced/revanced-integrations/commit/b63bad54d6f841b01d171c8f62f7acff52216716))
-* LithoThemePatch broken in `materialyou` theme ([777e8d6](https://github.com/YT-Advanced/revanced-integrations/commit/777e8d6a66979552e1a68b52589e33b62cdcfd51))
-* LithoThemePatch sometimes malfunctions ([41c40e3](https://github.com/YT-Advanced/revanced-integrations/commit/41c40e31f2ea9496c9b0bdf17baee751768729d8))
-* my mix is not hidden from the video playback ([05d39e4](https://github.com/YT-Advanced/revanced-integrations/commit/05d39e4fec0053cc6b78624b949b1f8175b44486))
-* reboot dialog not showing when adding custom filter ([6ec3107](https://github.com/YT-Advanced/revanced-integrations/commit/6ec31076fa1bb70b9bb564b147a0ac0fe027a90f))
-* sometimes info cards are not completely hidden ([7d91e64](https://github.com/YT-Advanced/revanced-integrations/commit/7d91e640ee034695caa4023d789f6b7dd142260c))
-* swipe gesture stuttering ([0104a02](https://github.com/YT-Advanced/revanced-integrations/commit/0104a02b89f4a12c5ae470bf2e503bb14897ec99))
-* typo ([93af2e7](https://github.com/YT-Advanced/revanced-integrations/commit/93af2e7f51d3b9858c72ee8537ae0a82c409b9b4))
-* **youtube/hide-endscreen-cards:** restore functionality ([ad1b541](https://github.com/YT-Advanced/revanced-integrations/commit/ad1b541134583a6781a1d26d91fec10243bf0f35))
-* **youtube/hide-info-cards:** remove initial popup of info-cards ([2b92c42](https://github.com/YT-Advanced/revanced-integrations/commit/2b92c428615bbbd7860950bc3f4f11ebb9cd8a10))
-
-
-### Features
-
-* disable `swipe-controls` when player controls are visible (https://github.com/revanced/revanced-integrations/pull/123) ([9941e4b](https://github.com/YT-Advanced/revanced-integrations/commit/9941e4b8c3326c5038b595444d4f2de0d5e1c1e0))
-* **youtube/general-ads-patch:** hide channelbar join button ([a9e9349](https://github.com/YT-Advanced/revanced-integrations/commit/a9e934935335af335b14e95b8dee00648e1afaca))
-* **youtube/general-ads-patch:** hide guidelines for subscriber ([781001e](https://github.com/YT-Advanced/revanced-integrations/commit/781001ea7c9cf3ffc17552f37c8222f236dda95d))
-* **youtube/return-youtube-dislike:** compatibility for old and new button layout ([d5ebcf9](https://github.com/YT-Advanced/revanced-integrations/commit/d5ebcf99ea16c1fe9746a6d9a58d5837a005231b))
-* **youtube:** bump patches compatibility to v17.43.36 ([40fc5fa](https://github.com/YT-Advanced/revanced-integrations/commit/40fc5fa9d9770a29f2bf23d047fe24d8af766617))
-
-
-### Reverts
-
-* feat(youtube/return-youtube-dislike): compatibility for old and new button layout ([0797a52](https://github.com/YT-Advanced/revanced-integrations/commit/0797a52e15c48c91d287ea3d0c0850c1cdd44eef))
-
 # [0.90.0](https://github.com/YT-Advanced/revanced-integrations/compare/v0.87.0...v0.89.0) (2023-01-01)
 
 
@@ -42,6 +8,7 @@
 ### Features
 
 * **youtube/general-ads-patch:** Update new AdBlock Rule
+* **youtube/like_dislike_button:** New Style for Like/Dislike Button
 * Bump version to `0.90.0`
 
 # [0.87.0](https://github.com/revanced/revanced-integrations/compare/v0.86.1...v0.87.0) (2022-12-26)
