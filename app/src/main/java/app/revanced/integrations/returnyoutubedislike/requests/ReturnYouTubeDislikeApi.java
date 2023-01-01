@@ -457,12 +457,12 @@ public class ReturnYouTubeDislikeApi {
     }
 
     // https://stackoverflow.com/a/157202
-    private static String randomString(int len) {
+    private static String randomString() {
         String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         SecureRandom rnd = new SecureRandom();
 
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
+        StringBuilder sb = new StringBuilder(36);
+        for (int i = 0; i < 36; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }
