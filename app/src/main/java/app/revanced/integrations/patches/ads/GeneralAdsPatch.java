@@ -25,6 +25,7 @@ public final class GeneralAdsPatch extends Filter {
         var communityPosts = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_POSTS, "post_base_wrapper");
         var communityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES, "community_guidelines");
         var subscribersCommunityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_SUBSCRIBERS_COMMUNITY_GUIDELINES, "sponsorships_comments_upsell");
+        var channelMemberShelf = new BlockRule(SettingsEnum.ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL, "member_recognition_shelf");
         var compactBanner = new BlockRule(SettingsEnum.ADREMOVER_COMPACT_BANNER, "compact_banner");
         var inFeedSurvey = new BlockRule(SettingsEnum.ADREMOVER_FEED_SURVEY, "infeed_survey");
         var medicalPanel = new BlockRule(SettingsEnum.ADREMOVER_MEDICAL_PANEL, "medical_panel", "emergency_onebox");
@@ -37,10 +38,10 @@ public final class GeneralAdsPatch extends Filter {
         var channelGuidelines = new BlockRule(SettingsEnum.ADREMOVER_CHANNEL_GUIDELINES, "channel_guidelines_entry_banner");
         var officialCard = new BlockRule(SettingsEnum.ADREMOVER_OFFICIAL_CARDS, "official_card");
         var selfSponsor = new BlockRule(SettingsEnum.ADREMOVER_SELF_SPONSOR, "cta_shelf_card");
+        var chapterTeaser = new BlockRule(SettingsEnum.ADREMOVER_CHAPTER_TEASER_REMOVAL, "expandable_metadata");
         var joinMembership = new BlockRule(SettingsEnum.ADREMOVER_CHANNELBAR_JOIN_BUTTON, "compact_sponsor_button");
         var graySeparator = new BlockRule(SettingsEnum.ADREMOVER_GRAY_SEPARATOR,
-                "cell_divider",
-                "member_recognition_shelf"
+                "cell_divider" 
         );
         var buttonedAd = new BlockRule(SettingsEnum.ADREMOVER_BUTTON_ADS,
                 "video_display_full_buttoned_layout",
@@ -56,6 +57,7 @@ public final class GeneralAdsPatch extends Filter {
                 "|ads_",
                 "_ad_with",
                 "ads_video_with_context",
+                "banner_text_icon",
                 "legal_disclosure_cell",
                 "primetime_promo",
                 "brand_video_shelf",
@@ -81,6 +83,7 @@ public final class GeneralAdsPatch extends Filter {
                 suggestions,
                 latestPosts,
                 movieAds,
+                chapterTeaser,
                 communityGuidelines,
                 compactBanner,
                 inFeedSurvey,
@@ -91,7 +94,8 @@ public final class GeneralAdsPatch extends Filter {
                 officialCard,
                 selfSponsor,
                 joinMembership,
-                subscribersCommunityGuidelines
+                subscribersCommunityGuidelines,
+                channelMemberShelf
         );
 
         var carouselAd = new BlockRule(SettingsEnum.ADREMOVER_GENERAL_ADS,
