@@ -2,9 +2,12 @@ package app.revanced.integrations.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.text.Bidi;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -56,6 +59,14 @@ public class ReVancedUtils {
         return false;
     }
 
+    private static final boolean isRightToLeftTextLayout =
+            new Bidi(Locale.getDefault().getDisplayLanguage(), Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT).isRightToLeft();
+    /**
+     * If the device language uses right to left text layout (hebrew, arabic, etc)
+     */
+    public static boolean isRightToLeftTextLayout() {
+        return isRightToLeftTextLayout;
+    }
     /**
      * Automatically logs any exceptions the runnable throws
      */
@@ -86,6 +97,15 @@ public class ReVancedUtils {
      */
     public static boolean currentIsOnMainThread() {
         return Looper.getMainLooper().isCurrentThread();
+    }
+
+    /**
+     * @throws IllegalStateException if the calling thread is _not_ on the main thread
+     */
+    public static void verifyOnMainThread() throws IllegalStateException {
+        if (!currentIsOnMainThread()) {
+            throw new IllegalStateException("Must call _on_ the main thread");
+        }
     }
 
     /**

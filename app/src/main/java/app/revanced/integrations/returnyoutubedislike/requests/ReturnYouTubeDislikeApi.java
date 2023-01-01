@@ -67,8 +67,89 @@ public class ReturnYouTubeDislikeApi {
      */
     private static volatile long lastTimeRateLimitWasHit; // must be volatile, since different threads read/write to this
 
+    /**
+     * Number of times {@link #RATE_LIMIT_HTTP_STATUS_CODE} was requested by RYD api.
+     * Does not include network calls attempted while rate limit is in effect
+     */
+    private static volatile int numberOfRateLimitRequestsEncountered;
+
+    /**
+     * Number of network calls made in {@link #fetchVotes(String)}
+     */
+    private static volatile int fetchCallCount;
+
+    /**
+     * Number of times {@link #fetchVotes(String)} failed due to timeout or any other error.
+     * This does not include when rate limit requests are encountered.
+     */
+    private static volatile int fetchCallNumberOfFailures;
+
+    /**
+     * Total time spent waiting for {@link #fetchVotes(String)} network call to complete.
+     * Value does does not persist on app shut down.
+     */
+    private static volatile long fetchCallResponseTimeTotal;
+
+    /**
+     * Round trip network time for the most recent call to {@link #fetchVotes(String)}
+     */
+    private static volatile long fetchCallResponseTimeLast;
+    private static volatile long fetchCallResponseTimeMin;
+    private static volatile long fetchCallResponseTimeMax;
+
+    public static final int FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT = -1;
+
+    /**
+     * If rate limit was hit, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT}
+     */
+    public static long getFetchCallResponseTimeLast() {
+        return fetchCallResponseTimeLast;
+    }
+    public static long getFetchCallResponseTimeMin() {
+        return fetchCallResponseTimeMin;
+    }
+    public static long getFetchCallResponseTimeMax() {
+        return fetchCallResponseTimeMax;
+    }
+    public static long getFetchCallResponseTimeAverage() {
+        return fetchCallCount == 0 ? 0 : (fetchCallResponseTimeTotal / fetchCallCount);
+    }
+    public static int getFetchCallCount() {
+        return fetchCallCount;
+    }
+    public static int getFetchCallNumberOfFailures() {
+        return fetchCallNumberOfFailures;
+    }
+    public static int getNumberOfRateLimitRequestsEncountered() {
+        return numberOfRateLimitRequestsEncountered;
+    }
+
     private ReturnYouTubeDislikeApi() {
     } // utility class
+
+    /**
+     * Simulates a slow response by doing meaningless calculations.
+     * Used to debug the app UI and verify UI timeout logic works
+     *
+     * @param maximumTimeToWait maximum time to wait
+     */
+    private static long randomlyWaitIfLocallyDebugging(long maximumTimeToWait) {
+        final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false; // set true to debug UI
+        if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
+            final long amountOfTimeToWaste = (long) (Math.random() * maximumTimeToWait);
+            final long timeCalculationStarted = System.currentTimeMillis();
+
+            long meaninglessValue = 0;
+            while (System.currentTimeMillis() - timeCalculationStarted < amountOfTimeToWaste) {
+                // could do a thread sleep, but that will trigger an exception if the thread is interrupted
+                meaninglessValue += Long.numberOfLeadingZeros((long) (Math.random() * Long.MAX_VALUE));
+            }
+            // return the value, otherwise the compiler or VM might optimize and remove the meaningless time wasting work,
+            // leaving an empty loop that hammers on the System.currentTimeMillis native call
+            return meaninglessValue;
+        }
+        return 0;
+    }
 
     /**
      * @return True, if api rate limit is in effect.
@@ -92,14 +173,26 @@ public class ReturnYouTubeDislikeApi {
         return false;
     }
 
-    private static void updateStatistics(boolean connectionError, boolean rateLimitHit) {
-        if (connectionError && rateLimitHit)
+    private static void updateStatistics(long timeNetworkCallStarted, long timeNetworkCallEnded, boolean connectionError, boolean rateLimitHit) {
+        if (connectionError && rateLimitHit) {
             throw new IllegalArgumentException("both connection error and rate limit parameter were true");
-
-        if (connectionError)
+        }
+        final long responseTimeOfFetchCall = timeNetworkCallEnded - timeNetworkCallStarted;
+        fetchCallResponseTimeTotal += responseTimeOfFetchCall;
+        fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
+        fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
+        fetchCallCount++;
+        if (connectionError) {
+            fetchCallResponseTimeLast = responseTimeOfFetchCall;
+            fetchCallNumberOfFailures++;
             showToast("revanced_ryd_failure_connection_timeout");
-        else if (rateLimitHit)
+        } else if (rateLimitHit) {
+            fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
+            numberOfRateLimitRequestsEncountered++;
             showToast("revanced_ryd_failure_client_rate_limit_requested");
+        } else {
+            fetchCallResponseTimeLast = responseTimeOfFetchCall;
+        }
     }
 
     /**
@@ -110,7 +203,10 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
 
-        if (checkIfRateLimitInEffect("fetchVotes")) return null;
+        if (checkIfRateLimitInEffect("fetchVotes")) {
+            return null;
+        }
+        final long timeNetworkCallStarted = System.currentTimeMillis();
 
         try {
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
@@ -124,18 +220,23 @@ public class ReturnYouTubeDislikeApi {
             connection.setConnectTimeout(API_GET_VOTES_TCP_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
             connection.setReadTimeout(API_GET_VOTES_HTTP_TIMEOUT_MILLISECONDS); // timeout for server response
 
+            randomlyWaitIfLocallyDebugging(2*(API_GET_VOTES_TCP_TIMEOUT_MILLISECONDS + API_GET_VOTES_HTTP_TIMEOUT_MILLISECONDS));
+
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect(); // rate limit hit, should disconnect
-                updateStatistics(false, true);
+                updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(),false, true);
                 return null;
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+                final long timeNetworkCallEnded = System.currentTimeMillis(); // record end time before parsing
                 // do not disconnect, the same server connection will likely be used again soon
                 JSONObject json = Requester.parseJSONObject(connection);
                 try {
-                    return new RYDVoteData(json);
+                    RYDVoteData votingData = new RYDVoteData(json);
+                    updateStatistics(timeNetworkCallStarted, timeNetworkCallEnded, false, false);
+                    return votingData;
                 } catch (JSONException ex) {
                     LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to parse video: " + videoId + " json: " + json, ex);
                     // fall thru to update statistics
@@ -147,7 +248,7 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to fetch votes", ex);
         }
 
-        updateStatistics(true, false);
+        updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(), true, false);
         return null;
     }
 
@@ -323,10 +424,13 @@ public class ReturnYouTubeDislikeApi {
 
 
     private static String solvePuzzle(String challenge, int difficulty) {
+        final long timeSolveStarted = System.currentTimeMillis();
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
 
         byte[] buffer = new byte[20];
-        System.arraycopy(decodedChallenge, 0, buffer, 4, 16);
+        for (int i = 4; i < 20; i++) {
+            buffer[i] = decodedChallenge[i - 4];
+        }
 
         MessageDigest md;
         try {
@@ -366,8 +470,8 @@ public class ReturnYouTubeDislikeApi {
     private static int countLeadingZeroes(byte[] uInt8View) {
         int zeroes = 0;
         int value = 0;
-        for (byte b : uInt8View) {
-            value = b & 0xFF;
+        for (int i = 0; i < uInt8View.length; i++) {
+            value = uInt8View[i] & 0xFF;
             if (value == 0) {
                 zeroes += 8;
             } else {
