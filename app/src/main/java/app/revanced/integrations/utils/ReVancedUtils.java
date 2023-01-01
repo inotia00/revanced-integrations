@@ -56,6 +56,64 @@ public class ReVancedUtils {
         return false;
     }
 
+    public static void setNewVideo(boolean started) {
+        newVideo = started;
+    }
+
+    public static boolean isNewVideoStarted() {
+        return newVideo;
+    }
+
+    public static Integer getResourceIdByName(Context context, String type, String name) {
+        try {
+            Resources res = context.getResources();
+            return res.getIdentifier(name, type, context.getPackageName());
+        } catch (Throwable exception) {
+        	LogHelper.printException(ReVancedUtils.class, "Resource not found.", exception);
+            return null;
+        }
+    }
+
+    public static void setPlayerType(PlayerType type) {
+        env = type;
+    }
+
+    public static PlayerType getPlayerType() {
+        return env;
+    }
+
+    public static int getIdentifier(String name, String defType) {
+        Context context = getContext();
+        return context.getResources().getIdentifier(name, defType, context.getPackageName());
+    }
+
+    public static Context getContext() {
+        if (context != null) {
+            return context;
+        } else {
+        	LogHelper.printException(ReVancedUtils.class, "Context is null, returning null!");
+            return null;
+        }
+    }
+
+    public static void setClipboard(String text) {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("ReVanced", text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    public static boolean isTablet(Context context) {
+        return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
+    private static final boolean isRightToLeftTextLayout =
+            new Bidi(Locale.getDefault().getDisplayLanguage(), Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT).isRightToLeft();
+    /**
+     * If the device language uses right to left text layout (hebrew, arabic, etc)
+     */
+    public static boolean isRightToLeftTextLayout() {
+        return isRightToLeftTextLayout;
+    }
     /**
      * Automatically logs any exceptions the runnable throws
      */
@@ -86,6 +144,15 @@ public class ReVancedUtils {
      */
     public static boolean currentIsOnMainThread() {
         return Looper.getMainLooper().isCurrentThread();
+    }
+
+    /**
+     * @throws IllegalStateException if the calling thread is _not_ on the main thread
+     */
+    public static void verifyOnMainThread() throws IllegalStateException {
+        if (!currentIsOnMainThread()) {
+            throw new IllegalStateException("Must call _on_ the main thread");
+        }
     }
 
     /**
