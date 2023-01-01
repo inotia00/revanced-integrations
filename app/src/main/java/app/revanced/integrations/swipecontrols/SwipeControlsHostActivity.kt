@@ -106,9 +106,6 @@ class SwipeControlsHostActivity : Activity() {
      */
     private fun ensureInitialized() {
         if (!this::config.isInitialized) {
-            printException {
-                "swipe controls were not initialized in onCreate, initializing on-the-fly (SDK is ${Build.VERSION.SDK_INT})"
-            }
             initialize()
             reAttachOverlays()
         }
