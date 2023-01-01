@@ -35,7 +35,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.ThemeHelper;
+import app.revanced.integrations.utils.ThemeHelperClass;
 
 public class ReturnYouTubeDislike {
     /**
