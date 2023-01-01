@@ -68,7 +68,53 @@ class SwipeControlsHostActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initialize()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        reAttachOverlays()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        ensureInitialized()
+        return if ((ev != null) && gesture.submitTouchEvent(ev)) true else {
+            super.dispatchTouchEvent(ev)
+        }
+    }
+
+    override fun dispatchKeyEvent(ev: KeyEvent?): Boolean {
+        ensureInitialized()
+        return if ((ev != null) && keys.onKeyEvent(ev)) true else {
+            super.dispatchKeyEvent(ev)
+        }
+    }
+
+    /**
+     * dispatch a touch event to downstream views
+     *
+     * @param event the event to dispatch
+     * @return was the event consumed?
+     */
+    fun dispatchDownstreamTouchEvent(event: MotionEvent) =
+        super.dispatchTouchEvent(event)
+
+    /**
+     * ensures that swipe controllers are initialized and attached.
+     * on some ROMs with SDK <= 23, [onCreate] and [onStart] may not be called correctly.
+     * see https://github.com/revanced/revanced-patches/issues/446
+     */
+    private fun ensureInitialized() {
+        if (!this::config.isInitialized) {
+            initialize()
+            reAttachOverlays()
+        }
+    }
+
+    /**
+     * initializes controllers, only call once
+     */
+    private fun initialize() {
         // create controllers
         LogHelper.info(this.javaClass, "initializing swipe controls controllers")
         config = SwipeControlsConfigurationProvider(this)
@@ -102,35 +148,14 @@ class SwipeControlsHostActivity : Activity() {
         currentHost = WeakReference(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        // (re) attach overlay
+    /**
+     * (re) attaches swipe overlays
+     */    
+    private fun reAttachOverlays() {
         LogHelper.info(this.javaClass, "attaching swipe controls overlay")
         contentRoot.removeView(overlay)
         contentRoot.addView(overlay)
     }
-
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        return if ((ev != null) && gesture.submitTouchEvent(ev)) true else {
-            super.dispatchTouchEvent(ev)
-        }
-    }
-
-    override fun dispatchKeyEvent(ev: KeyEvent?): Boolean {
-        return if ((ev != null) && keys.onKeyEvent(ev)) true else {
-            super.dispatchKeyEvent(ev)
-        }
-    }
-
-    /**
-     * dispatch a touch event to downstream views
-     *
-     * @param event the event to dispatch
-     * @return was the event consumed?
-     */
-    fun dispatchDownstreamTouchEvent(event: MotionEvent) =
-        super.dispatchTouchEvent(event)
 
     /**
      * called when the player type changes
