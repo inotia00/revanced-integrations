@@ -280,7 +280,7 @@ public class ReturnYouTubeDislike {
                 Spannable leftSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, leftSegmentedSeparatorString);
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 // style the separator appearance to mimic the existing layout
-                final int separatorColor = ThemeHelper.isDarkTheme()
+                final int separatorColor = ThemeHelperClass.isDarkTheme()
                         ? 0xFF414141  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
