@@ -31,6 +31,7 @@ public enum SettingsEnum {
     ADREMOVER_SELF_SPONSOR("revanced_adremover_self_sponsor", true, ReturnType.BOOLEAN),
     ADREMOVER_CHANNELBAR_JOIN_BUTTON("revanced_adremover_channelbar_join_button", true, ReturnType.BOOLEAN),
     ADREMOVER_CHAPTER_TEASER("revanced_adremover_chapter_teaser", true, ReturnType.BOOLEAN),
+    ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL("revanced_adremover_channel_member_shelf_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_GRAY_SEPARATOR("revanced_adremover_separator", true, ReturnType.BOOLEAN),
     ADREMOVER_OFFICIAL_CARDS("revanced_adremover_official_card_in_search", true, ReturnType.BOOLEAN, true),
     ADREMOVER_ALBUM_CARDS("revanced_adremover_album_card_in_search", true, ReturnType.BOOLEAN),
