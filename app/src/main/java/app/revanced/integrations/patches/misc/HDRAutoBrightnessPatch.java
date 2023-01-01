@@ -35,7 +35,7 @@ public class HDRAutoBrightnessPatch {
 
         if (swipeControlsHost != null
                 && swipeControlsHost.getScreen() != null
-                && swipeControlsHost.getConfig().getEnableBrightnessControl())
+                && swipeControlsHost.getConfig().getEnableBrightnessControl()
                 && !swipeControlsHost.getScreen().isDefaultBrightness()) {
             return swipeControlsHost.getScreen().getRawScreenBrightness();
         }
