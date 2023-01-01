@@ -2,7 +2,9 @@ package app.revanced.integrations.patches.utils;
 
 import static app.revanced.integrations.utils.StringRef.str;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.widget.Toast;
 
 import app.revanced.integrations.utils.LogHelper;
@@ -10,6 +12,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class MicroGPatch {
     private static final String MICROG_PACKAGE_NAME = "com.mgoogle.android.gms";
+    private static final String VANCED_MICROG_DOWNLOAD_LINK = "https://github.com/inotia00/VancedMicroG/releases/latest";
 
     public static void checkAvailability() {
         var context = ReVancedUtils.getContext();
@@ -20,6 +23,9 @@ public class MicroGPatch {
             LogHelper.printException(ReVancedUtils.class, "MicroG was not found", exception);
             Toast.makeText(context, str("microg_not_installed_warning"), Toast.LENGTH_LONG).show();
             Toast.makeText(context, str("microg_not_installed_notice"), Toast.LENGTH_LONG).show();
+			var intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(VANCED_MICROG_DOWNLOAD_LINK));
+            context.startActivity(intent);
         }
     }
 }
