@@ -9,6 +9,19 @@ import java.util.Locale;
 public class ReVancedHelper {
     private static boolean RTL = false;
     private static boolean isFounded = false;
+    private static int themeValue;
+
+    public static void setTheme(int value) {
+        themeValue = value;
+    }
+
+    public static void setTheme(Object value) {
+        themeValue = ((Enum) value).ordinal();
+    }
+
+    public static boolean isDarkTheme() {
+        return themeValue == 1;
+    }
 
     private ReVancedHelper() {
     } // utility class
