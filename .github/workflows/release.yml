@@ -4,36 +4,35 @@ on:
   workflow_dispatch:
   push:
     branches: 
-      - main
+      - revanced-extended
       - dev
   pull_request:
     branches:
-      - main
+      - revanced-extended
       - dev
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.0
-      with:
-        access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Checkout Repo
+    - name: Cancel previou runs
+      uses: styfle/cancel-workflow-action@0.11.0
+    - name: Checkout
       uses: actions/checkout@v3
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'zulu'
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: "lts/*"
+        node-version: "latest"
+        cache: 'npm'
     - name: Build with Gradle
-      run: ./gradlew --no-daemon build
+      run: ./gradlew build --no-daemon
     - name: Setup semantic-release
-      run: npm install -g semantic-release @semantic-release/git @semantic-release/changelog gradle-semantic-release-plugin -D
+      run: npm install semantic-release @saithodev/semantic-release-backmerge @semantic-release/git @semantic-release/changelog gradle-semantic-release-plugin -D
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
