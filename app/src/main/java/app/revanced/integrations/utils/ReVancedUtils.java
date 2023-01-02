@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.text.Bidi;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -54,6 +56,15 @@ public class ReVancedUtils {
         for (String string : targets)
             if (!string.isEmpty() && value.contains(string)) return true;
         return false;
+    }
+    
+    private static final boolean isRightToLeftTextLayout =
+            new Bidi(Locale.getDefault().getDisplayLanguage(), Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT).isRightToLeft();
+    /**
+     * If the device language uses right to left text layout (hebrew, arabic, etc)
+     */
+    public static boolean isRightToLeftTextLayout() {
+        return isRightToLeftTextLayout;
     }
 
     /**
