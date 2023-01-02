@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: 
-      - revanced-extended
+      - main
       - dev
   pull_request:
     branches:
-      - revanced-extended
+      - main
       - dev
 
 jobs:
