@@ -35,7 +35,6 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.ThemeHelperClass;
 
 public class ReturnYouTubeDislike {
     /**
@@ -279,7 +278,7 @@ public class ReturnYouTubeDislike {
                 Spannable leftSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, leftSegmentedSeparatorString);
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 // style the separator appearance to mimic the existing layout
-                final int separatorColor = ThemeHelperClass.isDarkTheme()
+                final int separatorColor = ReVancedHelper.isDarkTheme()
                         ? 0x37A0A0A0  // transparent dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
