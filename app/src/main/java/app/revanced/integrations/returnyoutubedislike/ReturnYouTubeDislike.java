@@ -2,16 +2,23 @@ package app.revanced.integrations.returnyoutubedislike;
 
 import static app.revanced.integrations.utils.StringRef.str;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
-import android.icu.text.DecimalFormat;
-import android.icu.text.DecimalFormatSymbols;
+import android.os.Build;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.ScaleXSpan;
+import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -28,22 +35,23 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.ThemeHelperClass;
 
 public class ReturnYouTubeDislike {
     /**
-     * Maximum amount of time to block the UI from updates while waiting for dislike network call to complete.
-     *
+     * Maximum amount of time to block the UI from updates while waiting for network call to complete.
+     * <p>
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 4000;
+    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
 
     /**
      * Used to send votes, one by one, in the same order the user created them
      */
     private static final ExecutorService voteSerialExecutor = Executors.newSingleThreadExecutor();
 
-    // Must be volatile, since this is read/wright from different threads
+    // Must be volatile, since this is read/write from different threads
     private static volatile boolean isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
 
     /**
@@ -85,8 +93,8 @@ public class ReturnYouTubeDislike {
     /**
      * Used to format like/dislike count.
      */
-    @GuardedBy("ReturnYouTubeDislike.class") // not thread safe
-    private static DecimalFormat dislikePercentageFormatter;
+    @GuardedBy("ReturnYouTubeDislike.class")
+    private static NumberFormat dislikePercentageFormatter;
 
     public static void onEnabledChange(boolean enabled) {
         isEnabled = enabled;
@@ -113,7 +121,7 @@ public class ReturnYouTubeDislike {
 
             synchronized (videoIdLockObject) {
                 currentVideoId = videoId;
-                // no need to wrap the fetchDislike call in a try/catch,
+                // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
             }
@@ -122,30 +130,41 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    // BEWARE! This method is sometimes called on the main thread, but it usually is called _off_ the main thread!
+    /**
+     * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
+     * <p>
+     * This method can be called multiple times for the same UI element (including after dislikes was added)
+     * This code should avoid needlessly replacing the same UI element with identical versions.
+     */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
         if (!isEnabled) return;
 
         try {
-            var conversionContextString = conversionContext.toString();
+            String conversionContextString = conversionContext.toString();
 
-            boolean isSegmentedButton = false;
-            // Check for new component
+            final boolean isSegmentedButton;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
-            } else if (!conversionContextString.contains("|dislike_button.eml|")) {
+            } else if (conversionContextString.contains("|dislike_button.eml|")) {
+                isSegmentedButton = false;
+            } else {
                 return;
             }
 
             // Have to block the current thread until fetching is done
             // There's no known way to edit the text after creation yet
             RYDVoteData votingData;
+            long fetchStartTime = 0;
             try {
                 Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-                fetchFuture.isDone();
-                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
+                if (!fetchFuture.isDone()) {
+                    fetchStartTime = System.currentTimeMillis();
+                }
+                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 return;
+            } finally {
+                recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
             }
             if (votingData == null) {
                 return;
@@ -186,10 +205,10 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Must call off main thread, as this will make a network call if user has not yet been registered
+     * Must call off main thread, as this will make a network call if user is not yet registered
      *
      * @return ReturnYouTubeDislike user ID. If user registration has never happened
-     * and the network call fails, this will return NULL
+     * and the network call fails, this returns NULL
      */
     @Nullable
     private static String getUserId() {
@@ -207,69 +226,274 @@ public class ReturnYouTubeDislike {
         return userId;
     }
 
-    private static void updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, RYDVoteData voteData) {
-        SpannableString oldSpannableString = (SpannableString) textRef.get();
+    /**
+     * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
+     * @return false, if the text reference already has dislike information and no changes were made.
+     */
+    private static boolean updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, RYDVoteData voteData) {
+        Spannable oldSpannable = (Spannable) textRef.get();
+        String oldLikesString = oldSpannable.toString();
+        Spannable replacementSpannable;
 
-        String newString = SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
-                ? formatPercentage(voteData.dislikePercentage)
-                : formatCount(voteData.dislikeCount);
+        // note: some locales use right to left layout (arabic, hebrew, etc),
+        // and care must be taken to retain the existing RTL encoding character on the likes string
+        // otherwise text will incorrectly show as left to right
+        // if making changes to this code, change device settings to a RTL language and verify layout is correct
 
-        if (isSegmentedButton) {
-            ReVancedHelper.setRTL();
-            String oldString = ReVancedHelper.getOldString(oldSpannableString.toString());
-            String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
-
-            String likesString = formatCount(voteData.likeCount);
-            if (!oldString.contains(".")) {
-                try {
-                    likesString = formatCount(Long.parseLong(oldString));
-                } catch (Exception ignored) {}
+        if (!isSegmentedButton) {
+            // simple replacement of 'dislike' with a number/percentage
+            if (stringContainsNumber(oldLikesString)) {
+                // already is a number, and was modified in a previous call to this method
+                return false;
+            }
+            replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
+        } else {
+            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|   " : "|   ";
+            if (oldLikesString.contains(leftSegmentedSeparatorString)) {
+                return false; // dislikes was previously added
             }
 
-            if (oldString.contains(hiddenMessageString))
-                newString = hiddenMessageString;
-            else
-                newString = ReVancedHelper.setRTLString(likesString, newString);
+            // YouTube creators can hide the like count on a video,
+            // and the like count appears as a device language specific string that says 'Like'
+            // check if the string contains any numbers
+            if (!stringContainsNumber(oldLikesString)) {
+                // likes are hidden.
+                // RYD does not provide usable data for these types of videos,
+                // and the API returns bogus data (zero likes and zero dislikes)
+                //
+                // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
+                // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
+                //
+                // discussion about this: https://github.com/Anarios/return-youtube-dislike/discussions/530
+
+                String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
+                if (hiddenMessageString.equals(oldLikesString)) {
+                    return false;
+                }
+                replacementSpannable = newSpanUsingStylingOfAnotherSpan(oldSpannable, hiddenMessageString);
+            } else {
+                Spannable likesSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikesString);
+
+                // left and middle separator
+                String middleSegmentedSeparatorString = "  •  ";
+                Spannable leftSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, leftSegmentedSeparatorString);
+                Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
+                // style the separator appearance to mimic the existing layout
+                final int separatorColor = ThemeHelperClass.isDarkTheme()
+                        ? 0x37A0A0A0  // transparent dark gray
+                        : 0xFFD9D9D9; // light gray
+                addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
+                addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
+                CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
+
+
+                    @Override
+                    public void updateDrawState(TextPaint tp) {
+                        tp.setAntiAlias(false); // draw without anti-aliasing, to give a sharper edge
+                    }
+                };
+                addSpanStyling(leftSeparatorSpan, noAntiAliasingStyle);
+                addSpanStyling(middleSeparatorSpan, noAntiAliasingStyle);
+
+                Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
+
+                // Increase the size of the left separator, so it better matches the stock separator on the right.
+                // But when using a larger font, the entire span (including the like/dislike text) becomes shifted downward.
+                // To correct this, use additional spans to move the alignment back upward by a relative amount.
+                setSegmentedAdjustmentValues();
+                class RelativeVerticalOffsetSpan extends CharacterStyle {
+                    final float relativeVerticalShiftRatio;
+
+                    RelativeVerticalOffsetSpan(float relativeVerticalShiftRatio) {
+                        this.relativeVerticalShiftRatio = relativeVerticalShiftRatio;
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint tp) {
+                        tp.baselineShift -= (int) (relativeVerticalShiftRatio * tp.getFontMetrics().top);
+                    }
+                }
+
+                // shift everything up, to compensate for the vertical movement caused by the font change below
+                // each section needs it's own Relative span, otherwise alignment is wrong
+                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                // important: must add size scaling after vertical offset (otherwise alignment gets off)
+                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(segmentedLeftSeparatorFontRatio));
+                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(segmentedLeftSeparatorHorizontalScaleRatio));
+                // middle separator does not need resizing
+
+                // put everything together
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+                builder.append(leftSeparatorSpan);
+                builder.append(likesSpan);
+                builder.append(middleSeparatorSpan);
+                builder.append(dislikeSpan);
+                replacementSpannable = new SpannableString(builder);
+            }
         }
 
-        SpannableString newSpannableString = new SpannableString(newString);
-        // Copy style (foreground color, etc) to new string
-        Object[] spans = oldSpannableString.getSpans(0, oldSpannableString.length(), Object.class);
-        for (Object span : spans) {
-            newSpannableString.setSpan(span, 0, newString.length(), oldSpannableString.getSpanFlags(span));
+        textRef.set(replacementSpannable);
+        return true;
+    }
+    private static boolean segmentedValuesSet = false;
+    private static float segmentedVerticalShiftRatio;
+    private static float segmentedLeftSeparatorFontRatio;
+    private static float segmentedLeftSeparatorHorizontalScaleRatio;
+    /**
+     * Set the segmented adjustment values, based on the device.
+     */
+    private static void setSegmentedAdjustmentValues() {
+        if (segmentedValuesSet) {
+            return;
         }
-        textRef.set(newSpannableString);
+        String deviceManufacturer = Build.MANUFACTURER;
+        final int deviceSdkVersion = Build.VERSION.SDK_INT;
+        DisplayMetrics metric = ReVancedUtils.getContext().getResources().getDisplayMetrics();
+        final float deviceScaledDensity = metric.scaledDensity;
+        final int deviceDensityDpi = metric.densityDpi;
+        final int deviceWidth = metric.widthPixels;
+        final int deviceHeight = metric.heightPixels;
+        // device used to determine the configuration below
+        final String configManufacturer; // very important
+        final int configSdk; // important
+        final float configScaledDensityDpi; // important only if using non default system font size
+        final int configDensityDpi, configWidth, configHeight; // rarely important
+        // If adding a configuration, then apply the new configuration to the
+        // broadest number of devices while preserving existing settings.
+        // ie: A new configuration for a Sony Android 13 phone should apply to all Sony phones.
+        // ie: If later adding Sony Android 12, then that configuration applies only to Sony Android 12.
+        // For logging/documentation variables, use the values in the log output above.
+        //
+        // IMPORTANT: configurations must be with the default system font size setting.
+        // If you want to add font size specific configurations, then add multiple configurations based on scaledDensity.
+        //
+        // In generally, a single configuration will give perfect layout for all devices
+        // with that manufacture and version of Android.
+        // Fine tuning based on screen size and densityDpi is usually not needed.
+        switch (deviceManufacturer) {
+            default: // use Google layout by default
+            case "Google":
+                // logging and documentation
+                configManufacturer = "Google";
+                configSdk = 33;
+                configScaledDensityDpi = 2.75f;
+                configDensityDpi = 560;
+                configWidth = 1080;
+                configHeight = 2154;
+                // actual adjustment values
+                segmentedVerticalShiftRatio = -0.18f; // move separators and like/dislike up by 18%
+                segmentedLeftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.65f; // horizontally compress left separator by 35%
+                break;
+            case "samsung":
+                configManufacturer = "samsung";
+                configSdk = 33;
+                configScaledDensityDpi = 3.0f;
+                configDensityDpi = 480;
+                configWidth = 1080;
+                configHeight = 2124;
+                segmentedVerticalShiftRatio = -0.19f;
+                segmentedLeftSeparatorFontRatio = 1.5f;
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.7f;
+                break;
+        }
+        segmentedValuesSet = true;
     }
 
-    @SuppressLint("NewApi")
-    private static String formatCount(long dislikeCount) {
+    /**
+     * Correctly handles any unicode numbers (such as Arabic numbers)
+     *
+     * @return if the string contains at least 1 number
+     */
+    private static boolean stringContainsNumber(String text) {
+        for (int index = 0, length = text.length(); index < length; index++) {
+            if (Character.isDigit(text.codePointAt(index))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void addSpanStyling(Spannable destination, Object styling) {
+        destination.setSpan(styling, 0, destination.length(), 0);
+    }
+
+    private static Spannable newSpannableWithDislikes(Spannable sourceStyling, RYDVoteData voteData) {
+        return newSpanUsingStylingOfAnotherSpan(sourceStyling,
+                SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
+                        ? formatDislikePercentage(voteData.dislikePercentage)
+                        : formatDislikeCount(voteData.dislikeCount));
+    }
+
+    private static Spannable newSpanUsingStylingOfAnotherSpan(Spannable sourceStyle, String newSpanText) {
+        SpannableString destination = new SpannableString(newSpanText);
+        Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
+        for (Object span : spans) {
+            destination.setSpan(span, 0, destination.length(), sourceStyle.getSpanFlags(span));
+        }
+        return destination;
+    }
+
+    private static String formatDislikeCount(long dislikeCount) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String formatted;
+            synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
+                if (dislikeCountFormatter == null) {
+                    // Note: Java number formatters will use the locale specific number characters.
+                    // such as Arabic which formats "1.2" into "???"
+                    // But YouTube disregards locale specific number characters
+                    // and instead shows english number characters everywhere.
+                    Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
+                    dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
+                }
+                formatted = dislikeCountFormatter.format(dislikeCount);
+            }
+            return formatted;
+        }
+
+        // never will be reached, as the oldest supported YouTube app requires Android N or greater
+        return String.valueOf(dislikeCount);
+    }
+
+    private static String formatDislikePercentage(float dislikePercentage) {
         String formatted;
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
-            if (dislikeCountFormatter == null) {
+            if (dislikePercentageFormatter == null) {
                 Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
-                dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
+                dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
             }
-            formatted = dislikeCountFormatter.format(dislikeCount);
+            if (dislikePercentage >= 0.01) { // at least 1%
+                dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
+            } else {
+                dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
+            }
+            formatted = dislikePercentageFormatter.format(dislikePercentage);
         }
         return formatted;
     }
 
-    @SuppressLint("NewApi")
-    private static String formatPercentage(float dislikePercentage) {
-        String formatted;
-        synchronized (ReturnYouTubeDislikeMirror.class) { // number formatter is not thread safe, must synchronize
-            if (dislikePercentageFormatter == null) {
-                Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
-                dislikePercentageFormatter = new DecimalFormat("", new DecimalFormatSymbols(locale));
-            }
-            if (dislikePercentage == 0 || dislikePercentage >= 0.01) { // zero, or at least 1%
-                dislikePercentageFormatter.applyLocalizedPattern("0"); // show only whole percentage points
-            } else { // between (0, 1)%
-                dislikePercentageFormatter.applyLocalizedPattern("0.#"); // show 1 digit precision
-            }
-            final char percentChar = dislikePercentageFormatter.getDecimalFormatSymbols().getPercent();
-            formatted = dislikePercentageFormatter.format(100 * dislikePercentage) + percentChar;
+
+    /**
+     * Number of times the UI was forced to wait on a network fetch to complete
+     */
+    private static volatile int numberOfTimesUIWaitedOnNetworkCalls;
+
+    /**
+     * Total time the UI waited, of all times it was forced to wait.
+     */
+    private static volatile long totalTimeUIWaitedOnNetworkCalls;
+
+    private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
+        if (timeUIWaitStarted == 0) {
+            return;
         }
-        return formatted;
+        final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
+
+        totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
+        numberOfTimesUIWaitedOnNetworkCalls++;
+        final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
     }
 }
