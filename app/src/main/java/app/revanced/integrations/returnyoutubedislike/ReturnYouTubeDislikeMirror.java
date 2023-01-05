@@ -107,7 +107,7 @@ public class ReturnYouTubeDislikeMirror {
                 Spannable likesSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikesString);
 
                 // left and middle separator
-                String middleSegmentedSeparatorString = "  ?  ";
+                String middleSegmentedSeparatorString = "  •  ";
                 Spannable leftSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, leftSegmentedSeparatorString);
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 final int separatorColor = ThemeHelper.getDayNightTheme()
