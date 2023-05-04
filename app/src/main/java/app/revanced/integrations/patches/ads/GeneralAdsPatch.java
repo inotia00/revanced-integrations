@@ -41,7 +41,7 @@ public final class GeneralAdsPatch extends Filter {
         var paidContent = new BlockRule(SettingsEnum.ADREMOVER_PAID_CONTENT, "paid_content_overlay");
         var selfSponsor = new BlockRule(SettingsEnum.ADREMOVER_SELF_SPONSOR, "cta_shelf_card");
         var teaser = new BlockRule(SettingsEnum.HIDE_TEASER, "expandable_metadata");
-        var ticketShelf = new BlockRule(SettingsEnum.HIDE_TICKET_SHELF, "ticket_shelf_search");
+        var ticketShelf = new BlockRule(SettingsEnum.HIDE_TICKET_SHELF, "ticket_shelf");
         var timedReactions = new BlockRule(SettingsEnum.HIDE_TIMED_REACTIONS, "emoji_control_panel", "timed_reaction_player_animation", "timed_reaction_live_player_overlay");
         var viewProducts = new BlockRule(SettingsEnum.HIDE_VIEW_PRODUCTS, "product_item", "products_in_video");
         var webSearchPanel = new BlockRule(SettingsEnum.HIDE_WEB_SEARCH_PANEL, "web_link_panel");
