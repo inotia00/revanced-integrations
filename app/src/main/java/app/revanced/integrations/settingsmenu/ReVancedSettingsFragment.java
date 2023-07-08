@@ -591,7 +591,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private void importActivity() {
         var intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/json");
+        intent.setType("*/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
