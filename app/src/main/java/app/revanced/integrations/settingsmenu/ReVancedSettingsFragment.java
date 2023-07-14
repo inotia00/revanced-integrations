@@ -290,7 +290,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         enableDisablePreferences(
                 !isOldPlayerFlyoutPanelAvailable(),
                 SettingsEnum.ENABLE_OLD_QUALITY_LAYOUT,
-                SettingsEnum.ENABLE_CUSTOM_VIDEO_SPEED
+                SettingsEnum.ENABLE_CUSTOM_PLAYBACK_SPEED
         );
     }
 

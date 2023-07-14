@@ -15,7 +15,7 @@ public class PlaybackSpeedPatch {
     private static float selectedSpeed = 1.0f;
     private static String currentContentCpn;
 
-    public static void newPlaybackStarted(final String contentCpn, final boolean isLive) {
+    public static void newVideoStarted(final String contentCpn, final boolean isLive) {
         try {
             if (contentCpn.isEmpty() || Objects.equals(currentContentCpn, contentCpn))
                 return;

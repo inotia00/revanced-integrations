@@ -99,7 +99,7 @@ public class LowLevelFilter {
                     path.contains("macro_markers_carousel.")) count++;
         }
 
-        if (PatchStatus.OldSpeedLayout() && SettingsEnum.ENABLE_CUSTOM_VIDEO_SPEED.getBoolean()) {
+        if (PatchStatus.OldSpeedLayout() && SettingsEnum.ENABLE_CUSTOM_PLAYBACK_SPEED.getBoolean()) {
             // Check if ["PLAYBACK_RATE_MENU_BOTTOM_SHEET_FRAGMENT"] is loaded.
             isPlaybackRateMenuLoaded = path.contains("playback_speed_sheet_content.eml-js");
         }

@@ -91,7 +91,7 @@ public class FlyoutPanelPatch {
      * @param linearLayout [BOTTOM_SHEET_FRAGMENT], {@ComponentHost} is located under linearLayout.
      */
     public static void enableOldPlaybackRateMenu(LinearLayout linearLayout) {
-        if (!SettingsEnum.ENABLE_CUSTOM_VIDEO_SPEED.getBoolean())
+        if (!SettingsEnum.ENABLE_CUSTOM_PLAYBACK_SPEED.getBoolean())
             return;
 
         // The RecyclerView is placed on the 1st ChildView.
