@@ -1,7 +1,7 @@
 package app.revanced.integrations.utils;
 
-import static app.revanced.integrations.patches.video.VideoSpeedPatch.overrideSpeed;
-import static app.revanced.integrations.patches.video.VideoSpeedPatch.userChangedSpeed;
+import static app.revanced.integrations.patches.video.PlaybackSpeedPatch.overrideSpeed;
+import static app.revanced.integrations.patches.video.PlaybackSpeedPatch.userChangedSpeed;
 import static app.revanced.integrations.utils.ReVancedHelper.getStringArray;
 import static app.revanced.integrations.utils.ReVancedHelper.isPackageEnabled;
 import static app.revanced.integrations.utils.ReVancedUtils.showToastShort;
@@ -22,7 +22,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
 
-import app.revanced.integrations.patches.video.CustomVideoSpeedPatch;
+import app.revanced.integrations.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.patches.video.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 
@@ -115,9 +115,9 @@ public class VideoHelpers {
         }
     }
 
-    public static void videoSpeedDialogListener(Context context) {
-        String[] speedEntries = CustomVideoSpeedPatch.getListEntries();
-        String[] speedEntryValues = CustomVideoSpeedPatch.getListEntryValues();
+    public static void playbackSpeedDialogListener(Context context) {
+        String[] speedEntries = CustomPlaybackSpeedPatch.getListEntries();
+        String[] speedEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();
 
         AlertDialog speedDialog = new AlertDialog.Builder(context)
                 .setTitle(setTitle(str("camera_speed_button_label")))

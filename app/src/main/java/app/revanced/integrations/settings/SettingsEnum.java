@@ -301,15 +301,15 @@ public enum SettingsEnum {
     // Video
     DEFAULT_VIDEO_QUALITY_MOBILE("revanced_default_video_quality_mobile", INTEGER, -2),
     DEFAULT_VIDEO_QUALITY_WIFI("revanced_default_video_quality_wifi", INTEGER, -2),
-    DEFAULT_VIDEO_SPEED("revanced_default_video_speed", FLOAT, -2.0f),
+    DEFAULT_PLAYBACK_SPEED("revanced_default_playback_speed", FLOAT, -2.0f),
     DISABLE_HDR_VIDEO("revanced_disable_hdr_video", BOOLEAN, FALSE, true),
-    DISABLE_DEFAULT_VIDEO_SPEED_LIVE("revanced_disable_default_video_speed_live", BOOLEAN, TRUE),
-    ENABLE_CUSTOM_VIDEO_SPEED("revanced_enable_custom_video_speed", BOOLEAN, FALSE, true),
-    CUSTOM_VIDEO_SPEEDS("revanced_custom_video_speeds", STRING,
+    DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE("revanced_disable_default_playback_speed_live", BOOLEAN, TRUE),
+    ENABLE_CUSTOM_PLAYBACK_SPEED("revanced_enable_custom_playback_speed", BOOLEAN, FALSE, true),
+    CUSTOM_PLAYBACK_SPEEDS("revanced_custom_playback_speeds", STRING,
             "0.25\n0.5\n0.75\n1.0\n1.25\n1.5\n1.75\n2.0\n2.25\n2.5", true,
-            parents(ENABLE_CUSTOM_VIDEO_SPEED)),
+            parents(ENABLE_CUSTOM_PLAYBACK_SPEED)),
     ENABLE_SAVE_VIDEO_QUALITY("revanced_enable_save_video_quality", BOOLEAN, TRUE),
-    ENABLE_SAVE_VIDEO_SPEED("revanced_enable_save_video_speed", BOOLEAN, TRUE),
+    ENABLE_SAVE_PLAYBACK_SPEED("revanced_enable_save_playback_speed", BOOLEAN, TRUE),
 
 
     // Return YouTube Dislike

@@ -10,7 +10,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class CustomVideoSpeedPatch {
+public class CustomPlaybackSpeedPatch {
     /**
      * Maximum playback speed, exclusive value.  Custom speeds must be less than this value.
      */
@@ -19,7 +19,7 @@ public class CustomVideoSpeedPatch {
     /**
      * Custom playback speeds.
      */
-    public static float[] videoSpeeds;
+    public static float[] playbackSpeeds;
 
     public static String[] customSpeedEntries;
     public static String[] customSpeedEntryValues;
@@ -31,54 +31,54 @@ public class CustomVideoSpeedPatch {
     }
 
     public static float[] getArray(float[] original) {
-        return isCustomVideoSpeedEnabled() ? videoSpeeds : original;
+        return isCustomPlaybackSpeedEnabled() ? playbackSpeeds : original;
     }
 
     public static int getLength(int original) {
-        return isCustomVideoSpeedEnabled() ? videoSpeeds.length : original;
+        return isCustomPlaybackSpeedEnabled() ? playbackSpeeds.length : original;
     }
 
     public static int getSize(int original) {
-        return isCustomVideoSpeedEnabled() ? 0 : original;
+        return isCustomPlaybackSpeedEnabled() ? 0 : original;
     }
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
         ReVancedUtils.showToastLong(toastMessage);
-        SettingsEnum.CUSTOM_VIDEO_SPEEDS.saveValue(SettingsEnum.CUSTOM_VIDEO_SPEEDS.defaultValue);
+        SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.saveValue(SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.defaultValue);
     }
 
     private static void loadSpeeds() {
         try {
-            if (!isCustomVideoSpeedEnabled()) return;
+            if (!isCustomPlaybackSpeedEnabled()) return;
 
-            String[] speedStrings = SettingsEnum.CUSTOM_VIDEO_SPEEDS.getString().split("\\s+");
+            String[] speedStrings = SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.getString().split("\\s+");
             Arrays.sort(speedStrings);
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();
             }
-            videoSpeeds = new float[speedStrings.length];
+            playbackSpeeds = new float[speedStrings.length];
             for (int i = 0, length = speedStrings.length; i < length; i++) {
                 final float speed = Float.parseFloat(speedStrings[i]);
-                if (speed <= 0 || arrayContains(videoSpeeds, speed)) {
+                if (speed <= 0 || arrayContains(playbackSpeeds, speed)) {
                     throw new IllegalArgumentException();
                 }
                 if (speed >= MAXIMUM_PLAYBACK_SPEED) {
-                    resetCustomSpeeds(str("revanced_custom_video_speeds_warning", MAXIMUM_PLAYBACK_SPEED + ""));
+                    resetCustomSpeeds(str("revanced_custom_playback_speeds_warning", MAXIMUM_PLAYBACK_SPEED + ""));
                     loadSpeeds();
                     return;
                 }
-                videoSpeeds[i] = speed;
+                playbackSpeeds[i] = speed;
             }
 
             if (customSpeedEntries != null) return;
 
-            customSpeedEntries = new String[videoSpeeds.length + 1];
-            customSpeedEntryValues = new String[videoSpeeds.length + 1];
+            customSpeedEntries = new String[playbackSpeeds.length + 1];
+            customSpeedEntryValues = new String[playbackSpeeds.length + 1];
             customSpeedEntries[0] = str("quality_auto");
             customSpeedEntryValues[0] = "-2.0";
 
             int i = 1;
-            for (float speed : videoSpeeds) {
+            for (float speed : playbackSpeeds) {
                 String speedString = String.valueOf(speed);
                 customSpeedEntries[i] = speed != 1.0f
                         ? speedString + "x"
@@ -87,8 +87,8 @@ public class CustomVideoSpeedPatch {
                 i++;
             }
         } catch (Exception ex) {
-            LogHelper.printException(CustomVideoSpeedPatch.class, "parse error", ex);
-            resetCustomSpeeds(str("revanced_custom_video_speeds_error"));
+            LogHelper.printException(CustomPlaybackSpeedPatch.class, "parse error", ex);
+            resetCustomSpeeds(str("revanced_custom_playback_speeds_error"));
             loadSpeeds();
         }
     }
@@ -101,19 +101,19 @@ public class CustomVideoSpeedPatch {
     }
 
     public static String[] getListEntries() {
-        return isCustomVideoSpeedEnabled()
+        return isCustomPlaybackSpeedEnabled()
                 ? customSpeedEntries
                 : defaultSpeedEntries;
     }
 
     public static String[] getListEntryValues() {
-        return isCustomVideoSpeedEnabled()
+        return isCustomPlaybackSpeedEnabled()
                 ? customSpeedEntryValues
                 : defaultSpeedEntryValues;
     }
 
-    private static boolean isCustomVideoSpeedEnabled() {
-        return SettingsEnum.ENABLE_CUSTOM_VIDEO_SPEED.getBoolean();
+    private static boolean isCustomPlaybackSpeedEnabled() {
+        return SettingsEnum.ENABLE_CUSTOM_PLAYBACK_SPEED.getBoolean();
     }
 
 }

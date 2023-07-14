@@ -3,7 +3,6 @@ package app.revanced.integrations.settingsmenu;
 import static app.revanced.integrations.utils.ReVancedHelper.getStringArray;
 import static app.revanced.integrations.utils.ReVancedHelper.isOldPlayerFlyoutPanelAvailable;
 import static app.revanced.integrations.utils.ReVancedHelper.isPackageEnabled;
-import static app.revanced.integrations.utils.ReVancedHelper.isSpoofedTargetVersionLez;
 import static app.revanced.integrations.utils.ReVancedHelper.isSupportHookDownloadButton;
 import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThreadDelayed;
 import static app.revanced.integrations.utils.ReVancedUtils.showToastShort;
@@ -53,7 +52,7 @@ import app.revanced.integrations.patches.button.CopyVideoUrl;
 import app.revanced.integrations.patches.button.CopyVideoUrlTimestamp;
 import app.revanced.integrations.patches.button.ExternalDownload;
 import app.revanced.integrations.patches.button.SpeedDialog;
-import app.revanced.integrations.patches.video.CustomVideoSpeedPatch;
+import app.revanced.integrations.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedHelper;
@@ -96,7 +95,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SettingsEnum.setValue(setting, editPreference.getText());
             } else if (pref instanceof ListPreference) {
                 switch (setting) {
-                    case DEFAULT_VIDEO_SPEED -> setVideoSpeed();
+                    case DEFAULT_PLAYBACK_SPEED -> setPlaybackSpeed();
                     case DEFAULT_VIDEO_QUALITY_WIFI -> setVideoQuality(true);
                     case DEFAULT_VIDEO_QUALITY_MOBILE -> setVideoQuality(false);
                     case SPOOF_APP_VERSION_TARGET -> setSpoofAppVersionTarget();
@@ -187,7 +186,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         setSplashAnimationPreference();
         setVideoQuality(false);
         setVideoQuality(true);
-        setVideoSpeed();
+        setPlaybackSpeed();
     }
 
     /**
@@ -309,9 +308,9 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     /**
      * Set interaction for default video speed ListPreference
      */
-    private void setVideoSpeed() {
+    private void setPlaybackSpeed() {
         try {
-            SettingsEnum speedSetting = SettingsEnum.DEFAULT_VIDEO_SPEED;
+            SettingsEnum speedSetting = SettingsEnum.DEFAULT_PLAYBACK_SPEED;
 
             var value = SharedPrefHelper.getString(REVANCED, speedSetting.path, "-2.0");
             speedSetting.saveValue(Float.valueOf(value));
@@ -321,14 +320,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (speedListPreference == null)
                 return;
 
-            speedListPreference.setEntries(CustomVideoSpeedPatch.getListEntries());
-            speedListPreference.setEntryValues(CustomVideoSpeedPatch.getListEntryValues());
+            speedListPreference.setEntries(CustomPlaybackSpeedPatch.getListEntries());
+            speedListPreference.setEntryValues(CustomPlaybackSpeedPatch.getListEntryValues());
 
             CharSequence[] entries = speedListPreference.getEntries();
             int entryIndex = speedListPreference.findIndexOfValue(value);
             speedListPreference.setSummary(entryIndex < 0 ? null : entries[entryIndex]);
         } catch (Throwable th) {
-            LogHelper.printException(ReVancedSettingsFragment.class, "Error setting setVideoSpeed" + th);
+            LogHelper.printException(ReVancedSettingsFragment.class, "Error setting setPlaybackSpeed" + th);
         }
     }
 

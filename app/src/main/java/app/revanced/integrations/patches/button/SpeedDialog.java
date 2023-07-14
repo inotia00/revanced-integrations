@@ -1,6 +1,6 @@
 package app.revanced.integrations.patches.button;
 
-import static app.revanced.integrations.patches.video.VideoSpeedPatch.overrideSpeed;
+import static app.revanced.integrations.patches.video.PlaybackSpeedPatch.overrideSpeed;
 import static app.revanced.integrations.utils.ReVancedUtils.showToastShort;
 import static app.revanced.integrations.utils.ResourceUtils.anim;
 import static app.revanced.integrations.utils.ResourceUtils.findView;
@@ -37,7 +37,7 @@ public class SpeedDialog {
             isButtonEnabled = setValue();
             ImageView imageView = findView(SpeedDialog.class, constraintLayout, "speed_dialog_button");
 
-            imageView.setOnClickListener(view -> VideoHelpers.videoSpeedDialogListener(view.getContext()));
+            imageView.setOnClickListener(view -> VideoHelpers.playbackSpeedDialogListener(view.getContext()));
             imageView.setOnLongClickListener(view -> {
                 overrideSpeed(1.0f);
                 showToastShort(view.getContext(), str("revanced_overlay_button_speed_dialog_reset"));
