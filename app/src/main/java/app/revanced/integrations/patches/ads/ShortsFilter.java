@@ -25,6 +25,11 @@ public final class ShortsFilter extends Filter {
                 "sponsor_button"
         );
 
+        final var pivotButton = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_PLAYER_PIVOT_BUTTON,
+                "reel_pivot_button"
+        );
+
         final var shorts = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_SHELF,
                 "shorts_shelf",
@@ -33,7 +38,7 @@ public final class ShortsFilter extends Filter {
                 "shorts_video_cell"
         );
 
-        this.pathFilterGroups.addAll(joinButton, subscribeButton);
+        this.pathFilterGroups.addAll(joinButton, subscribeButton, pivotButton);
         this.identifierFilterGroups.addAll(shorts, thanksButton);
     }
 
