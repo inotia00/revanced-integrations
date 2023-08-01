@@ -53,6 +53,7 @@ import app.revanced.integrations.patches.button.CopyVideoUrlTimestamp;
 import app.revanced.integrations.patches.button.ExternalDownload;
 import app.revanced.integrations.patches.button.SpeedDialog;
 import app.revanced.integrations.patches.video.CustomPlaybackSpeedPatch;
+import app.revanced.integrations.patches.utils.PatchStatus;
 import app.revanced.integrations.patches.button.Whitelists;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
