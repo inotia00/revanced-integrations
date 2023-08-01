@@ -12,6 +12,9 @@ object ResourceHelper {
     private const val ARROW_BLACK_ICON = "yt_outline_arrow_left_black_24"
     private const val ARROW_WHITE_ICON = "yt_outline_arrow_left_white_24"
 
+    private const val TRASH_BLACK_ICON = "yt_outline_trash_can_black_24"
+    private const val TRASH_WHITE_ICON = "yt_outline_trash_can_white_24"
+
     @JvmStatic
     val resources: Resources get() = ReVancedUtils.getContext().resources
 
