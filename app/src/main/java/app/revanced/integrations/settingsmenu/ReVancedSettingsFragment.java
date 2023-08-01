@@ -439,9 +439,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     this.whitelistingPreferenceScreen.addPreference(WhitelistSPEED);
                 }
             } else {
-                SwitchPreference setWhitelist = (SwitchPreference) findPreference(SettingsEnum.OVERLAY_BUTTON_WHITELIST.path);
-                this.overlayPreferenceScreen.removePreference(setWhitelist);
-                this.overlayPreferenceScreen.removePreference(whitelistingPreferenceScreen);
+                //I use it because all are false
+                enableDisablePreferences(
+                    isIncludedADS,
+                    SettingsEnum.OVERLAY_BUTTON_WHITELIST,
+                    SettingsEnum.SPEED_WHITELIST,
+                    SettingsEnum.SB_WHITELIST,
+                    SettingsEnum.ADS_WHITELIST
+            );
             }
         } catch (Throwable th) {
             LogHelper.printException(ReVancedSettingsFragment.class, "Error setting AddWhitelistSettings" + th);
