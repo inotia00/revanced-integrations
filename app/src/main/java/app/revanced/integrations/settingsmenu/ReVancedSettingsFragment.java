@@ -439,7 +439,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     this.whitelistingPreferenceScreen.addPreference(WhitelistSPEED);
                 }
             } else {
-                SwitchPreference setWhitelist = (SwitchPreference) findPreferenceOnScreen(SettingsEnum.OVERLAY_BUTTON_WHITELIST.getPath());
+                SwitchPreference setWhitelist = (SwitchPreference) findPreference(SettingsEnum.OVERLAY_BUTTON_WHITELIST.path);
                 this.overlayPreferenceScreen.removePreference(setWhitelist);
                 this.overlayPreferenceScreen.removePreference(whitelistingPreferenceScreen);
             }
