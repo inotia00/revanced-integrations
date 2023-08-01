@@ -202,15 +202,20 @@ public enum SettingsEnum {
     ALWAYS_REPEAT("revanced_always_repeat", BOOLEAN, FALSE),
     ALWAYS_REPEAT_PAUSE("revanced_always_repeat_pause", BOOLEAN, FALSE),
     OVERLAY_BUTTON_ALWAYS_REPEAT("revanced_overlay_button_always_repeat", BOOLEAN, TRUE),
+    OVERLAY_BUTTON_WHITELIST("revanced_overlay_button_whitelist", false, ReturnType.BOOLEAN),
     OVERLAY_BUTTON_COPY_VIDEO_URL("revanced_overlay_button_copy_video_url", BOOLEAN, TRUE),
     OVERLAY_BUTTON_COPY_VIDEO_URL_TIMESTAMP("revanced_overlay_button_copy_video_url_timestamp", BOOLEAN, FALSE),
     OVERLAY_BUTTON_EXTERNAL_DOWNLOADER("revanced_overlay_button_external_downloader", BOOLEAN, TRUE),
     OVERLAY_BUTTON_SPEED_DIALOG("revanced_overlay_button_speed_dialog", BOOLEAN, TRUE),
     EXTERNAL_DOWNLOADER_PACKAGE_NAME("revanced_external_downloader_package_name", STRING, "com.deniscerri.ytdl", true),
 
+    // Channel Whitelist
+    ADS_WHITELIST("revanced_whitelist_ads", false, ReturnType.BOOLEAN),
+    SPEED_WHITELIST("revanced_whitelist_speed", false, ReturnType.BOOLEAN),
+    SB_WHITELIST("revanced_whitelisting_sponsorblock", false, ReturnType.BOOLEAN),
+
     // Experimental Flags
     HOOK_DOWNLOAD_BUTTON("revanced_hook_download_button", BOOLEAN, FALSE, true),
-
 
     // Player
     HIDE_AUDIO_TRACK_BUTTON("revanced_hide_audio_track_button", BOOLEAN, TRUE),
