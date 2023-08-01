@@ -1,4 +1,7 @@
 {
+  "name": "revanced-integrations",
+	"version": "0.114.11",
+	"repository": "https://github.com/YT-Advanced/revanced-integrations",
   "devDependencies": {
     "@saithodev/semantic-release-backmerge": "^3.1.0",
     "@semantic-release/changelog": "^6.0.2",
