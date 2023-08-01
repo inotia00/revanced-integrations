@@ -117,6 +117,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     };
     private PreferenceScreen externalDownloaderPreferenceScreen;
+    private PreferenceScreen whitelistingPreferenceScreen;
 
     public ReVancedSettingsFragment() {
     }
