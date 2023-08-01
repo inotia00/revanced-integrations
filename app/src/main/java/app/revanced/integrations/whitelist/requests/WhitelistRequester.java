@@ -5,7 +5,7 @@ import static app.revanced.integrations.utils.ReVancedUtils.showToastShort;
 import static app.revanced.integrations.utils.StringRef.str;
 
 import org.json.JSONObject;
-
+import org.json.JSONArray;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
