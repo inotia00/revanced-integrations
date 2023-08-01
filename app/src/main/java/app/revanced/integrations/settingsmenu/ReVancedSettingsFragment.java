@@ -754,4 +754,13 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             rebootDialog();
         }
     }
+    
+    public static void rebootDialogStatic(Context context, String msg) {
+        Activity activity = (Activity) context;
+        new AlertDialog.Builder(activity)
+                .setMessage(str(msg))
+                .setPositiveButton(str("in_app_update_restart_button"), (dialog, id) -> reboot(activity))
+                .setNegativeButton(str("sign_in_cancel"), null)
+                .show();
+    }
 }
