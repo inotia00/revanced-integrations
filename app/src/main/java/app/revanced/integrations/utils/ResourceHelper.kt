@@ -23,6 +23,13 @@ object ResourceHelper {
         }
 
     @JvmStatic
+    val trash: Int
+        get() {
+            val themeName = if (dayNightTheme) TRASH_WHITE_ICON else TRASH_BLACK_ICON
+            return identifier(themeName, ResourceType.DRAWABLE)
+        }
+
+    @JvmStatic
     @Suppress("DEPRECATION")
     fun hidePlayerButtonBackground(view: View?) {
         PlayerButton.PLAYER.apply {
