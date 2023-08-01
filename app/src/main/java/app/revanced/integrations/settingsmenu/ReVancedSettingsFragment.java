@@ -439,9 +439,9 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     this.whitelistingPreferenceScreen.addPreference(WhitelistSPEED);
                 }
             } else {
-                //I use it because all are false
+                //True is disable
                 enableDisablePreferences(
-                    isIncludedADS,
+                    true,
                     SettingsEnum.OVERLAY_BUTTON_WHITELIST,
                     SettingsEnum.SPEED_WHITELIST,
                     SettingsEnum.SB_WHITELIST,
