@@ -1,3 +1,11 @@
+# [0.115.0](https://github.com/YT-Advanced/revanced-integrations/compare/v0.114.10...v0.115.0) (2023-08-01)
+
+
+### Features
+
+* **youtube:** preparation for discontinuation ([2449d8c](https://github.com/YT-Advanced/revanced-integrations/commit/2449d8c08509079974ec07d499bc389dfe30e4dd))
+* **youtube:** Re-add Whitelist ([930e311](https://github.com/YT-Advanced/revanced-integrations/commit/930e3118f0e47200cdc81b3d86fea37e01d86663))
+
 # [0.97.0](https://github.com/revanced/revanced-integrations/compare/v0.96.2...v0.97.0) (2023-02-14)
 
 
