@@ -442,7 +442,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 //True is disable
                 enableDisablePreferences(
                     true,
-                    SettingsEnum.OVERLAY_BUTTON_WHITELIST,
                     SettingsEnum.SPEED_WHITELIST,
                     SettingsEnum.SB_WHITELIST,
                     SettingsEnum.ADS_WHITELIST
