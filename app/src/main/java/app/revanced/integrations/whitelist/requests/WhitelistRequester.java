@@ -23,6 +23,7 @@ import app.revanced.integrations.whitelist.WhitelistType;
 
 public class WhitelistRequester {
     private static final String YT_API_URL = "https://www.googleapis.com/youtube/v3/";
+
     private static final String VIDEO_ID = VideoInformation.getVideoId();
 
     private WhitelistRequester() {
@@ -32,18 +33,16 @@ public class WhitelistRequester {
         try {
             var context = Objects.requireNonNull(ReVancedUtils.getContext());
 
-            HttpURLConnection connection = getConnectionFromRoute(VIDEO_ID);
-
-            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            HttpURLConnection connection = getChannelConnectionFromRoute(WhitelistRoutes.GET_CHANNEL_DETAILS, videoId);
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Connection", "keep-alive");
+            connection.setRequestProperty("Pragma", "no-cache");
+            connection.setRequestProperty("Cache-Control", "no-cache");
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(2000); // timeout for TCP connection to server
+            connection.setReadTimeout(4000); // timeout for server response
             connection.setDoOutput(true);
-            connection.setConnectTimeout(2000);
 
-            String jsonInputString = "";
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 JSONObject json = getJSONObject(connection);
