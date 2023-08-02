@@ -1,3 +1,10 @@
+## [0.115.2](https://github.com/YT-Advanced/revanced-integrations/compare/v0.115.1...v0.115.2) (2023-08-02)
+
+
+### Bug Fixes
+
+* **connection:** 401 Error ([a42bc70](https://github.com/YT-Advanced/revanced-integrations/commit/a42bc701e77a6a7577f17f7a43f5a72fd27d3f37))
+
 ## [0.115.1](https://github.com/YT-Advanced/revanced-integrations/compare/v0.115.0...v0.115.1) (2023-08-02)
 
 
