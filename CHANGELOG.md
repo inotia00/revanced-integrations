@@ -1,3 +1,10 @@
+## [0.115.1](https://github.com/YT-Advanced/revanced-integrations/compare/v0.115.0...v0.115.1) (2023-08-02)
+
+
+### Bug Fixes
+
+* **sponsorblock:** Auto disable whitelist setting ([c35b0b4](https://github.com/YT-Advanced/revanced-integrations/commit/c35b0b4fda3e7ac3c611139bdbb37f5cba444855))
+
 # [0.115.0](https://github.com/YT-Advanced/revanced-integrations/compare/v0.114.10...v0.115.0) (2023-08-01)
 
 
