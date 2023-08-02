@@ -63,7 +63,7 @@ public class WhitelistRequester {
                 });
             } else {
                 //runOnMainThread(() -> showToastShort(str("revanced_whitelisting_fetch_failed", responseCode)));
-                runOnMainThread(() -> showToastShort(connection.getResponseMessage());
+                runOnMainThread(() -> showToastShort(connection.getResponseMessage()));
             }
             connection.disconnect();
         } catch (Exception ex) {
