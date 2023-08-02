@@ -33,7 +33,7 @@ public class WhitelistRequester {
         try {
             var context = Objects.requireNonNull(ReVancedUtils.getContext());
 
-            HttpURLConnection connection = getConnectionFromRoute(WhitelistRoutes.GET_CHANNEL_DETAILS, videoId);
+            HttpURLConnection connection = getConnectionFromRoute(videoId);
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Connection", "keep-alive");
             connection.setRequestProperty("Pragma", "no-cache");
