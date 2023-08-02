@@ -24,7 +24,7 @@ import app.revanced.integrations.whitelist.WhitelistType;
 public class WhitelistRequester {
     private static final String YT_API_URL = "https://www.googleapis.com/youtube/v3/";
 
-    private static final String VIDEO_ID = VideoInformation.getVideoId();
+    private static final String videoId = VideoInformation.getVideoId();
 
     private WhitelistRequester() {
     }
