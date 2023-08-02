@@ -33,7 +33,7 @@ public class WhitelistRequester {
         try {
             var context = Objects.requireNonNull(ReVancedUtils.getContext());
 
-            HttpURLConnection connection = getConnectionFromRoute(videoId);
+            HttpURLConnection connection = getChannelConnectionFromRoute(videoId);
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Connection", "keep-alive");
             connection.setRequestProperty("Pragma", "no-cache");
@@ -62,8 +62,7 @@ public class WhitelistRequester {
                     }
                 });
             } else {
-                //runOnMainThread(() -> showToastShort(str("revanced_whitelisting_fetch_failed", responseCode)));
-                runOnMainThread(() -> showToastShort(connection.getResponseMessage()));
+                runOnMainThread(() -> showToastShort(str("revanced_whitelisting_fetch_failed", responseCode)));
             }
             connection.disconnect();
         } catch (Exception ex) {
@@ -74,7 +73,7 @@ public class WhitelistRequester {
 
     // helpers
 
-    private static HttpURLConnection getConnectionFromRoute(String... params) throws IOException {
+    private static HttpURLConnection getChannelConnectionFromRoute(String... params) throws IOException {
         return Requester.getConnectionFromRoute(YT_API_URL, WhitelistRoutes.GET_CHANNEL_DETAILS, params);
     }
 
