@@ -114,7 +114,7 @@ public class VideoHelpers {
         final String[] speedEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();
 
         AlertDialog speedDialog = new AlertDialog.Builder(context)
-                .setTitle(getFormattedSpeedString(str("camera_speed_button_label")))
+                .setTitle(getFormattedSpeedString(str("revanced_whitelisting_speed_button")))
                 .setItems(speedEntries, (dialog, index) -> overrideSpeedBridge(Float.parseFloat(speedEntryValues[index] + "f")))
                 .show();
 

@@ -211,8 +211,15 @@ public enum SettingsEnum {
     OVERLAY_BUTTON_COPY_VIDEO_URL("revanced_overlay_button_copy_video_url", BOOLEAN, TRUE),
     OVERLAY_BUTTON_COPY_VIDEO_URL_TIMESTAMP("revanced_overlay_button_copy_video_url_timestamp", BOOLEAN, FALSE),
     OVERLAY_BUTTON_EXTERNAL_DOWNLOADER("revanced_overlay_button_external_downloader", BOOLEAN, TRUE),
+    OVERLAY_BUTTON_WHITELIST("revanced_overlay_button_whitelist", BOOLEAN, FALSE),
+    WHITELIST_API_KEY("revanced_whitelist_api_key", STRING, "", true),
     OVERLAY_BUTTON_SPEED_DIALOG("revanced_overlay_button_speed_dialog", BOOLEAN, TRUE),
     EXTERNAL_DOWNLOADER_PACKAGE_NAME("revanced_external_downloader_package_name", STRING, "com.deniscerri.ytdl", true),
+
+    // Channel Whitelist
+    ADS_WHITELIST("revanced_whitelist_ads", BOOLEAN, FALSE),
+    SPEED_WHITELIST("revanced_whitelist_speed", BOOLEAN, FALSE),
+    SB_WHITELIST("revanced_whitelisting_sponsorblock", BOOLEAN, FALSE),
 
     // Experimental Flags
     HOOK_DOWNLOAD_BUTTON("revanced_hook_download_button", BOOLEAN, FALSE, true),

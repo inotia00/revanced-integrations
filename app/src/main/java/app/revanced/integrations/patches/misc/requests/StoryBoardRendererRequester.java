@@ -13,11 +13,14 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 import app.revanced.integrations.patches.misc.SpoofPlayerParameterPatch;
+import app.revanced.integrations.patches.video.VideoChannel;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class StoryBoardRendererRequester {
+
+    private static VideoChannel channelModel;
     /**
      * TCP timeout
      */
@@ -62,6 +65,9 @@ public class StoryBoardRendererRequester {
                 final String storyboardsRendererSpec = storyboardsRenderer.getString("spec");
 
                 SpoofPlayerParameterPatch.setStoryboardRendererSpec(storyboardsRendererSpec);
+                // Get the author information too
+                JSONObject videoInfo = playerResponse.getJSONObject("videoDetails");
+                channelModel = new VideoChannel(videoInfo.getString("author"), videoInfo.getString("channelId"));
             } else {
                 handleConnectionError("API not available: " + responseCode, null);
             }
@@ -73,6 +79,10 @@ public class StoryBoardRendererRequester {
         } catch (Exception ex) {
             handleConnectionError("Failed to fetch StoryBoard URL", ex);
         }
+    }
+
+    public static VideoChannel getchannelModel() {
+        return channelModel;
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
