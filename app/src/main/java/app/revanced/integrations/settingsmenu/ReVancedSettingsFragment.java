@@ -53,11 +53,15 @@ import app.revanced.integrations.patches.button.CopyVideoUrlTimestamp;
 import app.revanced.integrations.patches.button.ExternalDownload;
 import app.revanced.integrations.patches.button.SpeedDialog;
 import app.revanced.integrations.patches.video.CustomPlaybackSpeedPatch;
+import app.revanced.integrations.patches.utils.PatchStatus;
+import app.revanced.integrations.patches.button.Whitelists;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedHelper;
 import app.revanced.integrations.utils.ResourceType;
 import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.whitelist.Whitelist;
+import app.revanced.integrations.whitelist.WhitelistType;
 
 /**
  * @noinspection ALL
@@ -89,6 +93,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     case OVERLAY_BUTTON_COPY_VIDEO_URL_TIMESTAMP ->
                             CopyVideoUrlTimestamp.refreshVisibility();
                     case OVERLAY_BUTTON_EXTERNAL_DOWNLOADER -> ExternalDownload.refreshVisibility();
+                    case OVERLAY_BUTTON_WHITELIST -> Whitelists.refreshVisibility();
                     case OVERLAY_BUTTON_SPEED_DIALOG -> SpeedDialog.refreshVisibility();
                 }
 
@@ -113,6 +118,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     };
     private PreferenceScreen externalDownloaderPreferenceScreen;
+    private PreferenceScreen whitelistingPreferenceScreen;
 
     public ReVancedSettingsFragment() {
     }
@@ -139,6 +145,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             enableDisablePreferences();
 
             externalDownloaderPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("external_downloader");
+            whitelistingPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("whitelisting");
 
             initializeReVancedSettings();
         } catch (Throwable th) {
@@ -180,6 +187,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         setBackupRestorePreference();
         setDoubleBackTimeout();
         setExternalDownloaderPreference();
+        AddWhitelistSettings();
         setOpenSettingsPreference();
         setPatchesInformation();
         setPlaybackSpeed();
@@ -397,6 +405,51 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         Preference integrations = findPreference("revanced-integrations");
         if (integrations != null)
             integrations.setSummary(BuildConfig.VERSION_NAME);
+    }
+
+    /**
+     * Add Preference to Whitelist settings submenu
+     */
+    public void AddWhitelistSettings() {
+        try {
+            Activity activity = ReVancedSettingsFragment.this.getActivity();
+            boolean isIncludedSB = PatchStatus.SponsorBlock();
+            boolean isIncludedSPEED = PatchStatus.VideoSpeed();
+            boolean isIncludedADS = PatchStatus.VideoAds();
+
+            if (isIncludedSB || isIncludedSPEED || isIncludedADS) {
+                // Sponsorblock
+                if (isIncludedSB) {
+                    Whitelist.setEnabled(WhitelistType.SPONSORBLOCK, SettingsEnum.SB_WHITELIST.getBoolean());
+
+                    WhitelistedChannelsPreference WhitelistSB = new WhitelistedChannelsPreference(activity);
+                    WhitelistSB.setTitle(str("revanced_whitelisting_sponsorblock"));
+                    WhitelistSB.setWhitelistType(WhitelistType.SPONSORBLOCK);
+                    this.whitelistingPreferenceScreen.addPreference(WhitelistSB);
+                }
+
+                // Video Speed
+                if (isIncludedSPEED) {
+                    Whitelist.setEnabled(WhitelistType.SPEED, SettingsEnum.SPEED_WHITELIST.getBoolean());
+
+                    WhitelistedChannelsPreference WhitelistSPEED = new WhitelistedChannelsPreference(activity);
+                    WhitelistSPEED.setTitle(str("revanced_whitelisting_speed"));
+                    WhitelistSPEED.setWhitelistType(WhitelistType.SPEED);
+                    this.whitelistingPreferenceScreen.addPreference(WhitelistSPEED);
+                }
+            } else {
+                //True is disable
+YT-Advanced marked this conversation as resolved.
+                enableDisablePreferences(
+                    true,
+                    SettingsEnum.SPEED_WHITELIST,
+                    SettingsEnum.SB_WHITELIST,
+                    SettingsEnum.ADS_WHITELIST
+            );
+            }
+        } catch (Throwable th) {
+            LogHelper.printException(ReVancedSettingsFragment.class, "Error setting AddWhitelistSettings" + th);
+        }
     }
 
     /**
@@ -685,5 +738,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         } else {
             rebootDialog();
         }
+    }
+
+    public static void rebootDialogStatic(Context context, String msg) {
+        Activity activity = (Activity) context;
+        new AlertDialog.Builder(activity)
+                .setMessage(str(msg))
+                .setPositiveButton(str("in_app_update_restart_button"), (dialog, id) -> reboot(activity))
+                .setNegativeButton(str("sign_in_cancel"), null)
+                .show();
     }
 }

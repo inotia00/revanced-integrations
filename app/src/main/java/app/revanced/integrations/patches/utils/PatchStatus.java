@@ -16,4 +16,20 @@ public class PatchStatus {
         // Replace this with true if the Suggested Actions patch succeeds
         return false;
     }
+
+    public static boolean SponsorBlock() {
+        // Replace this with true if the SponsorBlock patch succeeds
+        return false;
+    }
+
+    public static boolean VideoAds() {
+        // Replace this with true if the Hide Video Ads patch succeeds
+        return false;
+    }
+
+    public static boolean VideoSpeed() {
+        // Replace this with true if the Default Video Speed patch succeeds
+        return false;
+    }
+
 }
