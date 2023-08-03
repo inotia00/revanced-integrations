@@ -24,6 +24,9 @@ public final class VideoInformation {
     @NonNull
     private static String videoId = "";
 
+    @NonNull
+    private static String channelName = "";
+
     private static long videoLength = 0;
     private static long videoTime = -1;
 
@@ -92,6 +95,17 @@ public final class VideoInformation {
     }
 
     /**
+     * Channel name of the current video playing.
+     * <b>Currently this does not function for Shorts playback.</b>
+     *
+     * @return The channel name of the video. Empty string if not set yet.
+     */
+    @NonNull
+    public static String getChannelName() {
+        return channelName;
+    }
+
+    /**
      * Injection point.
      *
      * @param newlyLoadedVideoId id of the current video
@@ -100,6 +114,16 @@ public final class VideoInformation {
         if (!videoId.equals(newlyLoadedVideoId)) {
             videoId = newlyLoadedVideoId;
         }
+    }
+
+    /**
+     * Injection point.
+     *
+     * @param newlyLoadedChannelName channel name of the current video
+     */
+    public static void setChannelName(@NonNull String newlyLoadedChannelName) {
+        if (!channelName.equals(newlyLoadedChannelName))
+            channelName = newlyLoadedChannelName;
     }
 
     /**
