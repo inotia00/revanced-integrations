@@ -16,6 +16,7 @@ public final class PlaylistCardFilter extends Filter {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlaylistCardFilter() {
         exceptions.addPatterns(
+                "comment_thread",
                 "menu",
                 "root",
                 "-count",

@@ -15,6 +15,7 @@ public final class AdsFilter extends Filter {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public AdsFilter() {
         exceptions.addPatterns(
+                "comment_thread",
                 "menu",
                 "root",
                 "-count",

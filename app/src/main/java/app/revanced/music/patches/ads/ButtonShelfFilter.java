@@ -15,6 +15,7 @@ public final class ButtonShelfFilter extends Filter {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public ButtonShelfFilter() {
         exceptions.addPatterns(
+                "comment_thread",
                 "menu",
                 "root",
                 "-count",

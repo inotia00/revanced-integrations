@@ -1,5 +1,6 @@
 package app.revanced.music.patches.ads;
 
+
 import android.os.Build;
 
 import androidx.annotation.Nullable;
@@ -9,11 +10,11 @@ import app.revanced.music.settings.SettingsEnum;
 import app.revanced.music.utils.StringTrieSearch;
 
 
-public final class CarouselShelfFilter extends Filter {
+public final class ChannelGuidelinesFilter extends Filter {
     private final StringTrieSearch exceptions = new StringTrieSearch();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public CarouselShelfFilter() {
+    public ChannelGuidelinesFilter() {
         exceptions.addPatterns(
                 "comment_thread",
                 "menu",
@@ -23,13 +24,13 @@ public final class CarouselShelfFilter extends Filter {
                 "-button"
         );
 
-        final var carouselShelf = new StringFilterGroup(
-                SettingsEnum.HIDE_CAROUSEL_SHELF,
-                "music_grid_item_carousel"
+        final var channelGuidelines = new StringFilterGroup(
+                SettingsEnum.HIDE_CHANNEL_GUIDELINES,
+                "community_guidelines"
         );
 
         this.pathFilterGroups.addAll(
-                carouselShelf
+                channelGuidelines
         );
     }
 

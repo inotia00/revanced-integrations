@@ -38,16 +38,16 @@ public class LayoutPatch {
         }
     }
 
-    public static boolean enableNewLayout(boolean original) {
-        return SettingsEnum.ENABLE_NEW_LAYOUT.getBoolean() || original;
+    public static boolean enableNewLayout() {
+        return SettingsEnum.ENABLE_NEW_LAYOUT.getBoolean();
     }
 
     public static boolean enableOldStyleMiniPlayer(boolean original) {
         return !SettingsEnum.ENABLE_OLD_STYLE_MINI_PLAYER.getBoolean() && original;
     }
 
-    public static boolean enableSleepTimer(boolean original) {
-        return SettingsEnum.ENABLE_SLEEP_TIMER.getBoolean() || original;
+    public static boolean enableSleepTimer() {
+        return SettingsEnum.ENABLE_SLEEP_TIMER.getBoolean();
     }
 
     public static boolean enableZenMode() {
