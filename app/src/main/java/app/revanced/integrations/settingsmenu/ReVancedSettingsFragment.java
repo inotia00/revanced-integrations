@@ -439,7 +439,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
             } else {
                 //True is disable
-YT-Advanced marked this conversation as resolved.
                 enableDisablePreferences(
                     true,
                     SettingsEnum.SPEED_WHITELIST,
