@@ -146,6 +146,7 @@ public enum SettingsEnum {
     HIDE_GRAY_SEPARATOR("revanced_hide_gray_separator", BOOLEAN, TRUE),
     HIDE_INFO_PANEL("revanced_hide_info_panel", BOOLEAN, TRUE),
     HIDE_JOIN_BUTTON("revanced_hide_join_button", BOOLEAN, TRUE),
+    HIDE_REMINDER_BUTTON("revanced_hide_reminder_button", BOOLEAN, FALSE),
     HIDE_LATEST_POSTS("revanced_hide_latest_posts", BOOLEAN, TRUE),
     HIDE_MEDICAL_PANEL("revanced_hide_medical_panel", BOOLEAN, TRUE),
     HIDE_MOVIE_SHELF("revanced_hide_movie_shelf", BOOLEAN, FALSE),
