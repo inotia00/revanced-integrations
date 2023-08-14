@@ -10,7 +10,8 @@ public final class NavBarIndexFilter extends Filter {
         pathFilterGroups.addAll(
                 new StringFilterGroup(
                         SettingsEnum.HIDE_SUGGESTIONS_SHELF,
-                        "horizontal_video_shelf"
+                        "horizontal_video_shelf",
+                        "horizontal_tile_shelf"
                 )
         );
     }
