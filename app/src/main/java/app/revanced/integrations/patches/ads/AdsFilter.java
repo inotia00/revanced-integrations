@@ -88,7 +88,8 @@ public final class AdsFilter extends Filter {
                 SettingsEnum.HIDE_VIEW_PRODUCTS,
                 "expandable_product_grid",
                 "product_item",
-                "products_in_video"
+                "products_in_video",
+                "expandable_product_grid"
         );
 
         final var webSearchPanel = new StringFilterGroup(
