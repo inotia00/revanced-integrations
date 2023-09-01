@@ -35,7 +35,6 @@ public final class ShortsFilter extends Filter {
                 "shorts_video_cell",
                 "shorts_pivot_item"
         );
-        //pivotButton must be added into 2 groups (I don't know why)
         this.pathFilterGroups.addAll(joinButton, subscribeButton, pivotButton);
         this.identifierFilterGroups.addAll(shorts, thanksButton, pivotButton);
     }
