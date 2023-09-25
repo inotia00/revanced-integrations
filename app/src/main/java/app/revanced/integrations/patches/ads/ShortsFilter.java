@@ -20,7 +20,8 @@ public final class ShortsFilter extends Filter {
                 "shorts_shelf",
                 "inline_shorts",
                 "shorts_grid",
-                "shorts_video_cell"
+                "shorts_video_cell",
+                "shorts_pivot_item"
         );
 
         shortsShelfHeader = new StringFilterGroup(
