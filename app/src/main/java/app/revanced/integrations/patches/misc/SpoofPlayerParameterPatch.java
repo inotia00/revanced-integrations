@@ -51,7 +51,21 @@ public class SpoofPlayerParameterPatch {
     private static volatile String lastPlayerResponseVideoId;
 
     private static volatile Future<StoryboardRenderer> rendererFuture;
-
+    
+    /**
+     * Used to check if video is Feed or not
+     */
+    private static boolean isPlayingFeed;
+    
+    /**
+     * Used to check if video is Shorts or not
+     */
+    private static boolean isPlayingShorts;
+    
+    /**
+     * Used to check if video is Shorts or not
+     */
+    private static boolean isPlayingClips;
 
     /**
      * Injection point.
@@ -69,19 +83,21 @@ public class SpoofPlayerParameterPatch {
             return parameters;
         }
 
+        isPlayingShorts = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)
         // Shorts do not need to be spoofed.
-        if (parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) {
+        if (isPlayingShorts) {
             return parameters;
         }
 
         // Clip's player parameters contain important information such as where the video starts, where it ends, and whether it loops.
         // For this reason, the player parameters of a clip are usually very long (150~300 characters).
         // Clips are 60 seconds or less in length, so no spoofing.
-        if (parameters.length() > 150) {
+        isPlayingClips = parameters.length() > 150
+        if (isPlayingClips) {
             return parameters;
         }
 
-        final boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
+        isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
                 && AUTOPLAY_PARAMETERS.stream().anyMatch(parameters::contains);
 
         if (isPlayingFeed) {
@@ -140,6 +156,8 @@ public class SpoofPlayerParameterPatch {
     @Nullable
     public static String getStoryboardRendererSpec() {
         if (SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean()) {
+            // If video is feed, shorts or clips, return original value
+            if (isPlayingFeed || isPlayingShorts || isPlayingClips) return null;
             StoryboardRenderer renderer = getRenderer();
             if (renderer != null)
                 return renderer.spec();
@@ -157,6 +175,7 @@ public class SpoofPlayerParameterPatch {
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
         if (SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean()) {
+
             StoryboardRenderer renderer = getRenderer();
             if (renderer != null) {
                 return renderer.isLiveStream() ? null : renderer.spec();
@@ -171,6 +190,9 @@ public class SpoofPlayerParameterPatch {
      */
     public static int getRecommendedLevel(int originalLevel) {
         if (SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean()) {
+            // If video is feed, shorts or clips, return original value
+            if (isPlayingFeed || isPlayingShorts || isPlayingClips) return originalLevel;
+            
             StoryboardRenderer renderer = getRenderer();
             if (renderer != null) {
                 Integer recommendedLevel = renderer.recommendedLevel();
