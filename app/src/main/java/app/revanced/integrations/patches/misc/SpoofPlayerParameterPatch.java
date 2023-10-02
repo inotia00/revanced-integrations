@@ -63,7 +63,7 @@ public class SpoofPlayerParameterPatch {
     private static boolean isPlayingShorts;
     
     /**
-     * Used to check if video is Shorts or not
+     * Used to check if video is Clips or not
      */
     private static boolean isPlayingClips;
 
@@ -83,7 +83,7 @@ public class SpoofPlayerParameterPatch {
             return parameters;
         }
 
-        isPlayingShorts = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)
+        isPlayingShorts = parameters.startsWith(SHORTS_PLAYER_PARAMETERS);
         // Shorts do not need to be spoofed.
         if (isPlayingShorts) {
             return parameters;
@@ -92,7 +92,7 @@ public class SpoofPlayerParameterPatch {
         // Clip's player parameters contain important information such as where the video starts, where it ends, and whether it loops.
         // For this reason, the player parameters of a clip are usually very long (150~300 characters).
         // Clips are 60 seconds or less in length, so no spoofing.
-        isPlayingClips = parameters.length() > 150
+        isPlayingClips = parameters.length() > 150;
         if (isPlayingClips) {
             return parameters;
         }
