@@ -30,6 +30,16 @@ public class SpoofPlayerParameterPatch {
     private static final String INCOGNITO_PARAMETERS = "CgIQBg==";
 
     /**
+     * I found this parameter when I (Alireza) openned
+     * a video from Notifications. Luckily, it
+     * worked and don't have any side effect.
+     * 
+     * Also this params can be fixed by Google,
+     * so we will remove it anytime.
+     */
+    private static final String NOTIFICATIONS_PARAMETERS = "wGIGCgQQAhgD";
+
+    /**
      * Parameters causing playback issues.
      */
     private static final List<String> AUTOPLAY_PARAMETERS = Arrays.asList(
@@ -93,11 +103,18 @@ public class SpoofPlayerParameterPatch {
             // This will cause playback issues in the feed, but it's better than manipulating the history.
             return SCRIM_PARAMETER + SHORTS_PLAYER_PARAMETERS;
         } else {
+            // If Turned on Spoof Player Parameter Type, it will use Incognito Mode
+            final String spoofedParameters = SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean()
+                ? INCOGNITO_PARAMETERS
+                : NOTIFICATIONS_PARAMETERS;
+
             // StoryboardRenderer is always empty when playing video with INCOGNITO_PARAMETERS parameter.
             // Fetch StoryboardRenderer without parameter.
-            fetchStoryboardRenderer(videoId);
+            if (SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean())
+                fetchStoryboardRenderer(videoId);
+
             // Spoof the player parameter to prevent playback issues.
-            return INCOGNITO_PARAMETERS;
+            return spoofedParameters;
         }
     }
 
