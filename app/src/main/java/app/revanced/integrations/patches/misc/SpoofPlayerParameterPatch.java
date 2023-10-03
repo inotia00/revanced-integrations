@@ -104,7 +104,7 @@ public class SpoofPlayerParameterPatch {
             return SCRIM_PARAMETER + SHORTS_PLAYER_PARAMETERS;
         } else {
             // If Turned on Spoof Player Parameter Type, it will use Incognito Mode
-            final String spoofedParameters = SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean()
+            final String playersParameters = SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean()
                 ? INCOGNITO_PARAMETERS
                 : NOTIFICATIONS_PARAMETERS;
 
@@ -114,7 +114,7 @@ public class SpoofPlayerParameterPatch {
                 fetchStoryboardRenderer(videoId);
 
             // Spoof the player parameter to prevent playback issues.
-            return spoofedParameters;
+            return playersParameters;
         }
     }
 
@@ -150,7 +150,7 @@ public class SpoofPlayerParameterPatch {
      * Injection point.
      */
     public static boolean getSeekbarThumbnailOverrideValue() {
-        return SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean();
+        return SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() && SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean();
     }
 
     /**
@@ -159,7 +159,7 @@ public class SpoofPlayerParameterPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec() {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean() || originalStoryboardRenderer)
             return null;
 
         StoryboardRenderer renderer = getRenderer();
@@ -177,7 +177,7 @@ public class SpoofPlayerParameterPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean() || originalStoryboardRenderer)
             return originalStoryboardRendererSpec;
 
         StoryboardRenderer renderer = getRenderer();
@@ -192,7 +192,7 @@ public class SpoofPlayerParameterPatch {
      * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean() || originalStoryboardRenderer)
             return originalLevel;
 
         StoryboardRenderer renderer = getRenderer();
