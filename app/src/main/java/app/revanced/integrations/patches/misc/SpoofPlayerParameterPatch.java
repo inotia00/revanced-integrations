@@ -32,13 +32,12 @@ public class SpoofPlayerParameterPatch {
     /**
      * I found this parameter when I (Alireza) openned
      * a video from Notifications. Luckily, it
-     * worked but having side effect same as Incognito Parameter.
-     * I think I will do some more test for knowing why it happened
+     * worked without any side effect.
      * 
      * Also this params may be fixed by Google,
      * so we can remove it anytime.
      */
-    private static final String NOTIFICATIONS_PARAMETERS = "wGIGCgQQAhgD";
+    private static final String NOTIFICATIONS_PARAMETERS = "wGIGCgQQAhgC";
 
     /**
      * Parameters causing playback issues.
@@ -104,14 +103,14 @@ public class SpoofPlayerParameterPatch {
             // This will cause playback issues in the feed, but it's better than manipulating the history.
             return SCRIM_PARAMETER + SHORTS_PLAYER_PARAMETERS;
         } else {
+            // StoryboardRenderer is always empty when playing video with INCOGNITO_PARAMETERS and NOTIFICATIONS_PARAMETERS parameter.
+            // Fetch StoryboardRenderer without parameter.
+            if (SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean()) fetchStoryboardRenderer(videoId);
+
             // If Turned on Spoof Player Parameter Type, it will use Incognito Mode
             final String playerParameters = SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean()
                 ? INCOGNITO_PARAMETERS
                 : NOTIFICATIONS_PARAMETERS;
-
-            // StoryboardRenderer is always empty when playing video with INCOGNITO_PARAMETERS and NOTIFICATIONS_PARAMETERS parameter.
-            // Fetch StoryboardRenderer without parameter.
-            fetchStoryboardRenderer(videoId);
 
             // Spoof the player parameter to prevent playback issues.
             return playerParameters;
@@ -159,7 +158,7 @@ public class SpoofPlayerParameterPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec() {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer|| !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean())
             return null;
 
         StoryboardRenderer renderer = getRenderer();
@@ -177,7 +176,7 @@ public class SpoofPlayerParameterPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer|| !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean())
             return originalStoryboardRendererSpec;
 
         StoryboardRenderer renderer = getRenderer();
@@ -192,7 +191,7 @@ public class SpoofPlayerParameterPatch {
      * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer)
+        if (!SettingsEnum.SPOOF_PLAYER_PARAMETER.getBoolean() || originalStoryboardRenderer|| !SettingsEnum.SPOOF_PLAYER_PARAMETER_TYPE.getBoolean())
             return originalLevel;
 
         StoryboardRenderer renderer = getRenderer();
