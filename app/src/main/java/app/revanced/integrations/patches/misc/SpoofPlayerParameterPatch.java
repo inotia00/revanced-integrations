@@ -32,10 +32,11 @@ public class SpoofPlayerParameterPatch {
     /**
      * I found this parameter when I (Alireza) openned
      * a video from Notifications. Luckily, it
-     * worked and don't have any side effect.
+     * worked but having side effect same as Incognito Parameter.
+     * I think I will do some more test for knowing why it happened
      * 
-     * Also this params can be fixed by Google,
-     * so we will remove it anytime.
+     * Also this params may be fixed by Google,
+     * so we can remove it anytime.
      */
     private static final String NOTIFICATIONS_PARAMETERS = "wGIGCgQQAhgD";
 
