@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
-import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -137,16 +136,6 @@ class SwipeControlsOverlayLayout(
             } else {
                 showFeedbackView(str("quality_auto"), autoBrightnessIcon)
             }
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    override fun onEnterSwipeSession() {
-        if (config.shouldEnableHapticFeedback) {
-            performHapticFeedback(
-                HapticFeedbackConstants.LONG_PRESS,
-                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-            )
         }
     }
 }

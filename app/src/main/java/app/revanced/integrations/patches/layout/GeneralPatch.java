@@ -1,6 +1,5 @@
 package app.revanced.integrations.patches.layout;
 
-import static app.revanced.integrations.utils.ReVancedHelper.isSpoofedTargetVersionLez;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy0dpUnderCondition;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
 import static app.revanced.integrations.utils.ResourceUtils.identifier;
@@ -15,19 +14,12 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import java.util.Arrays;
-import java.util.List;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.ResourceType;
 
 public class GeneralPatch {
     private static final String PREMIUM_HEADER_NAME = "ytPremiumWordmarkHeader";
-    private static final List<String> horizontalShelf = Arrays.asList(
-            "horizontal_tile_shelf.eml",
-            "horizontal_video_shelf.eml"
-    );
     public static boolean captionsButtonStatus;
     @SuppressLint("StaticFieldLeak")
     public static View compactLink;
@@ -67,14 +59,6 @@ public class GeneralPatch {
 
     public static boolean hideAutoPlayerPopupPanels() {
         return SettingsEnum.HIDE_AUTO_PLAYER_POPUP_PANELS.getBoolean();
-    }
-
-    public static void hideBreakingNewsShelf(View view) {
-        hideViewBy0dpUnderCondition(
-                SettingsEnum.HIDE_SUGGESTIONS_SHELF.getBoolean()
-                        && !isSpoofedTargetVersionLez("17.31.00"),
-                view
-        );
     }
 
     public static int hideCategoryBarInFeed(int original) {
@@ -119,25 +103,6 @@ public class GeneralPatch {
 
     public static boolean hideSnackBar() {
         return SettingsEnum.HIDE_SNACK_BAR.getBoolean();
-    }
-
-    /**
-     * In this method, only subcomponents are created:
-     * - horizontal video shelf in feed (horizontal_video_shelf.eml)
-     * - video action bar (video_action_bar.eml)
-     * <p>
-     * Horizontal video shelf used in library tab is not used in this method
-     * The header of the suggestion shelf cannot be removed here, so it must be removed from the low-level filter
-     *
-     * @param object allValue
-     * @return whether horizontal video shelf contains
-     */
-    public static boolean hideSuggestionsShelf(Object object) {
-        if (!SettingsEnum.HIDE_SUGGESTIONS_SHELF.getBoolean())
-            return false;
-
-        final String allValue = object.toString();
-        return horizontalShelf.stream().anyMatch(allValue::contains);
     }
 
     public static void hideTrendingSearches(ImageView imageView, boolean isTrendingSearches) {

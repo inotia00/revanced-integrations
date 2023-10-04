@@ -18,9 +18,4 @@ interface SwipeControlsOverlay {
      * @param brightness the new screen brightness, in percent (range 0.0 - 100.0)
      */
     fun onBrightnessChanged(brightness: Double)
-
-    /**
-     * called when a new swipe- session has started
-     */
-    fun onEnterSwipeSession()
 }

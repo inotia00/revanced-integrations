@@ -10,24 +10,12 @@ import java.util.stream.Stream;
 
 import app.revanced.integrations.patches.utils.PatchStatus;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedHelper;
 
 
 public class LowLevelFilter {
 
     private static final List<String> ignoredList = Arrays.asList(
-            "avatar",
-            "compact_channel",
-            "description",
-            "grid_video",
-            "inline_expander",
-            "metadata",
-            "shorts",
-            "thumbnail",
-            "video_action_bar",
-            "video_action_button",
             "_menu",
             "-button",
             "-count",
@@ -41,14 +29,6 @@ public class LowLevelFilter {
     private static final List<String> browseButtonTablet = Arrays.asList(
             "channel_profile_tablet.eml",
             "|ContainerType|ContainerType|ContainerType|ContainerType|ContainerType|button.eml|"
-    );
-    private static final List<String> horizontalShelf = Arrays.asList(
-            "horizontal_tile_shelf.eml",
-            "horizontal_video_shelf.eml"
-    );
-    private static final List<String> horizontalShelfHeader = Arrays.asList(
-            "horizontalCollectionSwipeProtector=null",
-            "shelf_header.eml"
     );
     private static final List<String> joinButtonPhone = List.of(
             "|ContainerType|ContainerType|ContainerType|button.eml|"
@@ -95,26 +75,6 @@ public class LowLevelFilter {
                             .allMatch(allValue::contains) &&
                     Stream.of("YTSans-SemiBold", "sans-serif-medium")
                             .allMatch(bufferString::contains))
-                count++;
-        }
-
-        if (PatchStatus.DescriptionComponent()) {
-            // As a limitation of the implementation of RVX patches, this too must be filtered in a low-level filter
-            if (SettingsEnum.HIDE_CHAPTERS.getBoolean() &&
-                    path.contains("macro_markers_carousel.")) count++;
-        }
-
-        if (PatchStatus.SuggestedActions() && !PlayerType.getCurrent().isNoneOrHidden()) {
-            // It is a single filter to separate into independent patches
-            if (SettingsEnum.HIDE_SUGGESTED_ACTION.getBoolean() &&
-                    allValue.contains("suggested_action")) count++;
-        }
-
-        // Since the header of the horizontal video shelf is not removed, it must be removed through the low level filter
-        if (SettingsEnum.HIDE_SUGGESTIONS_SHELF.getBoolean() && horizontalShelf.stream().anyMatch(path::contains)) {
-            if (ReVancedHelper.isTablet)
-                count++;
-            else if (horizontalShelfHeader.stream().allMatch(allValue::contains))
                 count++;
         }
 

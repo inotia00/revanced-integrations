@@ -47,7 +47,6 @@ public enum SettingsEnum {
     HIDE_CREATE_CLIP_BUTTON("revanced_hide_button_create_clip", BOOLEAN, FALSE),
     HIDE_DOWNLOAD_BUTTON("revanced_hide_button_download", BOOLEAN, FALSE),
     HIDE_LIKE_DISLIKE_BUTTON("revanced_hide_button_like_dislike", BOOLEAN, FALSE),
-    HIDE_LIVE_CHAT_BUTTON("revanced_hide_button_live_chat", BOOLEAN, FALSE),
     HIDE_PLAYLIST_BUTTON("revanced_hide_button_playlist", BOOLEAN, FALSE),
     HIDE_REWARDS_BUTTON("revanced_hide_button_rewards", BOOLEAN, FALSE),
     HIDE_REMIX_BUTTON("revanced_hide_button_remix", BOOLEAN, FALSE),
@@ -290,10 +289,6 @@ public enum SettingsEnum {
     ENABLE_SWIPE_VOLUME("revanced_enable_swipe_volume", BOOLEAN, TRUE, true),
     ENABLE_SWIPE_AUTO_BRIGHTNESS("revanced_enable_swipe_auto_brightness", BOOLEAN, FALSE,
             parents(ENABLE_SWIPE_BRIGHTNESS)),
-    ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE,
-            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
-    ENABLE_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE, true,
-            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", INTEGER, 0, true,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", INTEGER, 127, true,
@@ -305,8 +300,6 @@ public enum SettingsEnum {
 
     //Experimental Flags
     DISABLE_HDR_AUTO_BRIGHTNESS("revanced_disable_hdr_auto_brightness", BOOLEAN, TRUE, true,
-            parents(ENABLE_SWIPE_BRIGHTNESS)),
-    ENABLE_SAVE_BRIGHTNESS("revanced_enable_save_brightness", BOOLEAN, TRUE, true,
             parents(ENABLE_SWIPE_BRIGHTNESS)),
     SWIPE_BRIGHTNESS_VALUE("revanced_swipe_brightness_value", FLOAT, 50F),
 

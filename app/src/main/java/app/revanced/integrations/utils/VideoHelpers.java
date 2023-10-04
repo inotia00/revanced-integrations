@@ -34,6 +34,7 @@ public class VideoHelpers {
 
     public static String currentQuality = "";
     public static float currentSpeed;
+    private static int lastIndex = -1;
     public static String qualityAutoString = "Auto";
 
     public static void copyUrl(@NonNull Context context, Boolean withTimestamp) {
@@ -110,12 +111,20 @@ public class VideoHelpers {
     }
 
     public static void playbackSpeedDialogListener(@NonNull Context context) {
-        final String[] speedEntries = CustomPlaybackSpeedPatch.getListEntries();
-        final String[] speedEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();
+        final String[] playbackSpeedWithAutoEntries = CustomPlaybackSpeedPatch.getListEntries();
+        final String[] playbackSpeedWithAutoEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();
 
+        final String[] playbackSpeedEntries = Arrays.copyOfRange(playbackSpeedWithAutoEntries, 1, playbackSpeedWithAutoEntries.length);
+        final String[] playbackSpeedEntryValues = Arrays.copyOfRange(playbackSpeedWithAutoEntryValues, 1, playbackSpeedWithAutoEntryValues.length);
+
+        final int index = Arrays.asList(playbackSpeedEntryValues).indexOf(currentSpeed + "");
+        final int dialogEntryIndex = Math.max(index, lastIndex);
         AlertDialog speedDialog = new AlertDialog.Builder(context)
-                .setTitle(getFormattedSpeedString(str("camera_speed_button_label")))
-                .setItems(speedEntries, (dialog, index) -> overrideSpeedBridge(Float.parseFloat(speedEntryValues[index] + "f")))
+                .setSingleChoiceItems(playbackSpeedEntries, dialogEntryIndex, (mDialog, mIndex) -> {
+                    overrideSpeedBridge(Float.parseFloat(playbackSpeedEntryValues[mIndex] + "f"));
+                    lastIndex = mIndex;
+                    mDialog.dismiss();
+                })
                 .show();
 
         Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
@@ -123,7 +132,7 @@ public class VideoHelpers {
         display.getSize(size);
 
         WindowManager.LayoutParams params = Objects.requireNonNull(speedDialog.getWindow()).getAttributes();
-        params.width = (int) (size.x * 0.5);
+        params.width = (int) (size.x * 0.45);
         speedDialog.getWindow().setAttributes(params);
         speedDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }

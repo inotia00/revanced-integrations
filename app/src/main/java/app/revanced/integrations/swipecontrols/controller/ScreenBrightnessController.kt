@@ -39,25 +39,14 @@ class ScreenBrightnessController(
      * save the current screen brightness, to be brought back using [restore]
      */
     fun save() {
-        if (SettingsEnum.ENABLE_SAVE_BRIGHTNESS.boolean) {
-            SettingsEnum.SWIPE_BRIGHTNESS_VALUE.saveValue(rawScreenBrightness)
-        } else if (savedScreenBrightness == null) {
-            savedScreenBrightness = rawScreenBrightness
-        }
+        SettingsEnum.SWIPE_BRIGHTNESS_VALUE.saveValue(rawScreenBrightness)
     }
 
     /**
      * restore the screen brightness saved using [save]
      */
     fun restore() {
-        if (SettingsEnum.ENABLE_SAVE_BRIGHTNESS.boolean) {
-            rawScreenBrightness = SettingsEnum.SWIPE_BRIGHTNESS_VALUE.float
-        } else {
-            savedScreenBrightness?.let {
-                rawScreenBrightness = it
-            }
-            savedScreenBrightness = null
-        }
+        rawScreenBrightness = SettingsEnum.SWIPE_BRIGHTNESS_VALUE.float
     }
 
     /**

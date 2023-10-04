@@ -151,17 +151,13 @@ public class CustomPlaybackSpeedPatch {
                         // So we need to check the tablet layout and phone layout, use [ReVancedHelper.isTablet()].
 
                         // Close the new Playback speed menu and show the old one.
-                        showPlaybackSpeedMenu();
+                        showOldPlaybackSpeedMenu();
                     }
                 });
     }
 
-    public static void showPlaybackSpeedMenu() {
-        showOldPlaybackSpeedMenu();
-    }
-
     private static void showOldPlaybackSpeedMenu() {
-        SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.getBoolean();
+        SettingsEnum.ENABLE_CUSTOM_PLAYBACK_SPEED.getBoolean();
         // Rest of the implementation added by patch.
     }
 

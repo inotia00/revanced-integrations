@@ -1,7 +1,5 @@
 package app.revanced.integrations.patches.layout;
 
-import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
-
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,10 +74,6 @@ public class PlayerPatch {
 
     public static boolean hideSeekMessage() {
         return SettingsEnum.HIDE_SEEK_MESSAGE.getBoolean();
-    }
-
-    public static void hideSuggestedActions(View view) {
-        hideViewUnderCondition(SettingsEnum.HIDE_SUGGESTED_ACTION.getBoolean(), view);
     }
 
     public static void hideSuggestedVideoOverlay(ViewGroup viewGroup) {

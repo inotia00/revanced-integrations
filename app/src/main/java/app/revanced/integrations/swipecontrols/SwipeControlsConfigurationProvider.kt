@@ -49,12 +49,6 @@ class SwipeControlsConfigurationProvider(
 
 //region gesture adjustments
     /**
-     * should press-to-swipe be enabled?
-     */
-    val shouldEnablePressToSwipe: Boolean
-        get() = SettingsEnum.ENABLE_PRESS_TO_SWIPE.boolean
-
-    /**
      * threshold for swipe detection
      * this may be called rapidly in onScroll, so we have to load it once and then leave it constant
      */
@@ -63,12 +57,6 @@ class SwipeControlsConfigurationProvider(
 //endregion
 
 //region overlay adjustments
-
-    /**
-     * should the overlay enable haptic feedback?
-     */
-    val shouldEnableHapticFeedback: Boolean
-        get() = SettingsEnum.ENABLE_SWIPE_HAPTIC_FEEDBACK.boolean
 
     /**
      * how long the overlay should be shown on changes
