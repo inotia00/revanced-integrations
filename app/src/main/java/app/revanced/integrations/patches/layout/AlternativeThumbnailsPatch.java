@@ -84,15 +84,15 @@ public final class AlternativeThumbnailsPatch {
             // especially for new videos uploaded in the last hour.
             // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
             // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
-            
+
             StringBuilder builder = new StringBuilder(originalUrl.length() + 75);
-            
+
             // DeArrow Implementation
             if (SettingsEnum.DE_ARROW_ENABLED.getBoolean()) {
                 builder.append(DE_ARROW_THUMBNAILS_API);
                 builder.append(decodedUrl.videoId).append('&redirectUrl=');
                 // This code is using to prevent strange behavior from Youtube
-                int imageFileFound = ReVancedUtils.submitOnBackgroundThread(() -> {
+                int responseCode = ReVancedUtils.submitOnBackgroundThread(() -> {
                     HttpURLConnection connection = getHttpURLConnection(originalUrl);
                     return connection.getResponseCode();
                 });
@@ -274,7 +274,7 @@ public final class AlternativeThumbnailsPatch {
             synchronized (altVideoIdLookup) {
                 verified = altVideoIdLookup.get(videoId);
                 if (verified == null) {
-                    if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean() || SettingsEnum.DE_ARROW_ENABLED.getBoolean()) {
+                    if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
                         // For fast quality, skip checking if the alt thumbnail exists.
                         // And for DeArrow, it will auto redirect to original thumbnail if fail so no need to check
                         return true;
@@ -324,7 +324,7 @@ public final class AlternativeThumbnailsPatch {
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
                 return false; // Previously verified as not existing.
             }
-            if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean() || SettingsEnum.DE_ARROW_ENABLED.getBoolean()) {
+            if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
                 return true; // Unknown if it exists or not.  Use the URL anyways and update afterwards if loading fails.
             }
 
