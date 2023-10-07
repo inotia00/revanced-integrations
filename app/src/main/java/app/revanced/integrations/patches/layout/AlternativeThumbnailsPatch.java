@@ -276,7 +276,6 @@ public final class AlternativeThumbnailsPatch {
                 if (verified == null) {
                     if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
                         // For fast quality, skip checking if the alt thumbnail exists.
-                        // And for DeArrow, it will auto redirect to original thumbnail if fail so no need to check
                         return true;
                     }
                     verified = new VerifiedQualities();
