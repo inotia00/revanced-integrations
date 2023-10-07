@@ -39,7 +39,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public final class AlternativeThumbnailsPatch {
     private static final int TIMEOUT_DEFAULT_MILLISECONDS = 5000;
 
-    private static final String DE_ARROW_THUMBNAILS_API = "https://dearrow-thumb.ajay.app/api/v1/getThumbnail?videoID="
+    private static final String DE_ARROW_THUMBNAILS_API = "https://dearrow-thumb.ajay.app/api/v1/getThumbnail?videoID=";
     
     static {
         // Fix any bad imported data.
@@ -90,12 +90,12 @@ public final class AlternativeThumbnailsPatch {
             // DeArrow Implementation
             if (SettingsEnum.DE_ARROW_ENABLED.getBoolean()) {
                 builder.append(DE_ARROW_THUMBNAILS_API);
-                builder.append(decodedUrl.videoId).append('&redirectUrl=');
+                builder.append(decodedUrl.videoId).append("&redirectUrl=");
                 // This code is using to prevent strange behavior from Youtube
                 int responseCode = ReVancedUtils.submitOnBackgroundThread(() -> {
                     HttpURLConnection connection = getHttpURLConnection(originalUrl);
                     return connection.getResponseCode();
-                });
+                }).get();
             }
             builder.append(decodedUrl.urlPrefix);
             builder.append(decodedUrl.videoId).append('/');
