@@ -88,10 +88,6 @@ public final class AlternativeThumbnailsPatch {
 
             StringBuilder builder = new StringBuilder();
 
-            // DeArrow Implementation
-            if (SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean()) {
-                builder.append(String.format(DE_ARROW_THUMBNAILS_API, decodedUrl.videoId));
-            }
             builder.append(decodedUrl.urlPrefix);
             builder.append(decodedUrl.videoId).append('/');
             builder.append(qualityToUse.getAltImageNameToUse());
@@ -100,6 +96,11 @@ public final class AlternativeThumbnailsPatch {
             String sanitizedReplacement = builder.toString();
             if (!VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
                 return originalUrl;
+            }
+
+            // DeArrow Implementation
+            if (SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean()) {
+                builder.insert(String.format(DE_ARROW_THUMBNAILS_API, decodedUrl.videoId));
             }
 
             // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
