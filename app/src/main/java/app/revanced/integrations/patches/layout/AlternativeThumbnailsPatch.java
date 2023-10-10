@@ -100,7 +100,7 @@ public final class AlternativeThumbnailsPatch {
 
             // DeArrow Implementation
             if (SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean()) {
-                builder.insert(String.format(DE_ARROW_THUMBNAILS_API, decodedUrl.videoId));
+                builder.insert(0, String.format(DE_ARROW_THUMBNAILS_API, decodedUrl.videoId));
             }
 
             // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
