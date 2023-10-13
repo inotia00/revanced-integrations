@@ -35,6 +35,7 @@ public class VideoHelpers {
     public static String currentQuality = "";
     public static float currentSpeed;
     public static String qualityAutoString = "Auto";
+    public static boolean isDownloadBtnOnClick = false;
 
     public static void copyUrl(@NonNull Context context, Boolean withTimestamp) {
         String url = String.format("https://youtu.be/%s", VideoInformation.getVideoId());
@@ -79,7 +80,13 @@ public class VideoHelpers {
             return;
         }
 
+        isDownloadBtnOnClick = true;
+
         startDownloaderActivity(context, downloaderPackageName, String.format("https://youtu.be/%s", VideoInformation.getVideoId()));
+
+        ReVancedUtils.runOnMainThreadDelayed(() -> {
+            isDownloadBtnOnClick = false;
+        }, 500L);
     }
 
     @NonNull
@@ -156,6 +163,10 @@ public class VideoHelpers {
 
     public static float getCurrentSpeed() {
         return currentSpeed;
+    }
+
+    public static boolean isDownloadBtnClicked() {
+        return isDownloadBtnOnClick;
     }
 
     public static String getQualityString() {
