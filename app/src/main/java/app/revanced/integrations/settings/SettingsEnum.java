@@ -190,6 +190,7 @@ public enum SettingsEnum {
     ENABLE_PHONE_LAYOUT("revanced_enable_phone_layout", BOOLEAN, FALSE, true, "revanced_reboot_warning_phone"),
     ENABLE_TABLET_LAYOUT("revanced_enable_tablet_layout", BOOLEAN, FALSE, true, "revanced_reboot_warning_tablet"),
     ENABLE_VP9_CODEC("revanced_enable_vp9_codec", BOOLEAN, FALSE, true, "revanced_reboot_warning_vp9"),
+    ENABLE_HDR_CODEC("revanced_enable_hdr_codec", BOOLEAN, FALSE, true, "revanced_reboot_warning_hdr"),
     SPOOF_APP_VERSION("revanced_spoof_app_version", BOOLEAN, FALSE, true),
     SPOOF_APP_VERSION_TARGET("revanced_spoof_app_version_target", STRING, "18.17.43", true,
             parents(SPOOF_APP_VERSION)),

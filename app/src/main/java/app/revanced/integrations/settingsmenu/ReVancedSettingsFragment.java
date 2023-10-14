@@ -155,6 +155,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void initializeReVancedSettings() {
+        EnableHDRCodecPreferenceLinks();
         FullScreenPanelPreferenceLinks();
         LayoutOverrideLinks();
         NavigationPreferenceLinks();
@@ -213,6 +214,17 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SettingsEnum.HIDE_QUICK_ACTIONS_RELATED_VIDEO,
                 SettingsEnum.HIDE_QUICK_ACTIONS_SHARE_BUTTON,
                 SettingsEnum.SHOW_FULLSCREEN_TITLE
+        );
+    }
+
+    /**
+     * Enable/Disable Preference related to Enable HDR Codec
+     */
+    public void EnableHDRCodecPreferenceLinks() {
+        enableDisablePreferences(
+                SettingsEnum.ENABLE_HDR_CODEC.getBoolean(),
+                SettingsEnum.ENABLE_VP9_CODEC,
+                SettingsEnum.DISABLE_HDR_VIDEO
         );
     }
 
