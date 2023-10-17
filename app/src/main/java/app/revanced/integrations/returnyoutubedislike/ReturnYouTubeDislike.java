@@ -50,18 +50,6 @@ import app.revanced.integrations.utils.ThemeHelper;
  */
 public class ReturnYouTubeDislike {
 
-    public enum Vote {
-        LIKE(1),
-        DISLIKE(-1),
-        LIKE_REMOVE(0);
-
-        public final int value;
-
-        Vote(int value) {
-            this.value = value;
-        }
-    }
-
     /**
      * Maximum amount of time to block the UI from updates while waiting for network call to complete.
      * <p>
@@ -69,50 +57,42 @@ public class ReturnYouTubeDislike {
      * <a href="https://developer.android.com/topic/performance/vitals/anr">...</a>
      */
     private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH = 4500;
-
     /**
      * How long to retain successful RYD fetches.
      */
     private static final long CACHE_TIMEOUT_SUCCESS_MILLISECONDS = 7 * 60 * 1000; // 7 Minutes
-
     /**
      * How long to retain unsuccessful RYD fetches,
      * and also the minimum time before retrying again.
      */
     private static final long CACHE_TIMEOUT_FAILURE_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes
-
     /**
      * Unique placeholder character, used to detect if a segmented span already has dislikes added to it.
      * Can be any almost any non-visible character.
      */
     private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // 'narrow space' character
-
     /**
      * Cached lookup of all video ids.
      */
     @GuardedBy("itself")
     private static final Map<String, ReturnYouTubeDislike> fetchCache = new HashMap<>();
-
     /**
      * Used to send votes, one by one, in the same order the user created them.
      */
     private static final ExecutorService voteSerialExecutor = Executors.newSingleThreadExecutor();
-
+    // Used for segmented dislike spans in Litho regular player.
+    private static final Rect leftSeparatorBounds;
+    private static final Rect middleSeparatorBounds;
     /**
      * For formatting dislikes as number.
      */
     @GuardedBy("ReturnYouTubeDislike.class") // not thread safe
     private static CompactDecimalFormat dislikeCountFormatter;
-
     /**
      * For formatting dislikes as percentage.
      */
     @GuardedBy("ReturnYouTubeDislike.class")
     private static NumberFormat dislikePercentageFormatter;
-
-    // Used for segmented dislike spans in Litho regular player.
-    private static final Rect leftSeparatorBounds;
-    private static final Rect middleSeparatorBounds;
 
     static {
         DisplayMetrics dp = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getDisplayMetrics();
@@ -126,38 +106,32 @@ public class ReturnYouTubeDislike {
     }
 
     private final String videoId;
-
     /**
      * Stores the results of the vote api fetch, and used as a barrier to wait until fetch completes.
      * Absolutely cannot be holding any lock during calls to {@link Future#get()}.
      */
     private final Future<RYDVoteData> future;
-
     /**
      * Time this instance and the future was created.
      */
     private final long timeFetched;
-
     /**
      * If this instance was previously used for a Short.
      */
     @GuardedBy("this")
     private boolean isShort;
-
     /**
      * Optional current vote status of the UI.  Used to apply a user vote that was done on a previous video viewing.
      */
     @Nullable
     @GuardedBy("this")
     private Vote userVote;
-
     /**
      * Original dislike span, before modifications.
      */
     @Nullable
     @GuardedBy("this")
     private Spanned originalDislikeSpan;
-
     /**
      * Replacement like/dislike span that includes formatted dislikes.
      * Used to prevent recreating the same span multiple times.
@@ -165,6 +139,12 @@ public class ReturnYouTubeDislike {
     @Nullable
     @GuardedBy("this")
     private SpannableString replacementLikeDislikeSpan;
+
+    private ReturnYouTubeDislike(@NonNull String videoId) {
+        this.videoId = Objects.requireNonNull(videoId);
+        this.timeFetched = System.currentTimeMillis();
+        this.future = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
+    }
 
     /**
      * @param isSegmentedButton If UI is using the segmented single UI component for both like and dislike.
@@ -297,7 +277,9 @@ public class ReturnYouTubeDislike {
         return destination;
     }
 
-    /** @noinspection deprecation*/
+    /**
+     * @noinspection deprecation
+     */
     private static String formatDislikeCount(long dislikeCount) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikeCountFormatter == null) {
@@ -313,7 +295,9 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    /** @noinspection deprecation*/
+    /**
+     * @noinspection deprecation
+     */
     private static String formatDislikePercentage(float dislikePercentage) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {
@@ -361,12 +345,6 @@ public class ReturnYouTubeDislike {
                 fetch.clearUICache();
             }
         }
-    }
-
-    private ReturnYouTubeDislike(@NonNull String videoId) {
-        this.videoId = Objects.requireNonNull(videoId);
-        this.timeFetched = System.currentTimeMillis();
-        this.future = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
     }
 
     private boolean isExpired(long now) {
@@ -543,7 +521,7 @@ public class ReturnYouTubeDislike {
                 userVote = vote;
                 clearUICache();
             }
-            
+
             if (future.isDone()) {
                 // Update the fetched vote data.
                 RYDVoteData voteData = getFetchData(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH);
@@ -557,6 +535,18 @@ public class ReturnYouTubeDislike {
 
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislike.class, "setUserVote failure", ex);
+        }
+    }
+
+    public enum Vote {
+        LIKE(1),
+        DISLIKE(-1),
+        LIKE_REMOVE(0);
+
+        public final int value;
+
+        Vote(int value) {
+            this.value = value;
         }
     }
 }

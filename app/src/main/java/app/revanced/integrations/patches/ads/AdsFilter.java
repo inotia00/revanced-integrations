@@ -93,7 +93,8 @@ public final class AdsFilter extends Filter {
 
         final var webSearchPanel = new StringFilterGroup(
                 SettingsEnum.HIDE_WEB_SEARCH_RESULTS,
-                "web_link_panel"
+                "web_link_panel",
+                "web_result_panel"
         );
 
         this.pathFilterGroupList.addAll(

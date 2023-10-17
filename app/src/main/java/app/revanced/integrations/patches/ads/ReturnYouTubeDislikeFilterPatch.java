@@ -32,6 +32,20 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
             return size() > NUMBER_OF_LAST_VIDEO_IDS_TO_TRACK;
         }
     };
+    private final ByteArrayFilterGroupList videoIdFilterGroup = new ByteArrayFilterGroupList();
+
+    public ReturnYouTubeDislikeFilterPatch() {
+        pathFilterGroupList.addAll(
+                new StringFilterGroup(SettingsEnum.RYD_SHORTS, "|shorts_dislike_button.eml|")
+        );
+        // After the dislikes icon name is some binary data and then the video id for that specific short.
+        videoIdFilterGroup.addAll(
+                // Video was previously disliked before video was opened.
+                new ByteArrayAsStringFilterGroup(null, "ic_right_dislike_on_shadowed"),
+                // Video was not already disliked.
+                new ByteArrayAsStringFilterGroup(null, "ic_right_dislike_off_shadowed")
+        );
+    }
 
     /**
      * Injection point.
@@ -51,19 +65,24 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
         }
     }
 
-    private final ByteArrayFilterGroupList videoIdFilterGroup = new ByteArrayFilterGroupList();
-
-    public ReturnYouTubeDislikeFilterPatch() {
-        pathFilterGroupList.addAll(
-                new StringFilterGroup(SettingsEnum.RYD_SHORTS, "|shorts_dislike_button.eml|")
-        );
-        // After the dislikes icon name is some binary data and then the video id for that specific short.
-        videoIdFilterGroup.addAll(
-                // Video was previously disliked before video was opened.
-                new ByteArrayAsStringFilterGroup(null, "ic_right_dislike_on_shadowed"),
-                // Video was not already disliked.
-                new ByteArrayAsStringFilterGroup(null, "ic_right_dislike_off_shadowed")
-        );
+    /**
+     * This could use {@link TrieSearch}, but since the video ids are constantly changing
+     * the overhead of updating the Trie might negate the search performance gain.
+     */
+    private static boolean byteArrayContainsString(@NonNull byte[] array, @NonNull String text) {
+        for (int i = 0, lastArrayStartIndex = array.length - text.length(); i <= lastArrayStartIndex; i++) {
+            boolean found = true;
+            for (int j = 0, textLength = text.length(); j < textLength; j++) {
+                if (array[i + j] != (byte) text.charAt(j)) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -92,25 +111,5 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
             }
             return null;
         }
-    }
-
-    /**
-     * This could use {@link TrieSearch}, but since the video ids are constantly changing
-     * the overhead of updating the Trie might negate the search performance gain.
-     */
-    private static boolean byteArrayContainsString(@NonNull byte[] array, @NonNull String text) {
-        for (int i = 0, lastArrayStartIndex = array.length - text.length(); i <= lastArrayStartIndex; i++) {
-            boolean found = true;
-            for (int j = 0, textLength = text.length(); j < textLength; j++) {
-                if (array[i + j] != (byte) text.charAt(j)) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                return true;
-            }
-        }
-        return false;
     }
 }

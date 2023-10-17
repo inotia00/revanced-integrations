@@ -171,7 +171,8 @@ public class ReturnYouTubeDislikeApi {
                 handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             }
             connection.disconnect(); // something went wrong, might as well disconnect
-        } catch (SocketTimeoutException ex) { // connection timed out, response timeout, or some other network error
+        } catch (
+                SocketTimeoutException ex) { // connection timed out, response timeout, or some other network error
             handleConnectionError((str("revanced_ryd_failure_connection_timeout")), ex);
         } catch (IOException ex) {
             handleConnectionError((str("revanced_ryd_failure_generic", ex.getMessage())), ex);

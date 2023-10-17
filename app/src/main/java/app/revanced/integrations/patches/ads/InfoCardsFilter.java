@@ -2,9 +2,9 @@ package app.revanced.integrations.patches.ads;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
-final class PlayerFilter extends Filter {
+final class InfoCardsFilter extends Filter {
 
-    public PlayerFilter() {
+    public InfoCardsFilter() {
         final var infoCard = new StringFilterGroup(
                 SettingsEnum.HIDE_INFO_CARDS,
                 "info_card_teaser_overlay.eml"

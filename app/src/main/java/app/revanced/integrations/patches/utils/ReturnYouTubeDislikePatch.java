@@ -42,16 +42,31 @@ import app.revanced.integrations.utils.ResourceType;
  * Permanent fix (yet to be implemented), either of:
  * - Modify patch to hook onto the Shorts Litho TextView, and update the dislikes asynchronously.
  * - Find a way to force Litho to rebuild it's component tree
- *   (and use that hook to force the shorts dislikes to update after the fetch is completed).
+ * (and use that hook to force the shorts dislikes to update after the fetch is completed).
  */
 public class ReturnYouTubeDislikePatch {
 
+    /**
+     * Resource identifier of old UI dislike button.
+     */
+    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID
+            = identifier("dislike_button", ResourceType.ID);
+    /**
+     * Replacement text to use for "Dislikes" while RYD is fetching.
+     */
+    private static final Spannable SHORTS_LOADING_SPAN = new SpannableString("-");
+    /**
+     * Dislikes TextViews used by Shorts.
+     * <p>
+     * Multiple TextViews are loaded at once (for the prior and next videos to swipe to).
+     * Keep track of all of them, and later pick out the correct one based on their on screen position.
+     */
+    private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
     /**
      * RYD data for the current video on screen.
      */
     @Nullable
     private static volatile ReturnYouTubeDislike currentVideoData;
-
     /**
      * The last litho based Shorts loaded.
      * May be the same value as {@link #currentVideoData}, but usually is the next short to swipe to.
@@ -59,6 +74,10 @@ public class ReturnYouTubeDislikePatch {
     @Nullable
     private static volatile ReturnYouTubeDislike lastLithoShortsVideoData;
 
+
+    //
+    // 17.x non litho regular video player.
+    //
     /**
      * Because the litho Shorts spans are created after ReturnYouTubeDislikeFilterPatch
      * detects the video ids, after the user votes the litho will update
@@ -66,12 +85,45 @@ public class ReturnYouTubeDislikePatch {
      * If this is true, then instead use {@link #currentVideoData}.
      */
     private static volatile boolean lithoShortsShouldUseCurrentData;
-
     /**
      * Last video id prefetched. Field is prevent prefetching the same video id multiple times in a row.
      */
     @Nullable
     private static volatile String lastPrefetchedVideoId;
+    /**
+     * Dislikes text label used by old UI.
+     */
+    @NonNull
+    private static WeakReference<TextView> oldUITextViewRef = new WeakReference<>(null);
+    /**
+     * Original old UI 'Dislikes' text before patch modifications.
+     * Required to reset the dislikes when changing videos and RYD is not available.
+     * Set only once during the first load.
+     */
+    private static Spanned oldUIOriginalSpan;
+    /**
+     * Replacement span that contains dislike value. Used by {@link #oldUiTextWatcher}.
+     */
+    @Nullable
+    private static Spanned oldUIReplacementSpan;
+    /**
+     * Old UI dislikes can be set multiple times by YouTube.
+     * To prevent reverting changes made here, this listener overrides any future changes YouTube makes.
+     */
+    private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        public void afterTextChanged(Editable s) {
+            if (oldUIReplacementSpan == null || oldUIReplacementSpan.toString().equals(s.toString())) {
+                return;
+            }
+            s.replace(0, s.length(), oldUIReplacementSpan); // Causes a recursive call back into this listener
+        }
+    };
 
     public static void onRYDStatusChange(boolean rydEnabled) {
         if (!rydEnabled) {
@@ -85,50 +137,8 @@ public class ReturnYouTubeDislikePatch {
 
 
     //
-    // 17.x non litho regular video player.
+    // Litho player for both regular videos and Shorts.
     //
-
-    /**
-     * Resource identifier of old UI dislike button.
-     */
-    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID
-            = identifier("dislike_button", ResourceType.ID);
-
-    /**
-     * Dislikes text label used by old UI.
-     */
-    @NonNull
-    private static WeakReference<TextView> oldUITextViewRef = new WeakReference<>(null);
-
-    /**
-     * Original old UI 'Dislikes' text before patch modifications.
-     * Required to reset the dislikes when changing videos and RYD is not available.
-     * Set only once during the first load.
-     */
-    private static Spanned oldUIOriginalSpan;
-
-    /**
-     * Replacement span that contains dislike value. Used by {@link #oldUiTextWatcher}.
-     */
-    @Nullable
-    private static Spanned oldUIReplacementSpan;
-
-    /**
-     * Old UI dislikes can be set multiple times by YouTube.
-     * To prevent reverting changes made here, this listener overrides any future changes YouTube makes.
-     */
-    private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-        public void afterTextChanged(Editable s) {
-            if (oldUIReplacementSpan == null || oldUIReplacementSpan.toString().equals(s.toString())) {
-                return;
-            }
-            s.replace(0, s.length(), oldUIReplacementSpan); // Causes a recursive call back into this listener
-        }
-    };
 
     private static void updateOldUIDislikesTextView() {
         ReturnYouTubeDislike videoData = currentVideoData;
@@ -184,7 +194,7 @@ public class ReturnYouTubeDislikePatch {
 
 
     //
-    // Litho player for both regular videos and Shorts.
+    // Non litho Shorts player.
     //
 
     public static CharSequence onCharSequenceLoaded(@NonNull Object conversionContext,
@@ -226,9 +236,9 @@ public class ReturnYouTubeDislikePatch {
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added).
      *
-     * @param textRef Cache reference to the like/dislike char sequence,
-     *                which may or may not be the same as the original span parameter.
-     *                If dislikes are added, the atomic reference must be set to the replacement span.
+     * @param textRef  Cache reference to the like/dislike char sequence,
+     *                 which may or may not be the same as the original span parameter.
+     *                 If dislikes are added, the atomic reference must be set to the replacement span.
      * @param original Original span that was created or reused by Litho.
      * @return The original span (if nothing should change), or a replacement span that contains dislikes.
      */
@@ -294,24 +304,6 @@ public class ReturnYouTubeDislikePatch {
         }
         return original;
     }
-
-
-    //
-    // Non litho Shorts player.
-    //
-
-    /**
-     * Replacement text to use for "Dislikes" while RYD is fetching.
-     */
-    private static final Spannable SHORTS_LOADING_SPAN = new SpannableString("-");
-
-    /**
-     * Dislikes TextViews used by Shorts.
-     * <p>
-     * Multiple TextViews are loaded at once (for the prior and next videos to swipe to).
-     * Keep track of all of them, and later pick out the correct one based on their on screen position.
-     */
-    private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
 
     private static void clearRemovedShortsTextViews() {
         shortsTextViewRefs.removeIf(ref -> ref.get() == null);

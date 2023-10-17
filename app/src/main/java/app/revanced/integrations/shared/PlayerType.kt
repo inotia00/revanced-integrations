@@ -11,11 +11,13 @@ enum class PlayerType {
      * Either no video, or a Short is playing.
      */
     NONE,
+
     /**
      * A Short is playing. Occurs if a regular video is first opened
      * and then a Short is opened (without first closing the regular video).
      */
     HIDDEN,
+
     /**
      * A regular video is minimized.
      *
@@ -27,6 +29,7 @@ enum class PlayerType {
     WATCH_WHILE_FULLSCREEN,
     WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN,
     WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED,
+
     /**
      * Player is either sliding to [HIDDEN] state because a Short was opened while a regular video is on screen.
      * OR
@@ -34,6 +37,7 @@ enum class PlayerType {
      */
     WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED,
     WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED,
+
     /**
      * Home feed video playback.
      */
@@ -72,6 +76,7 @@ enum class PlayerType {
                 currentPlayerType = value
                 onChange(currentPlayerType)
             }
+
         @Volatile // value is read/write from different threads
         private var currentPlayerType = NONE
 

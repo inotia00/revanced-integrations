@@ -3,6 +3,7 @@ package app.revanced.integrations.patches.ads;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
 
 final class PlayerFlyoutPanelsFilter extends Filter {
     // Search the buffer only if the flyout menu identifier is found.
@@ -79,6 +80,9 @@ final class PlayerFlyoutPanelsFilter extends Filter {
     @Override
     boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
+        // In YouTube v18.33.xx+, Shorts also use the player flyout panel
+        if (PlayerType.getCurrent().isNoneOrHidden())
+            return false;
         // Only 1 group is added to the parent class, so the matched group must be the overflow menu.
         if (matchedIndex == 0 && flyoutFilterGroupList.check(protobufBufferArray).isFiltered()) {
             // Super class handles logging.

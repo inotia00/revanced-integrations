@@ -28,6 +28,10 @@ public class GeneralPatch {
         return SettingsEnum.DISABLE_AUTO_CAPTIONS.getBoolean() && !PlayerType.getCurrent().isNoneOrHidden();
     }
 
+    public static boolean enableGradientLoadingScreen() {
+        return SettingsEnum.ENABLE_GRADIENT_LOADING_SCREEN.getBoolean();
+    }
+
     public static int enablePremiumHeader(int originalValue) {
         if (SettingsEnum.ENABLE_PREMIUM_HEADER.getBoolean())
             return identifier(PREMIUM_HEADER_NAME, ResourceType.ATTR);
