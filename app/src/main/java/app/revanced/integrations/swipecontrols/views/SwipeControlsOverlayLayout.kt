@@ -72,7 +72,7 @@ class SwipeControlsOverlayLayout(
                 )
             }
             background = GradientDrawable().apply {
-                cornerRadius = 8f
+                cornerRadius = 20f
                 setColor(config.overlayTextBackgroundColor)
             }
             setTextColor(config.overlayForegroundColor)
