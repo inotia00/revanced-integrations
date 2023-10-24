@@ -74,7 +74,7 @@ public enum SettingsEnum {
 
     // Feed Flyout Panel
     HIDE_FEED_FLYOUT_PANEL("revanced_hide_feed_flyout_panel", BOOLEAN, FALSE),
-    HIDE_FEED_FLYOUT_PANEL_FILTER_STRINGS("revanced_hide_feed_flyout_panel_filter_strings", STRING, "", true,
+    HIDE_FEED_FLYOUT_PANEL_FILTER_STRINGS("revanced_hide_feed_flyout_panel_filter_strings", STRING, "Play next in queue\nDownload video", true,
             parents(HIDE_FEED_FLYOUT_PANEL)),
 
     // Player Flyout Panel
