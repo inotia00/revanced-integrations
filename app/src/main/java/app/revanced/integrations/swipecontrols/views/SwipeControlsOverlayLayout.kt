@@ -65,14 +65,14 @@ class SwipeControlsOverlayLayout(
             ).apply {
                 addRule(CENTER_IN_PARENT, TRUE)
                 setPadding(
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding
+                    10.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP),
+                    5.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP),
+                    10.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP),
+                    5.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
                 )
             }
             background = GradientDrawable().apply {
-                cornerRadius = 8f
+                cornerRadius = 20f
                 setColor(config.overlayTextBackgroundColor)
             }
             setTextColor(config.overlayForegroundColor)

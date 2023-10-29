@@ -25,7 +25,7 @@ public class SeekBarPatch {
         if (matcher.find()) {
             String matcherGroup = matcher.group(1);
             String appendString = String.format(
-                    "\u2009(%s)",
+                    "\u2009• %s",
                     SettingsEnum.APPEND_TIME_STAMP_INFORMATION_TYPE.getBoolean()
                             ? VideoHelpers.getFormattedQualityString(matcherGroup)
                             : VideoHelpers.getFormattedSpeedString(matcherGroup)
@@ -33,7 +33,7 @@ public class SeekBarPatch {
             return original.replaceAll(regex, "") + appendString;
         } else {
             String appendString = String.format(
-                    "\u2009(%s)",
+                    "\u2009• %s",
                     SettingsEnum.APPEND_TIME_STAMP_INFORMATION_TYPE.getBoolean()
                             ? VideoHelpers.getFormattedQualityString(null)
                             : VideoHelpers.getFormattedSpeedString(null)

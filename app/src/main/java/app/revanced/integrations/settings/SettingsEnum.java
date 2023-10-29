@@ -75,7 +75,7 @@ public enum SettingsEnum {
 
     // Feed Flyout Panel
     HIDE_FEED_FLYOUT_PANEL("revanced_hide_feed_flyout_panel", BOOLEAN, FALSE),
-    HIDE_FEED_FLYOUT_PANEL_FILTER_STRINGS("revanced_hide_feed_flyout_panel_filter_strings", STRING, "", true,
+    HIDE_FEED_FLYOUT_PANEL_FILTER_STRINGS("revanced_hide_feed_flyout_panel_filter_strings", STRING, "Play next in queue\nDownload video", true,
             parents(HIDE_FEED_FLYOUT_PANEL)),
 
     // Player Flyout Panel
@@ -316,7 +316,7 @@ public enum SettingsEnum {
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", INTEGER, 127, true,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
-    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", INTEGER, 27, true,
+    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", INTEGER, 20, true,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L, true,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
