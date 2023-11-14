@@ -44,6 +44,11 @@ public class SpoofPlayerParameterPatch {
     private static final String SCRIM_PARAMETER = "SAFgAXgB";
 
     /**
+     * Parameters used in Clips.
+     */
+    private static final String CLIPS_PLAYER_PARAMETERS = "kAIB";
+    
+    /**
      * Parameters used in YouTube Shorts.
      */
     private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
@@ -82,7 +87,9 @@ public class SpoofPlayerParameterPatch {
         // Clip's player parameters contain important information such as where the video starts, where it ends, and whether it loops.
         // For this reason, the player parameters of a clip are usually very long (150~300 characters).
         // Clips are 60 seconds or less in length, so no spoofing.
-        if (originalStoryboardRenderer = parameters.length() > 150) {
+        final boolean isClip = parameters.length() > 150 
+                    || parameters.startsWith(CLIPS_PLAYER_PARAMETERS)
+        if (originalStoryboardRenderer = isClip) {
             return parameters;
         }
 
