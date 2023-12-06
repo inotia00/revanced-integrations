@@ -16,7 +16,11 @@ import app.revanced.integrations.utils.LogHelper;
  * @noinspection ALL
  */
 public class SpoofPlayerParameterPatch {
-
+    /** 
+     * Parameters used in Your Clips. 
+     */ 
+    private static final String CLIPS_PLAYER_PARAMETERS = "kAIB";
+    
     /**
      * Parameter (also used by
      * <a href="https://github.com/yt-dlp/yt-dlp/blob/81ca451480051d7ce1a31c017e005358345a9149/yt_dlp/extractor/youtube.py#L3602">yt-dlp</a>)
@@ -72,7 +76,9 @@ public class SpoofPlayerParameterPatch {
         // Clip's player parameters contain important information such as where the video starts, where it ends, and whether it loops.
         // For this reason, the player parameters of a clip are usually very long (150~300 characters).
         // Clips are 60 seconds or less in length, so no spoofing.
-        if (originalStoryboardRenderer = parameters.length() > 150) {
+        final boolean isClip = parameters.length() > 150  
+                     || parameters.startsWith(CLIPS_PLAYER_PARAMETERS) 
+        if (originalStoryboardRenderer = isClip) {
             return parameters;
         }
 
