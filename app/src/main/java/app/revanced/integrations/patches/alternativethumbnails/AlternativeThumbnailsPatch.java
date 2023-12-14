@@ -178,6 +178,8 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
+            if (originalUrl.contains("_live.")) return originalUrl; // Livestream video in feed.
+
             final boolean usingDeArrow = usingDeArrow();
             final boolean usingVideoStills = usingVideoStills();
             if (!usingDeArrow && !usingVideoStills) {
