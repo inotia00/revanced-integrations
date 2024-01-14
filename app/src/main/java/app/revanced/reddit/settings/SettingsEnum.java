@@ -41,7 +41,7 @@ public enum SettingsEnum {
             "Hides the recently visited shelf in the sidebar."),
     HIDE_TOOLBAR_BUTTON("revanced_hide_toolbar_button", BOOLEAN, FALSE, true,
             "Hide toolbar button",
-            "Hides the \"r/place\" or Reddit recap button in the toolbar."),
+            "Hides the r/place or Reddit recap button in the toolbar."),
     OPEN_LINKS_DIRECTLY("revanced_open_links_directly", BOOLEAN, TRUE,
             "Open links directly",
             "Skips over redirection URLs in external links."),
