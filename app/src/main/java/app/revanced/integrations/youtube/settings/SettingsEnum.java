@@ -295,11 +295,14 @@ public enum SettingsEnum {
     HIDE_SEEK_MESSAGE("revanced_hide_seek_message", BOOLEAN, FALSE, true),
     HIDE_SEEK_UNDO_MESSAGE("revanced_hide_seek_undo_message", BOOLEAN, FALSE, true),
     HIDE_SUGGESTED_ACTION("revanced_hide_suggested_actions", BOOLEAN, TRUE, true),
+    HIDE_SUGGESTED_VIDEO_OVERLAY("revanced_hide_suggested_video_overlay", BOOLEAN, FALSE, true),
+    HIDE_SUGGESTED_VIDEO_OVERLAY_AUTO_PLAY("revanced_hide_suggested_video_overlay_auto_play", BOOLEAN, TRUE, true,
+            parents(HIDE_SUGGESTED_VIDEO_OVERLAY)),
+
     HIDE_YOUTUBE_MUSIC_BUTTON("revanced_hide_youtube_music_button", BOOLEAN, FALSE),
 
     // Experimental Flags
     HIDE_FILMSTRIP_OVERLAY("revanced_hide_filmstrip_overlay", BOOLEAN, FALSE, true),
-    HIDE_SUGGESTED_VIDEO_OVERLAY("revanced_hide_suggested_video_overlay", BOOLEAN, FALSE, true),
 
     // Haptic Feedback
     DISABLE_HAPTIC_FEEDBACK_CHAPTERS("revanced_disable_haptic_feedback_chapters", BOOLEAN, FALSE),
