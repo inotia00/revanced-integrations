@@ -108,8 +108,18 @@ public class PlayerPatch {
         return SettingsEnum.HIDE_SEEK_UNDO_MESSAGE.getBoolean();
     }
 
+    public static void hideSuggestedVideoOverlay(View view) {
+        if (!SettingsEnum.HIDE_SUGGESTED_VIDEO_OVERLAY.getBoolean() || !SettingsEnum.HIDE_SUGGESTED_VIDEO_OVERLAY_AUTO_PLAY.getBoolean())
+            return;
+
+        if (view != null) {
+            view.setSoundEffectsEnabled(false);
+            view.performClick();
+        }
+    }
+
     public static void hideSuggestedVideoOverlay(ViewGroup viewGroup) {
-        if (!SettingsEnum.HIDE_SUGGESTED_VIDEO_OVERLAY.getBoolean())
+        if (!SettingsEnum.HIDE_SUGGESTED_VIDEO_OVERLAY.getBoolean() || SettingsEnum.HIDE_SUGGESTED_VIDEO_OVERLAY_AUTO_PLAY.getBoolean())
             return;
 
         viewGroup.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
