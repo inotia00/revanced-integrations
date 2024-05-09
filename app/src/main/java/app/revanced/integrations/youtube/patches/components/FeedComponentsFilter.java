@@ -1,7 +1,5 @@
 package app.revanced.integrations.youtube.patches.components;
 
-import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
-
 import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +11,6 @@ import app.revanced.integrations.shared.patches.components.StringFilterGroupList
 import app.revanced.integrations.shared.utils.StringTrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.RootView;
-import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
 @SuppressWarnings("unused")
 public final class FeedComponentsFilter extends Filter {
@@ -221,20 +218,10 @@ public final class FeedComponentsFilter extends Filter {
             return true;
         }
 
-        // In the old library tab, the library shelf is hidden for some reason.
-        // To solve this, check browserId in the library tab, check navigation button in the You tab.
-        if (ExtendedUtils.isYouTabUsed()) {
-            // Check navigation button last.
-            // Only filter if the library tab is not selected.
-            // This check is important as the shelf layout is used for the library tab playlists.
-            NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
-            return selectedNavButton != null && !selectedNavButton.isLibraryOrYouTab();
-        } else {
-            // Check browseId last.
-            // Only filter in home feed, search results, playlist.
-            final String browseId = RootView.getBrowseId();
-            return browseId.isEmpty() || StringUtils.startsWithAny(browseId, BROWSE_ID_DEFAULT, BROWSE_ID_PLAYLIST);
-        }
+        // Check browseId last.
+        // Only filter in home feed, search results, playlist.
+        final String browseId = RootView.getBrowseId();
+        return browseId.isEmpty() || StringUtils.startsWithAny(browseId, BROWSE_ID_DEFAULT, BROWSE_ID_PLAYLIST);
     }
 
     @Override
