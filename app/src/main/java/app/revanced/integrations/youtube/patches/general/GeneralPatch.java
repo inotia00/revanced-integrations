@@ -35,6 +35,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -291,33 +292,33 @@ public class GeneralPatch {
         return Settings.HIDE_HANDLE.get() ? 8 : originalValue;
     }
 
-    private static final String[] settingsMenuBlockList = Settings.HIDE_SETTINGS_MENU_FILTER_STRINGS.get().split("\\n");
+    private static String[] settingsMenuBlockList = Settings.HIDE_SETTINGS_MENU_FILTER_STRINGS.get().split("\\n");
     private static final String rvxSettingsLabel = str("revanced_extended_settings_title");
 
     public static void hideSettingsMenu(RecyclerView recyclerView) {
         if (!Settings.HIDE_SETTINGS_MENU.get())
             return;
 
+        settingsMenuBlockList = Arrays.stream(settingsMenuBlockList)
+                .filter(item -> !item.equals(rvxSettingsLabel))
+                .toArray(String[]::new);
+
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             final int childCount = recyclerView.getChildCount();
             if (childCount == 0)
                 return;
-            for (int i = 0; i < childCount; i++) {
-                if (!(recyclerView.getChildAt(i) instanceof ViewGroup linearLayout))
-                    return;
-                if (linearLayout.getChildCount() < 2)
-                    return;
-                if (!(linearLayout.getChildAt(1) instanceof ViewGroup relativeLayout))
-                    return;
-                if (!(relativeLayout.getChildAt(0) instanceof TextView textView))
-                    return;
-                final String title = textView.getText().toString();
-                if (title.equals(rvxSettingsLabel))
-                    return;
-
-                for (String filter : settingsMenuBlockList) {
-                    if (!filter.isEmpty() && title.equals(filter)) {
-                        ViewGroupMarginLayoutParamsPatch.hideViewGroupByMarginLayoutParams(linearLayout);
+            for (int i = 0; i <= childCount; i++) {
+                if (recyclerView.getChildAt(i) instanceof ViewGroup linearLayout
+                        && linearLayout.getChildCount() > 1
+                        && linearLayout.getChildAt(1) instanceof ViewGroup relativeLayout
+                        && relativeLayout.getChildAt(0) instanceof TextView textView
+                ) {
+                    final String title = textView.getText().toString();
+                    Logger.printDebug(() -> title);
+                    for (String filter : settingsMenuBlockList) {
+                        if (!filter.isEmpty() && title.equals(filter)) {
+                            ViewGroupMarginLayoutParamsPatch.hideViewGroupByMarginLayoutParams(linearLayout);
+                        }
                     }
                 }
             }
