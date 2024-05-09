@@ -361,8 +361,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_SHORTS_TOOLBAR = new BooleanSetting("revanced_hide_shorts_toolbar", FALSE, true);
     public static final BooleanSetting HIDE_SHORTS_NAVIGATION_BAR = new BooleanSetting("revanced_hide_shorts_navigation_bar", FALSE, true);
     public static final BooleanSetting RETURN_SHORTS_CHANNEL_NAME = new BooleanSetting("revanced_return_shorts_channel_name", FALSE);
-    public static final BooleanSetting RETURN_SHORTS_CHANNEL_NAME_FETCH = new BooleanSetting("revanced_return_shorts_channel_name_fetch", FALSE, parent(RETURN_SHORTS_CHANNEL_NAME));
-
 
     // PreferenceScreen: Swipe controls
     public static final BooleanSetting ENABLE_SWIPE_BRIGHTNESS = new BooleanSetting("revanced_enable_swipe_brightness", TRUE, true);
