@@ -101,7 +101,8 @@ public class ReturnYouTubeChannelNamePatch {
         if (handle.contains(NON_BREAK_SPACE_CHARACTER)) {
             replacedChannelName += NON_BREAK_SPACE_CHARACTER;
         }
-        Logger.printDebug(() -> "Replace Handle " + handle + " to " + replacedChannelName);
+        String finalReplacedChannelName = replacedChannelName;
+        Logger.printDebug(() -> "Replace Handle " + handle + " to " + finalReplacedChannelName);
         return replacedChannelName;
     }
 
