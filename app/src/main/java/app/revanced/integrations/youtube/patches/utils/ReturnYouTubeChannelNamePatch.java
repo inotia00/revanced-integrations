@@ -120,6 +120,7 @@ public class ReturnYouTubeChannelNamePatch {
             if (!matcher.find()) return;
             //noinspection deprecation
             String channelName = StringEscapeUtils.unescapeXml(Objects.requireNonNull(matcher.group(1)).split("</title>")[0]);
+            // Caching channel names are retrieved through the API only, to ensure accuracy
             if (channelNameMap.put(handle, channelName) == null) {
                 Logger.printDebug(() -> "Set Handle: " + handle + ", Channel Name: " + channelName);
             }
