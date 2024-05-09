@@ -29,8 +29,8 @@ public class ReturnYouTubeChannelNamePatch {
      */
     private static final Map<String, String> channelNameMap = new LinkedHashMap<>() {
         /**
-         * Number of video id's to keep track of for searching thru the buffer.
-         * A minimum value of 3 should be sufficient, but check a few more just in case.
+         * Number of channel id's to keep track of for searching thru the buffer.
+         * A minimum value of 20 should be sufficient, but check a few more just in case.
          */
         private static final int NUMBER_OF_LAST_CHANNEL_IDS_TO_TRACK = 20;
 
