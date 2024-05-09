@@ -24,7 +24,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ReturnYouTubeChannelNamePatch {
 
     /**
-     * Last unique video id's loaded.  Value is ignored and Map is treated as a Set.
+     * Last unique channel name's loaded.  Value is ignored and Map is treated as a Set.
      * Cannot use {@link LinkedHashSet} because it's missing #removeEldestEntry().
      */
     private static final Map<String, String> channelNameMap = new LinkedHashMap<>() {
