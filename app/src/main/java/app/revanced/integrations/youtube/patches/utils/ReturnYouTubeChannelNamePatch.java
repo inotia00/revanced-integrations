@@ -29,14 +29,14 @@ public class ReturnYouTubeChannelNamePatch {
      */
     private static final Map<String, String> channelNameMap = new LinkedHashMap<>() {
         /**
-         * Number of channel id's to keep track of for searching thru the buffer.
+         * Number of channel name's to keep track of for searching thru the buffer.
          * A minimum value of 20 should be sufficient, but check a few more just in case.
          */
-        private static final int NUMBER_OF_LAST_CHANNEL_IDS_TO_TRACK = 20;
+        private static final int NUMBER_OF_LAST_CHANNEL_NAME_TO_TRACK = 20;
 
         @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > NUMBER_OF_LAST_CHANNEL_IDS_TO_TRACK;
+            return size() > NUMBER_OF_LAST_CHANNEL_NAME_TO_TRACK;
         }
     };
 
