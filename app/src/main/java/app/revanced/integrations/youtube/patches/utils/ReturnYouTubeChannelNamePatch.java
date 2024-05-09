@@ -87,11 +87,11 @@ public class ReturnYouTubeChannelNamePatch {
     }
 
     private static CharSequence getChannelName(String handle) {
-        final String trimedHandle = handle.replaceAll(NON_BREAK_SPACE_CHARACTER, "");
+        final String trimmedHandle = handle.replaceAll(NON_BREAK_SPACE_CHARACTER, "");
         String replacedChannelName;
 
         // Priority: Prefetch channel name via api -> Channel name via hook -> Fallback to the original handle
-        String cachedChannelName = channelNameMap.get(trimedHandle);
+        String cachedChannelName = channelNameMap.get(trimmedHandle);
         if (cachedChannelName != null) {
             replacedChannelName = cachedChannelName;
         } else if (!channelName.isEmpty()) {
