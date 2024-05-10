@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
@@ -15,12 +16,21 @@ public class VideoQualityPatch {
     private static final IntegerSetting mobileQualitySetting = Settings.DEFAULT_VIDEO_QUALITY_MOBILE;
     private static final IntegerSetting wifiQualitySetting = Settings.DEFAULT_VIDEO_QUALITY_WIFI;
 
+    @NonNull
+    public static String videoId = "";
+
     /**
      * Injection point.
      */
     public static void newVideoStarted(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
                                            @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
                                            final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
+        if (PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL)
+            return;
+        if (videoId.equals(newlyLoadedVideoId))
+            return;
+        videoId = newlyLoadedVideoId;
+
         final int defaultQuality = Utils.getNetworkType() == Utils.NetworkType.MOBILE
                 ? mobileQualitySetting.get()
                 : wifiQualitySetting.get();
