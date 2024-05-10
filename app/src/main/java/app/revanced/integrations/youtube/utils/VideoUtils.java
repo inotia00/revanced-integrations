@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.StringSetting;
@@ -30,7 +31,7 @@ public class VideoUtils extends IntentUtils {
             Settings.EXTERNAL_DOWNLOADER_ACTION_BUTTON;
     private static final StringSetting externalDownloaderPackageName =
             Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
-    private static volatile boolean isExternalDownloaderLaunched = false;
+    private static final AtomicBoolean isExternalDownloaderLaunched = new AtomicBoolean(false);
 
     public static void copyUrl(boolean withTimestamp) {
         StringBuilder builder = new StringBuilder("https://youtu.be/");
@@ -95,13 +96,13 @@ public class VideoUtils extends IntentUtils {
                 return;
             }
 
-            isExternalDownloaderLaunched = true;
+            isExternalDownloaderLaunched.compareAndSet(false, true);
             final String content = String.format("https://youtu.be/%s", videoId);
             launchExternalDownloader(content, downloaderPackageName);
         } catch (Exception ex) {
             Logger.printException(() -> "launchExternalDownloader failure", ex);
         } finally {
-            runOnMainThreadDelayed(() -> isExternalDownloaderLaunched = false, 500L);
+            runOnMainThreadDelayed(() -> isExternalDownloaderLaunched.compareAndSet(true, false), 500);
         }
     }
 
@@ -200,7 +201,7 @@ public class VideoUtils extends IntentUtils {
      * Disable PiP mode when an external downloader Intent is started.
      */
     public static boolean getExternalDownloaderLaunchedState(boolean original) {
-        return !isExternalDownloaderLaunched && original;
+        return !isExternalDownloaderLaunched.get() && original;
     }
 
     /**

@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.youtube.utils.VideoUtils.getFormattedTimeStamp;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
@@ -311,7 +312,7 @@ public class SegmentPlaybackController {
                     || segments == null || segments.length == 0) {
                 return;
             }
-            Logger.printDebug(() -> "setVideoTime: " + millis);
+            Logger.printDebug(() -> "setVideoTime: " + getFormattedTimeStamp(millis));
 
             updateHiddenSegments(millis);
 

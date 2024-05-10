@@ -37,7 +37,7 @@ public final class VideoInformation {
     private static String videoTitle = "";
     private static long videoLength = 0;
     private static boolean videoIsLiveStream;
-    private static volatile long videoTime = -1;
+    private static long videoTime = -1;
 
     @NonNull
     private static volatile String playerResponseVideoId = "";
@@ -384,6 +384,7 @@ public final class VideoInformation {
      */
     public static void setVideoTime(final long time) {
         videoTime = time;
+        Logger.printDebug(() -> "setVideoTime: " + getFormattedTimeStamp(time));
     }
 
     /**

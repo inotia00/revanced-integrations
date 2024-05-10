@@ -49,19 +49,17 @@ public final class NewSegmentLayout extends FrameLayout {
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        final long videoLength = SegmentPlaybackController.getVideoLength();
-
         initializeButton(
                 context,
                 "revanced_sb_new_segment_rewind",
-                () -> VideoInformation.seekToRelative(-Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), videoLength),
+                () -> VideoInformation.seekToRelative(-Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), SegmentPlaybackController.getVideoLength()),
                 "Rewind button clicked"
         );
 
         initializeButton(
                 context,
                 "revanced_sb_new_segment_forward",
-                () -> VideoInformation.seekToRelative(Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), videoLength),
+                () -> VideoInformation.seekToRelative(Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), SegmentPlaybackController.getVideoLength()),
                 "Forward button clicked"
         );
 
