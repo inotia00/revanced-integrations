@@ -4,10 +4,13 @@ import static app.revanced.integrations.shared.utils.Utils.hideViewBy0dpUnderCon
 
 import android.view.View;
 
+import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class AdsPatch {
+    private static final String DIALOG_DATA_EXCEPTION = "ALERT";
     private static final Boolean hideFullscreenAdsEnabled = Settings.HIDE_FULLSCREEN_ADS.get();
     private static final Boolean hideGeneralAdsEnabled = Settings.HIDE_GENERAL_ADS.get();
     private static final Boolean hideGetPremiumAdsEnabled = Settings.HIDE_GET_PREMIUM.get();
@@ -28,8 +31,10 @@ public class AdsPatch {
     /**
      * Injection point.
      */
-    public static boolean hideFullscreenAds() {
-        return hideFullscreenAdsEnabled;
+    public static boolean hideFullscreenAds(Object object) {
+        final String dialogData = object.toString();
+        Logger.printDebug(() -> dialogData);
+        return hideFullscreenAdsEnabled && !Utils.containsAny(dialogData, DIALOG_DATA_EXCEPTION);
     }
 
     /**
