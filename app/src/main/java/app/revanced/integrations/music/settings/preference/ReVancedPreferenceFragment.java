@@ -75,17 +75,15 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         if (key == null || key.isEmpty())
             return;
 
-        for (Setting<?> setting : Setting.allLoadedSettings()) {
-            if (setting.equals(Settings.RESTORE_OLD_PLAYER_LAYOUT)) {
-                Settings.RESTORE_OLD_PLAYER_BACKGROUND.save(newValue);
-            } else if (setting.equals(Settings.RESTORE_OLD_PLAYER_BACKGROUND) && !newValue) {
-                Settings.RESTORE_OLD_PLAYER_LAYOUT.save(newValue);
-            } else if (setting.equals(Settings.RYD_ENABLED)) {
-                ReturnYouTubeDislikePatch.onRYDStatusChange(newValue);
-            } else if (setting.equals(Settings.RYD_DISLIKE_PERCENTAGE) || setting.equals(Settings.RYD_COMPACT_LAYOUT)) {
-                ReturnYouTubeDislike.clearAllUICaches();
-            }
+        if (key.equals(Settings.RESTORE_OLD_PLAYER_LAYOUT.key) && newValue) {
+            Settings.RESTORE_OLD_PLAYER_BACKGROUND.save(newValue);
+        } else if (key.equals(Settings.RYD_ENABLED.key)) {
+            ReturnYouTubeDislikePatch.onRYDStatusChange(newValue);
+        } else if (key.equals(Settings.RYD_DISLIKE_PERCENTAGE.key) || key.equals(Settings.RYD_COMPACT_LAYOUT.key)) {
+            ReturnYouTubeDislike.clearAllUICaches();
+        }
 
+        for (Setting<?> setting : Setting.allLoadedSettings()) {
             if (key.equals(setting.key)) {
                 ((BooleanSetting) setting).save(newValue);
                 if (setting.rebootApp) {
