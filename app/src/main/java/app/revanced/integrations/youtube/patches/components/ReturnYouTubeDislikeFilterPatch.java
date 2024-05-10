@@ -164,8 +164,6 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
             for (String videoId : lastVideoIds.keySet()) {
                 if (byteArrayContainsString(protobufBufferArray, videoId)) {
                     return videoId;
-                } else if (videoId.equals(shortsVideoId)) {
-                    return videoId;
                 }
             }
             return null;
