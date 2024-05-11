@@ -16,14 +16,14 @@ import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import app.revanced.integrations.shared.requests.Requester;
 import app.revanced.integrations.shared.utils.Logger;
@@ -54,43 +54,50 @@ public final class SpoofFormatStreamDataPatch {
     @NonNull
     private static volatile String lastPlayerResponseVideoId = "";
 
-    // TODO: Check that the access modifier for this variable is appropriate.
-    private static Map<Integer, String> formatStreamDataMap;
+    private static volatile Map<Integer, String> formatStreamDataMap;
 
     private static Downloader instance = getDownloader();
 
     /**
      * Injection point.
-     * TODO: Check if there are any issues without wrapping this method in a try .. catch block.
      */
-    public static void hookFormatStreamData() {
-        if (!spoofFormatStreamData) {
-            return;
+    public static void hookStreamData(Object protobufList) {
+        try {
+            if (!(protobufList instanceof List<?> formatsList)) {
+                return;
+            }
+            for (Object formatObject : formatsList) {
+                Field field = formatObject.getClass().getDeclaredField("replaceMeWithFieldName");
+                field.setAccessible(true);
+                if (!(field.get(formatObject) instanceof String url)) continue;
+                if (!url.contains("googlevideo")) continue;
+                // Since I used a locally modified NewPipeExtractor - https://github.com/inotia00/NewPipeExtractor -
+                // it is fetched as ANDROID_TESTSUITE.
+                // If you use jitpack's NewPipeExtractor library (original), it will be fetched as WEB.
+                if (url.contains("ANDROID_TESTSUITE")) continue;
+                var itag = Uri.parse(url).getQueryParameter("itag");
+                if (itag == null) {
+                    Logger.printDebug(() -> "URL does not contain itag: " + url);
+                    continue;
+                }
+                String replacement = formatStreamDataMap.get(Integer.parseInt(itag));
+                if (replacement == null) {
+                    // lowest quality
+                    Logger.printDebug(() -> "Falling back to itag 133");
+                    replacement = formatStreamDataMap.get(133);
+                }
+                if (replacement == null) {
+                    Logger.printDebug(() -> "No replacement found for itag: " + itag);
+                    continue;
+                }
+                String finalReplacement = replacement;
+                Logger.printDebug(() -> "Original StreamData: " + url);
+                Logger.printDebug(() -> "Hooked StreamData: " + finalReplacement);
+                field.set(formatObject, replacement);
+            }
+        } catch (Exception e) {
+            Logger.printException(() -> "Hooked Error: " + e.getMessage(), e);
         }
-        String formatStreamData = getFormatStreamData();
-        if (!formatStreamData.contains("googlevideo")) {
-            return;
-        }
-        Logger.printDebug(() -> "Original FormatStreamData: " + formatStreamData);
-        String itag = Uri.parse(formatStreamData).getQueryParameter("itag");
-        Logger.printDebug(() -> "Hooked itag: " + itag);
-        if (itag == null) {
-            return;
-        }
-
-        // find nearest key to itag
-        Set<Integer> availableTags = formatStreamDataMap.keySet();
-        Integer nearest = availableTags.stream().min(Comparator.comparingInt(a -> Math.abs(Integer.parseInt(itag) - a))).orElse(null);
-        Logger.printDebug(() -> "Hooked count: " + formatStreamDataMap.size());
-        Logger.printDebug(() -> "Hooked nearest " + nearest);
-
-        String format = formatStreamDataMap.get(nearest);
-        if (format == null) {
-            Logger.printDebug(() -> "Hooked format null");
-            return;
-        }
-        Logger.printDebug(() -> "Hooked format " + format);
-        setFormatStreamData(format);
     }
 
     /**
@@ -115,32 +122,25 @@ public final class SpoofFormatStreamDataPatch {
                 }
                 NewPipe.init(instance);
 
-                // TODO: [YouTubeStreamExtractor] always fetches to the [WEB] client.
-                //       (Fetch with [Android] client provided by NewPipeExtractor also has a playback buffer issue: https://github.com/TeamNewPipe/NewPipeExtractor/issues/1164)
-                //       Adds new class that extends [YouTubeStreamExtractor] to integrations and fetch with [ANDROID_TESTSUITE] client: https://github.com/iv-org/invidious/pull/4650
+                Logger.printDebug(() -> "Fetching urls: " + videoId);
+
                 StreamExtractor extractor = new YoutubeService(1).getStreamExtractor(url);
                 extractor.fetchPage();
-                Logger.printDebug(() -> "Hooked got extractor");
                 for (AudioStream audioStream : extractor.getAudioStreams()) {
                     formatStreamMap.put(audioStream.getItag(), audioStream.getContent());
                 }
-
-                Logger.printDebug(() -> "Hooked got audio");
 
                 for (VideoStream videoOnlyStream : extractor.getVideoOnlyStreams()) {
                     formatStreamMap.put(videoOnlyStream.getItag(), videoOnlyStream.getContent());
                 }
 
-                Logger.printDebug(() -> "Hooked got video only");
-
                 for (VideoStream videoStream : extractor.getVideoStreams()) {
                     formatStreamMap.put(videoStream.getItag(), videoStream.getContent());
                 }
-                Logger.printDebug(() -> "Hooked got format");
 
                 return formatStreamMap;
             }).get();
-        } catch (Exception ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.printException(() -> "Hooked Error making request: " + ex.getMessage(), ex);
         }
     }
@@ -226,22 +226,5 @@ public final class SpoofFormatStreamDataPatch {
         }
 
         return null;
-    }
-
-    /**
-     * Get current FormatStreamData.
-     * Rest of the implementation added by patch.
-     */
-    private static String getFormatStreamData() {
-        return "";
-    }
-
-    /**
-     * Set current FormatStreamData.
-     * Rest of the implementation added by patch.
-     */
-    private static void setFormatStreamData(String formatStreamData) {
-        // These instructions are ignored by patch.
-        Logger.printDebug(() -> "Original FormatStreamData: " + formatStreamData);
     }
 }
