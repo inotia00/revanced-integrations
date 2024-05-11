@@ -143,7 +143,6 @@ public class Settings extends BaseSettings {
 
     // PreferenceScreen: General - Settings menu
     public static final BooleanSetting HIDE_SETTINGS_MENU = new BooleanSetting("revanced_hide_settings_menu", FALSE);
-    public static final BooleanSetting HIDE_SETTINGS_MENU_FILTER_TYPE = new BooleanSetting("revanced_hide_settings_menu_filter_type", FALSE, parent(HIDE_SETTINGS_MENU));
     public static final StringSetting HIDE_SETTINGS_MENU_FILTER_STRINGS = new StringSetting("revanced_hide_settings_menu_filter_strings", "", true, parent(HIDE_SETTINGS_MENU));
 
     // PreferenceScreen: General - Toolbar

@@ -303,53 +303,26 @@ public class GeneralPatch {
                 .filter(item -> !item.equals(rvxSettingsLabel))
                 .toArray(String[]::new);
 
-        if (Settings.HIDE_SETTINGS_MENU_FILTER_TYPE.get()) {
-            recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
-                final int childCount = recyclerView.getChildCount();
-                if (childCount == 0)
-                    return;
-                for (int i = 0; i <= childCount; i++) {
-                    int finalIIndex = i;
-                    if (recyclerView.getChildAt(i) instanceof ViewGroup linearLayout) {
-                        if (linearLayout.getChildCount() > 1
-                                && linearLayout.getChildAt(1) instanceof ViewGroup relativeLayout
-                                && relativeLayout.getChildAt(0) instanceof TextView textView
-                        ) {
-                            final String title = textView.getText().toString();
-                            Logger.printDebug(() -> title);
-                            for (String filter : settingsMenuBlockList) {
-                                if (!filter.isEmpty() && !title.equals(filter) && !title.equals(rvxSettingsLabel)) {
-                                    ViewGroupMarginLayoutParamsPatch.hideViewGroupByMarginLayoutParams(linearLayout);
-                                }
-                            }
-                        } else {
+        recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
+            final int childCount = recyclerView.getChildCount();
+            if (childCount == 0)
+                return;
+            for (int i = 0; i <= childCount; i++) {
+                if (recyclerView.getChildAt(i) instanceof ViewGroup linearLayout
+                        && linearLayout.getChildCount() > 1
+                        && linearLayout.getChildAt(1) instanceof ViewGroup relativeLayout
+                        && relativeLayout.getChildAt(0) instanceof TextView textView
+                ) {
+                    final String title = textView.getText().toString();
+                    Logger.printDebug(() -> title);
+                    for (String filter : settingsMenuBlockList) {
+                        if (!filter.isEmpty() && title.equals(filter)) {
                             ViewGroupMarginLayoutParamsPatch.hideViewGroupByMarginLayoutParams(linearLayout);
                         }
                     }
                 }
-            });
-        } else {
-            recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
-                final int childCount = recyclerView.getChildCount();
-                if (childCount == 0)
-                    return;
-                for (int i = 0; i <= childCount; i++) {
-                    if (recyclerView.getChildAt(i) instanceof ViewGroup linearLayout
-                            && linearLayout.getChildCount() > 1
-                            && linearLayout.getChildAt(1) instanceof ViewGroup relativeLayout
-                            && relativeLayout.getChildAt(0) instanceof TextView textView
-                    ) {
-                        final String title = textView.getText().toString();
-                        Logger.printDebug(() -> title);
-                        for (String filter : settingsMenuBlockList) {
-                            if (!filter.isEmpty() && title.equals(filter)) {
-                                ViewGroupMarginLayoutParamsPatch.hideViewGroupByMarginLayoutParams(linearLayout);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+            }
+        });
     }
 
     public static boolean hideFloatingMicrophone(boolean original) {
