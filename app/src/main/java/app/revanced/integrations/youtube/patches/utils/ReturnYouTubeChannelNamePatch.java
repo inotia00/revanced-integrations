@@ -24,19 +24,19 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ReturnYouTubeChannelNamePatch {
 
     /**
-     * Last unique video id's loaded.  Value is ignored and Map is treated as a Set.
+     * Last unique channel name's loaded.  Value is ignored and Map is treated as a Set.
      * Cannot use {@link LinkedHashSet} because it's missing #removeEldestEntry().
      */
     private static final Map<String, String> channelNameMap = new LinkedHashMap<>() {
         /**
-         * Number of video id's to keep track of for searching thru the buffer.
-         * A minimum value of 3 should be sufficient, but check a few more just in case.
+         * Number of channel name's to keep track of for searching thru the buffer.
+         * A minimum value of 20 should be sufficient, but check a few more just in case.
          */
-        private static final int NUMBER_OF_LAST_CHANNEL_IDS_TO_TRACK = 10;
+        private static final int NUMBER_OF_LAST_CHANNEL_NAME_TO_TRACK = 20;
 
         @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > NUMBER_OF_LAST_CHANNEL_IDS_TO_TRACK;
+            return size() > NUMBER_OF_LAST_CHANNEL_NAME_TO_TRACK;
         }
     };
 
@@ -87,32 +87,23 @@ public class ReturnYouTubeChannelNamePatch {
     }
 
     private static CharSequence getChannelName(String handle) {
-        final String trimedString = handle.replaceAll(NON_BREAK_SPACE_CHARACTER,"");
+        final String trimmedHandle = handle.replaceAll(NON_BREAK_SPACE_CHARACTER, "");
         String replacedChannelName;
 
-        if (Settings.RETURN_SHORTS_CHANNEL_NAME_FETCH.get()) {
-            String channelName = channelNameMap.get(trimedString);
-            if (channelName != null) {
-                replacedChannelName = channelName;
-                if (handle.contains(NON_BREAK_SPACE_CHARACTER)) {
-                    replacedChannelName += NON_BREAK_SPACE_CHARACTER;
-                }
-                final String finalChannelName = replacedChannelName;
-                Logger.printDebug(() -> "Replace Handle " + handle + " to " + finalChannelName);
-                return replacedChannelName;
-            }
-        } else {
-            if (!channelName.isEmpty()) {
-                replacedChannelName = channelName;
-                if (handle.contains(NON_BREAK_SPACE_CHARACTER)) {
-                    replacedChannelName += NON_BREAK_SPACE_CHARACTER;
-                }
-                final String finalChannelName = replacedChannelName;
-                Logger.printDebug(() -> "Replace Handle " + handle + " to " + finalChannelName);
-                return replacedChannelName;
-            }
+        // Priority: Prefetch channel name via api -> Channel name via hook -> Fallback to the original handle
+        String cachedChannelName = channelNameMap.get(trimmedHandle);
+        if (cachedChannelName != null) {
+            replacedChannelName = cachedChannelName;
+        } else if (!channelName.isEmpty()) {
+            replacedChannelName = channelName;
+        } else return handle;
+
+        if (handle.contains(NON_BREAK_SPACE_CHARACTER)) {
+            replacedChannelName += NON_BREAK_SPACE_CHARACTER;
         }
-        return handle;
+        String finalReplacedChannelName = replacedChannelName;
+        Logger.printDebug(() -> "Replace Handle " + handle + " to " + finalReplacedChannelName);
+        return replacedChannelName;
     }
 
     public synchronized static void setLastShortsChannelId(String handle, String channelId) {
@@ -130,6 +121,7 @@ public class ReturnYouTubeChannelNamePatch {
             if (!matcher.find()) return;
             //noinspection deprecation
             String channelName = StringEscapeUtils.unescapeXml(Objects.requireNonNull(matcher.group(1)).split("</title>")[0]);
+            // Caching channel names are retrieved through the API only, to ensure accuracy
             if (channelNameMap.put(handle, channelName) == null) {
                 Logger.printDebug(() -> "Set Handle: " + handle + ", Channel Name: " + channelName);
             }
@@ -180,6 +172,5 @@ public class ReturnYouTubeChannelNamePatch {
     }
 
 }
-
 
 

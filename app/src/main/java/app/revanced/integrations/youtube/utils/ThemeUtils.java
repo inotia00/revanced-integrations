@@ -37,6 +37,14 @@ public class ThemeUtils {
         return getDrawable(drawableName);
     }
 
+    public static Drawable getTrashButtonDrawable() {
+        final String drawableName = isDarkTheme()
+                ? "yt_outline_trash_can_white_24"
+                : "yt_outline_trash_can_black_24";
+
+        return getDrawable(drawableName);
+    }
+
     public static int getTextColor() {
         final String colorName = isDarkTheme()
                 ? "yt_white1"

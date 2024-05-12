@@ -16,7 +16,7 @@ public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
 
     public ReturnYouTubeChannelNameFilterPatch() {
         addPathCallbacks(
-                new StringFilterGroup(Settings.RETURN_SHORTS_CHANNEL_NAME_FETCH, "|reel_channel_bar_inner.eml|")
+                new StringFilterGroup(Settings.RETURN_SHORTS_CHANNEL_NAME, "|reel_channel_bar_inner.eml|")
         );
         shortsChannelBarAvatarFilterGroup.addAll(
                 new ByteArrayFilterGroup(Settings.RETURN_SHORTS_CHANNEL_NAME, "/@")

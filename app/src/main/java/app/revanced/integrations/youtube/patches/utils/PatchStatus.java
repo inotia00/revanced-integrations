@@ -7,6 +7,11 @@ public class PatchStatus {
         return false;
     }
 
+    public static boolean PlaybackSpeed() {
+        // Replace this with true if the Video playback patch succeeds
+        return false;
+    }
+
     public static boolean PlayerButtons() {
         // Replace this with true if the Hide player buttons patch succeeds
         return false;
@@ -16,9 +21,8 @@ public class PatchStatus {
         // Replace this with true if the Fullscreen components patch succeeds
         return false;
     }
-
-    public static boolean RememberPlaybackSpeed() {
-        // Replace this with true if the Video playback patch succeeds
+    public static boolean SponsorBlock() {
+        // Replace this with true if the SponsorBlock patch succeeds
         return false;
     }
 

@@ -296,8 +296,11 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting OVERLAY_BUTTON_COPY_VIDEO_URL_TIMESTAMP = new BooleanSetting("revanced_overlay_button_copy_video_url_timestamp", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_overlay_button_external_downloader", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_SPEED_DIALOG = new BooleanSetting("revanced_overlay_button_speed_dialog", FALSE);
+    public static final BooleanSetting OVERLAY_BUTTON_WHITELIST = new BooleanSetting("revanced_overlay_button_whitelisting", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_package_name", "com.deniscerri.ytdl");
     public static final BooleanSetting EXTERNAL_DOWNLOADER_ACTION_BUTTON = new BooleanSetting("revanced_external_downloader_action", FALSE);
+    public static final BooleanSetting SPEED_WHITELIST = new BooleanSetting("revanced_whitelisting_speed", FALSE);
+    public static final BooleanSetting SB_WHITELIST = new BooleanSetting("revanced_whitelisting_sponsorblock", FALSE);
 
     // PreferenceScreen: Player - Seekbar
     public static final BooleanSetting APPEND_TIME_STAMP_INFORMATION = new BooleanSetting("revanced_append_time_stamp_information", TRUE, true);
@@ -361,8 +364,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_SHORTS_TOOLBAR = new BooleanSetting("revanced_hide_shorts_toolbar", FALSE, true);
     public static final BooleanSetting HIDE_SHORTS_NAVIGATION_BAR = new BooleanSetting("revanced_hide_shorts_navigation_bar", FALSE, true);
     public static final BooleanSetting RETURN_SHORTS_CHANNEL_NAME = new BooleanSetting("revanced_return_shorts_channel_name", FALSE);
-    public static final BooleanSetting RETURN_SHORTS_CHANNEL_NAME_FETCH = new BooleanSetting("revanced_return_shorts_channel_name_fetch", FALSE, parent(RETURN_SHORTS_CHANNEL_NAME));
-
 
     // PreferenceScreen: Swipe controls
     public static final BooleanSetting ENABLE_SWIPE_BRIGHTNESS = new BooleanSetting("revanced_enable_swipe_brightness", TRUE, true);

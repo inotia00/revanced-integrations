@@ -48,6 +48,7 @@ import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
+import app.revanced.integrations.youtube.settings.preference.WhitelistedPreferenceFragment;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
@@ -136,6 +137,9 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             case "revanced_preference_screen_sb" -> {
                 fragment = new SponsorBlockPreferenceFragment();
             }
+            case "whitelisting" -> {
+                fragment = new WhitelistedPreferenceFragment();
+            }
             default -> {
                 Logger.printException(() -> "Unknown key: " + key);
                 return;
@@ -219,6 +223,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
             setPreferenceFragmentToolbar("revanced_preference_screen_ryd");
             setPreferenceFragmentToolbar("revanced_preference_screen_sb");
+            setPreferenceFragmentToolbar("whitelisting");
             setPreferenceScreenToolbar();
 
             ReVancedSettingsPreference.initializeReVancedSettings(getActivity());

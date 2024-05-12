@@ -9,6 +9,7 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
+import app.revanced.integrations.youtube.whitelist.Whitelist;
 
 @SuppressWarnings("unused")
 public class PlaybackSpeedPatch {
@@ -27,7 +28,7 @@ public class PlaybackSpeedPatch {
 
         Logger.printDebug(() -> "newVideoStarted: " + newlyLoadedVideoId);
 
-        VideoInformation.overridePlaybackSpeed(Settings.DEFAULT_PLAYBACK_SPEED.get());
+        VideoInformation.overridePlaybackSpeed(Whitelist.isChannelSPEEDWhitelisted() ? 1.0f : Settings.DEFAULT_PLAYBACK_SPEED.get());
     }
 
     /**
@@ -56,7 +57,7 @@ public class PlaybackSpeedPatch {
         if (!Settings.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.get())
             return;
 
-        if (!PatchStatus.RememberPlaybackSpeed())
+        if (!PatchStatus.PlaybackSpeed())
             return;
 
         Settings.DEFAULT_PLAYBACK_SPEED.save(playbackSpeed);
