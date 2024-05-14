@@ -168,6 +168,18 @@ public final class VideoInformation {
     }
 
     /**
+     * Injection point.
+     *
+     * @param newlyLoadedVideoId id of the current video
+     */
+    public static void setVideoId(@NonNull String newlyLoadedVideoId) {
+        if (videoId.equals(newlyLoadedVideoId))
+            return;
+
+        videoId = newlyLoadedVideoId;
+    }
+
+    /**
      * Id of the last video opened.  Includes Shorts.
      *
      * @return The id of the video, or an empty string if no videos have been opened yet.
