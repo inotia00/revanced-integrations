@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,12 +77,16 @@ public class PlayerPatch {
      * view id R.id.content
      */
     private static final int contentId = ResourceUtils.getIdIdentifier("content");
+    private static final boolean expandDescriptionEnabled = Settings.EXPAND_VIDEO_DESCRIPTION.get();
     private static final String descriptionString = Settings.EXPAND_VIDEO_DESCRIPTION_STRINGS.get();
 
     private static boolean isDescriptionPanel = false;
 
     public static void setContentDescription(String contentDescription) {
-        isDescriptionPanel = contentDescription.equals(descriptionString);
+        if (!expandDescriptionEnabled) {
+            return;
+        }
+        isDescriptionPanel = contentDescription != null && Objects.equals(descriptionString, contentDescription);
     }
 
     /**
@@ -91,7 +96,7 @@ public class PlayerPatch {
 
 
     public static void onVideoDescriptionCreate(RecyclerView recyclerView) {
-        if (!Settings.EXPAND_VIDEO_DESCRIPTION.get())
+        if (!expandDescriptionEnabled)
             return;
 
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
