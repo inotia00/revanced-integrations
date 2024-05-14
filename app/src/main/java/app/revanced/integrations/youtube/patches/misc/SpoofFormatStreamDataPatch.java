@@ -120,13 +120,13 @@ public final class SpoofFormatStreamDataPatch {
      * @param endpointUrl   It has a similar format to the 'baseEndpointUrl' variable in the {@link YoutubeParsingHelper#getMobilePostResponse} method.
      */
     public static void newEndpointUrlResponse(@Nullable String endpointUrl) {
+        if (endpointUrl == null) return;
         // Example format for EndpointUrl:
         // https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w&t=J2aJjSG9n2pQ&id=dQw4w9WgXcQ
         String videoId = Uri.parse(endpointUrl).getQueryParameter("id");
-        if (videoId != null) {
-            Logger.printDebug(() -> "newEndpointUrlResponse: " + endpointUrl);
-            setFormatStreamData(videoId);
-        }
+        if (videoId == null) return;
+        Logger.printDebug(() -> "newEndpointUrlResponse: " + endpointUrl);
+        setFormatStreamData(videoId);
     }
 
     private static void setFormatStreamData(@NonNull String videoId) {
