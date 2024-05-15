@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import org.apache.commons.lang3.StringUtils;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
 import org.schabi.newpipe.extractor.downloader.Request;
@@ -110,6 +111,48 @@ public final class SpoofFormatStreamDataPatch {
         } catch (Exception e) {
             Logger.printException(() -> "Hooked Error: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Injection point.
+     * TODO: initplayback also needs to be hooked.
+     */
+    public static Uri hookUri(Uri original) {
+        try {
+            if (!spoofFormatStreamData) {
+                return original;
+            }
+            if (formatStreamDataMap == null || formatStreamDataMap.isEmpty()) {
+                return original;
+            }
+            final String url = original.toString();
+            if (!url.contains("googlevideo")) {
+                return original;
+            }
+            if (StringUtils.containsAny(url, "initplayback", "s.youtube.com", "ANDROID_TESTSUITE")) {
+                return original;
+            }
+            Logger.printDebug(() -> "Original StreamData: " + url);
+            String itag = original.getQueryParameter("itag");
+            String replacement = null;
+            if (itag != null) {
+                replacement = formatStreamDataMap.get(Integer.parseInt(itag));
+            }
+            if (replacement == null) {
+                Logger.printDebug(() -> "No replacement found for itag, fallback to 22");
+                replacement = formatStreamDataMap.get(22);
+            }
+            if (replacement == null) {
+                Logger.printDebug(() -> "No replacement found for itag, ignoring");
+                return original;
+            }
+            String finalReplacement = replacement;
+            Logger.printDebug(() -> "Hooked StreamData: " + finalReplacement);
+            return Uri.parse(replacement);
+        } catch (Exception e) {
+            Logger.printException(() -> "Hooked Error: " + e.getMessage(), e);
+        }
+        return original;
     }
 
     /**
