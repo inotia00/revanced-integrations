@@ -127,6 +127,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ENABLE_SWIPE_TO_DISMISS_MINI_PLAYER = new BooleanSetting("revanced_enable_swipe_to_dismiss_mini_player", TRUE, true);
     public static final BooleanSetting ENABLE_ZEN_MODE = new BooleanSetting("revanced_enable_zen_mode", FALSE);
     public static final BooleanSetting ENABLE_ZEN_MODE_PODCAST = new BooleanSetting("revanced_enable_zen_mode_podcast", FALSE);
+    public static final BooleanSetting HIDE_AUDIO_VIDEO_SWITCH_TOGGLE = new BooleanSetting("revanced_hide_audio_video_switch_toggle", FALSE, true);
     public static final BooleanSetting HIDE_COMMENT_CHANNEL_GUIDELINES = new BooleanSetting("revanced_hide_comment_channel_guidelines", TRUE);
     public static final BooleanSetting HIDE_COMMENT_TIMESTAMP_AND_EMOJI_BUTTONS = new BooleanSetting("revanced_hide_comment_timestamp_and_emoji_buttons", FALSE);
     public static final BooleanSetting HIDE_FULLSCREEN_SHARE_BUTTON = new BooleanSetting("revanced_hide_fullscreen_share_button", FALSE, true);

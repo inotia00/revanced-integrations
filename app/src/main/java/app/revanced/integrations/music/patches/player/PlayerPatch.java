@@ -119,6 +119,15 @@ public class PlayerPatch {
         return originalColor;
     }
 
+    public static void hideAudioVideoSwitchToggle(View view) {
+        if (!Settings.HIDE_AUDIO_VIDEO_SWITCH_TOGGLE.get())
+            return;
+
+        if (view.getParent() instanceof ViewGroup viewGroup) {
+            viewGroup.removeView(view);
+        }
+    }
+
     public static int hideFullscreenShareButton(int original) {
         return Settings.HIDE_FULLSCREEN_SHARE_BUTTON.get() ? 0 : original;
     }
