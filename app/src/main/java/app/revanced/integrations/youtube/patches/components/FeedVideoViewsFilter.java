@@ -19,7 +19,7 @@ public final class FeedVideoViewsFilter extends Filter {
 
     public FeedVideoViewsFilter() {
         feedVideoFilter = new StringFilterGroup(
-                Settings.HIDE_VIDEO_BY_VIEW_COUNTS, // Multiple settings are used and must be individually checked if active.
+                null, // Multiple settings are used and must be individually checked if active.
                 "video_with_context.eml"
         );
 
@@ -30,7 +30,7 @@ public final class FeedVideoViewsFilter extends Filter {
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (filterByViews(protobufBufferArray)) {
+        if (filterVideos(protobufBufferArray)) {
             return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }
 
@@ -42,10 +42,80 @@ public final class FeedVideoViewsFilter extends Filter {
     private final String[] parts = Settings.HIDE_VIDEO_VIEW_COUNTS_MULTIPLIER.get().split("\\n");
     private Pattern[] viewCountPatterns = null;
 
-    private synchronized boolean filterByViews(byte[] protobufBufferArray) {
-        final long hideVideoViewCounts = Settings.HIDE_VIDEO_VIEW_COUNTS.get();
-
+    private boolean filterVideos(byte[] protobufBufferArray) {
         final String protobufString = new String(protobufBufferArray);
+
+        boolean hideBasedOnDuration = false;
+        boolean hideBasedOnViews = false;
+
+        if (Settings.HIDE_VIDEO_BY_DURATION.get())
+            hideBasedOnDuration = filterByDuration(protobufString);
+
+        if (Settings.HIDE_VIDEO_BY_VIEW_COUNTS.get())
+            hideBasedOnViews = filterByViews(protobufString);
+
+        return hideBasedOnDuration || hideBasedOnViews;
+    }
+
+    /**
+     * Hide videos based on duration
+     */
+    private boolean filterByDuration(String protobufString) {
+        Pattern durationPattern = getDurationPattern();
+
+        String shorterThanStr = Settings.HIDE_VIDEO_BY_DURATION_SHORTER_THAN.get();
+        String longerThanStr = Settings.HIDE_VIDEO_BY_DURATION_LONGER_THAN.get();
+
+        long shorterThan = parseDuration(shorterThanStr);
+        long longerThan = parseDuration(longerThanStr);
+
+        Matcher matcher = durationPattern.matcher(protobufString);
+        if (matcher.find()) {
+            String durationString = Objects.requireNonNull(matcher.group());
+            long durationInSeconds = convertToSeconds(durationString);
+            return checkDuration(durationInSeconds, shorterThan, longerThan);
+        }
+
+        return false;
+    }
+
+    private long parseDuration(String durationString) {
+        if (durationString.contains(":")) {
+            return convertToSeconds(durationString);
+        } else {
+            return Long.parseLong(durationString);
+        }
+    }
+
+    private Pattern getDurationPattern() {
+        // Pattern: hours? : minutes : seconds
+        return Pattern.compile("(?:(\\d+):)?(\\d+):(\\d+)");
+    }
+
+    private long convertToSeconds(String durationString) {
+        String[] parts = durationString.split(":");
+        int length = parts.length;
+        long seconds = 0;
+        for (int i = length - 1; i >= 0; i--) {
+            long value = Long.parseLong(parts[i]);
+            seconds += (long) (value * Math.pow(60, length - 1 - i));
+        }
+        return seconds;
+    }
+
+    private boolean checkDuration(long durationInSeconds, long shorterThan, long longerThan) {
+        if (shorterThan < 0 || longerThan < 0) throw new IllegalArgumentException("Duration cannot be negative.");
+
+        return durationInSeconds < shorterThan || durationInSeconds > longerThan;
+    }
+
+    /**
+     * Hide videos badsed on views count
+     */
+    private synchronized boolean filterByViews(String protobufString) {
+        final long lessThan = Settings.HIDE_VIDEO_VIEW_COUNTS_LESS_THAN.get();
+        final long greaterThan = Settings.HIDE_VIDEO_VIEW_COUNTS_GREATER_THAN.get();
+
         if (viewCountPatterns == null) {
             viewCountPatterns = getViewCountPatterns(parts);
         }
@@ -57,7 +127,7 @@ public final class FeedVideoViewsFilter extends Filter {
                 double num = parseNumber(numString);
                 String multiplierKey = matcher.group(2);
                 long multiplierValue = getMultiplierValue(parts, multiplierKey);
-                return num * multiplierValue < hideVideoViewCounts;
+                return num * multiplierValue < lessThan || num * multiplierValue > greaterThan;
             }
         }
 
@@ -88,8 +158,8 @@ public final class FeedVideoViewsFilter extends Filter {
     }
 
     private synchronized Pattern[] getViewCountPatterns(String[] parts) {
-        StringBuilder prefixPatternBuilder = new StringBuilder("(\\d+(?:[.,]\\d+)?)\\s?(");
-        StringBuilder secondPatternBuilder = new StringBuilder();
+        StringBuilder prefixPatternBuilder = new StringBuilder("(\\d+(?:[.,]\\d+)?)\\s?("); // LTR layout
+        StringBuilder secondPatternBuilder = new StringBuilder(); // RTL layout
         StringBuilder suffixBuilder = getSuffixBuilder(parts, prefixPatternBuilder, secondPatternBuilder);
 
         prefixPatternBuilder.deleteCharAt(prefixPatternBuilder.length() - 1); // Remove the trailing |
