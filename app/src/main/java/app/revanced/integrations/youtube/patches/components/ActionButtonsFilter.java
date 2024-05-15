@@ -27,7 +27,7 @@ public final class ActionButtonsFilter extends Filter {
 
         bufferFilterPathRule = new StringFilterGroup(
                 null,
-                "|CellType|CollectionType|CellType|ContainerType|button.eml|"
+                "|ContainerType|button.eml|"
         );
         addPathCallbacks(
                 new StringFilterGroup(
