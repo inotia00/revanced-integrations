@@ -32,7 +32,8 @@ public final class FeedComponentsFilter extends Filter {
     private static final ByteArrayFilterGroup mixPlaylistsBufferExceptions =
             new ByteArrayFilterGroup(
                     null,
-                    "cell_description_body"
+                    "cell_description_body",
+                    "channel_profile"
             );
     private static final StringTrieSearch mixPlaylistsContextExceptions = new StringTrieSearch();
 
