@@ -19,9 +19,9 @@ public class TimeOrderedPlaylist extends BottomControlButton {
                 bottomControlsViewGroup,
                 "time_ordered_playlist_button",
                 Settings.OVERLAY_BUTTON_TIME_ORDERED_PLAYLIST,
-                view -> VideoUtils.playlistFromChannelVideosListener(view.getContext(), true),
+                view -> VideoUtils.playlistFromChannelVideosListener(true),
                 view -> {
-                    VideoUtils.playlistFromChannelVideosListener(view.getContext(), false);
+                    VideoUtils.playlistFromChannelVideosListener(false);
                     return true;
                 }
         );
