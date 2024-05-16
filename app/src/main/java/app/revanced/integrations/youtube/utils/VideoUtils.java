@@ -111,9 +111,10 @@ public class VideoUtils extends IntentUtils {
      * starting from the video where button is clicked.
      */
     public static void playlistFromChannelVideosListener(boolean activated) {
-        String baseUri = "vnd.youtube://" + VideoInformation.getVideoId() + "?start=" + VideoInformation.getVideoTime() / 1000;
+        final String videoId = VideoInformation.getVideoId();
+        String baseUri = "vnd.youtube://" + videoId + "?start=" + VideoInformation.getVideoTime() / 1000;
         if (activated) {
-            baseUri += "&list=UL" + VideoInformation.getVideoId();
+            baseUri += "&list=UL" + videoId;
         }
 
         launchView(baseUri, getContext().getPackageName());
