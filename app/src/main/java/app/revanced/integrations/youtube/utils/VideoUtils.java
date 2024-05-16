@@ -8,6 +8,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -104,6 +106,20 @@ public class VideoUtils extends IntentUtils {
         } finally {
             runOnMainThreadDelayed(() -> isExternalDownloaderLaunched.compareAndSet(true, false), 500);
         }
+    }
+
+    /**
+     * Create playlist from all channel videos from oldest to newest,
+     * starting from the video where button is clicked.
+     */
+    public static void playlistFromChannelVideosListener(@NonNull Context context, boolean activated) {
+        String baseUri = "vnd.youtube://" + VideoInformation.getVideoId() + "?start=" + VideoInformation.getVideoTime() / 1000;
+        if (activated) {
+            baseUri += "&list=UL" + VideoInformation.getVideoId();
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(baseUri));
+        context.startActivity(intent);
     }
 
     public static void showPlaybackSpeedDialog(@NonNull Context context) {
