@@ -380,6 +380,7 @@ public class Settings extends BaseSettings {
     public static final IntegerSetting SWIPE_MAGNITUDE_THRESHOLD = new IntegerSetting("revanced_swipe_magnitude_threshold", 0, true, parentsAny(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME));
     public static final IntegerSetting SWIPE_OVERLAY_BACKGROUND_ALPHA = new IntegerSetting("revanced_swipe_overlay_background_alpha", 127, true, parentsAny(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME));
     public static final IntegerSetting SWIPE_OVERLAY_TEXT_SIZE = new IntegerSetting("revanced_swipe_overlay_text_size", 27, true, parentsAny(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME));
+    public static final IntegerSetting SWIPE_OVERLAY_RECT_SIZE = new IntegerSetting("revanced_swipe_overlay_rect_size", 20, true, parentsAny(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME));
     public static final LongSetting SWIPE_OVERLAY_TIMEOUT = new LongSetting("revanced_swipe_overlay_timeout", 500L, true, parentsAny(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME));
 
     /** @noinspection DeprecatedIsStillUsed*/
