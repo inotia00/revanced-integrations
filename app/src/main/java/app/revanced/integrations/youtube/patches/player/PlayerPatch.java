@@ -22,8 +22,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.BooleanSetting;
@@ -112,7 +110,7 @@ public class PlayerPatch {
                 if (contentView.getId() != contentId) {
                     return;
                 }
-                // This method is invoked whenever the Engagement panel is opened. (Description, Chapters, Comments, etc)
+                // This method is invoked whenever the Engagement panel is opened. (Description, Chapters, Comments, etc.)
                 // Check the title of the Engagement panel to prevent unnecessary clicking.
                 if (!isDescriptionPanel) {
                     return;
@@ -511,30 +509,20 @@ public class PlayerPatch {
     public static final int ORIGINAL_SEEKBAR_COLOR = 0xFFFF0000;
 
     public static String appendTimeStampInformation(String original) {
-        if (!Settings.APPEND_TIME_STAMP_INFORMATION.get())
-            return original;
+        if (!Settings.APPEND_TIME_STAMP_INFORMATION.get()) return original;
 
-        final String regex = "\\((.*?)\\)";
-        final Matcher matcher = Pattern.compile(regex).matcher(original);
+        String appendString = Settings.APPEND_TIME_STAMP_INFORMATION_TYPE.get()
+                ? VideoUtils.getFormattedQualityString(null)
+                : VideoUtils.getFormattedSpeedString(null);
 
-        if (matcher.find()) {
-            String matcherGroup = matcher.group(1);
-            String appendString = String.format(
-                    "\u2009(%s)",
-                    Settings.APPEND_TIME_STAMP_INFORMATION_TYPE.get()
-                            ? VideoUtils.getFormattedQualityString(matcherGroup)
-                            : VideoUtils.getFormattedSpeedString(matcherGroup)
-            );
-            return original.replaceAll(regex, "") + appendString;
-        } else {
-            String appendString = String.format(
-                    "\u2009(%s)",
-                    Settings.APPEND_TIME_STAMP_INFORMATION_TYPE.get()
-                            ? VideoUtils.getFormattedQualityString(null)
-                            : VideoUtils.getFormattedSpeedString(null)
-            );
-            return original + appendString;
-        }
+        // Encapsulate the entire appendString with bidi control characters
+        appendString = "\u2066" + appendString + "\u2069";
+
+        // Format the original string with the appended timestamp information
+        return String.format(
+                "%s\u2009•\u2009%s", // Add the separator and the appended information
+                original, appendString
+        );
     }
 
     public static void setContainerClickListener(View view) {
