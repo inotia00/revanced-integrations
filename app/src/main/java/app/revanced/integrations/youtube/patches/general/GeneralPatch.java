@@ -605,10 +605,6 @@ public class GeneralPatch {
         return Settings.HIDE_SEARCH_TERM_THUMBNAIL.get();
     }
 
-    public static boolean hideTrendingSearches(boolean original) {
-        return Settings.HIDE_TRENDING_SEARCHES.get() || original;
-    }
-
     public static void hideVoiceSearchButton(View view) {
         hideViewUnderCondition(
                 Settings.HIDE_VOICE_SEARCH_BUTTON.get(),

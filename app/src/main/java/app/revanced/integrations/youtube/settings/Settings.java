@@ -159,7 +159,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_TOOLBAR_CREATE_BUTTON = new BooleanSetting("revanced_hide_toolbar_create_button", FALSE, true);
     public static final BooleanSetting HIDE_TOOLBAR_NOTIFICATION_BUTTON = new BooleanSetting("revanced_hide_toolbar_notification_button", FALSE, true);
     public static final BooleanSetting HIDE_SEARCH_TERM_THUMBNAIL = new BooleanSetting("revanced_hide_search_term_thumbnail", FALSE);
-    public static final BooleanSetting HIDE_TRENDING_SEARCHES = new BooleanSetting("revanced_hide_trending_searches", TRUE);
     public static final BooleanSetting HIDE_VOICE_SEARCH_BUTTON = new BooleanSetting("revanced_hide_voice_search_button", FALSE, true);
     public static final BooleanSetting REPLACE_TOOLBAR_CREATE_BUTTON = new BooleanSetting("revanced_replace_toolbar_create_button", FALSE, true);
     public static final BooleanSetting REPLACE_TOOLBAR_CREATE_BUTTON_TYPE = new BooleanSetting("revanced_replace_toolbar_create_button_type", FALSE, true);
