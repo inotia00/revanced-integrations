@@ -247,6 +247,9 @@ public class ReturnYouTubeDislikePatch {
     public static String onRollingNumberLoaded(@NonNull Object conversionContext,
                                                @NonNull String original) {
         try {
+            if (!conversionContext.toString().contains("video_action_bar.eml|")) {
+                return original;
+            }
             CharSequence replacement = onLithoTextLoaded(conversionContext, original, true);
             if (!replacement.toString().equals(original)) {
                 rollingNumberSpan = replacement;
@@ -353,7 +356,7 @@ public class ReturnYouTubeDislikePatch {
             if (replacement == null) {
                 // User enabled RYD while a video was open,
                 // or user opened/closed a Short while a regular video was opened.
-                Logger.printDebug(() -> "Cannot update rolling number (field is null");
+                Logger.printDebug(() -> "Cannot update rolling number (field is null)");
                 removeRollingNumberPatchChanges(view);
                 return original;
             }
