@@ -258,6 +258,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting DISABLE_ENGAGEMENT_PANEL = new BooleanSetting("revanced_disable_engagement_panel", FALSE, true);
     public static final BooleanSetting SHOW_VIDEO_TITLE_SECTION = new BooleanSetting("revanced_show_video_title_section", TRUE, true, parent(DISABLE_ENGAGEMENT_PANEL));
     public static final BooleanSetting HIDE_AUTOPLAY_PREVIEW = new BooleanSetting("revanced_hide_autoplay_preview", FALSE, true);
+    public static final BooleanSetting HIDE_LIVE_CHAT_REPLAY_BUTTON = new BooleanSetting("revanced_hide_live_chat_replay_button", FALSE);
     public static final BooleanSetting HIDE_RELATED_VIDEO_OVERLAY = new BooleanSetting("revanced_hide_related_video_overlay", FALSE, true);
 
     public static final BooleanSetting HIDE_QUICK_ACTIONS = new BooleanSetting("revanced_hide_quick_actions", FALSE, true);
@@ -272,7 +273,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON = new BooleanSetting("revanced_hide_quick_actions_save_to_playlist_button", FALSE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS_SHARE_BUTTON = new BooleanSetting("revanced_hide_quick_actions_share_button", FALSE);
     public static final IntegerSetting QUICK_ACTIONS_TOP_MARGIN = new IntegerSetting("revanced_quick_actions_top_margin", 0, true);
-    public static final BooleanSetting HIDE_FULLSCREEN_LIVE_CHAT_REPLAY = new BooleanSetting("revanced_hide_fullscreen_live_chat_replay", FALSE);
 
     public static final BooleanSetting DISABLE_LANDSCAPE_MODE = new BooleanSetting("revanced_disable_landscape_mode", FALSE, true);
     public static final BooleanSetting ENABLE_COMPACT_CONTROLS_OVERLAY = new BooleanSetting("revanced_enable_compact_controls_overlay", FALSE, true);
