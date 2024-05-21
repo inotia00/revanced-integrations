@@ -106,6 +106,20 @@ public class VideoUtils extends IntentUtils {
         }
     }
 
+    /**
+     * Create playlist from all channel videos from oldest to newest,
+     * starting from the video where button is clicked.
+     */
+    public static void playlistFromChannelVideosListener(boolean activated) {
+        final String videoId = VideoInformation.getVideoId();
+        String baseUri = "vnd.youtube://" + videoId + "?start=" + VideoInformation.getVideoTime() / 1000;
+        if (activated) {
+            baseUri += "&list=UL" + videoId;
+        }
+
+        launchView(baseUri, getContext().getPackageName());
+    }
+
     public static void showPlaybackSpeedDialog(@NonNull Context context) {
         final String[] playbackSpeedWithAutoEntries = CustomPlaybackSpeedPatch.getListEntries();
         final String[] playbackSpeedWithAutoEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();

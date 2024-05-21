@@ -56,7 +56,8 @@ class SwipeControlsOverlayLayout(
 
     init {
         // init views
-        val feedbackTextViewPadding = 2.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
+        val feedbackYTextViewPadding = 5.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
+        val feedbackXTextViewPadding = 12.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         val compoundIconPadding = 4.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         feedbackTextView = TextView(context).apply {
             layoutParams = LayoutParams(
@@ -65,14 +66,14 @@ class SwipeControlsOverlayLayout(
             ).apply {
                 addRule(CENTER_IN_PARENT, TRUE)
                 setPadding(
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding,
-                    feedbackTextViewPadding
+                    feedbackXTextViewPadding,
+                    feedbackYTextViewPadding,
+                    feedbackXTextViewPadding,
+                    feedbackYTextViewPadding
                 )
             }
             background = GradientDrawable().apply {
-                cornerRadius = 8f
+                cornerRadius = 30f
                 setColor(config.overlayTextBackgroundColor)
             }
             setTextColor(config.overlayForegroundColor)
