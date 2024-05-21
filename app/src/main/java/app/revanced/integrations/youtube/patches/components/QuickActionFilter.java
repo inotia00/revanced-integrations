@@ -27,7 +27,7 @@ public final class QuickActionFilter extends Filter {
         );
 
         liveChatReplay = new StringFilterGroup(
-                Settings.HIDE_FULLSCREEN_LIVE_CHAT_REPLAY,
+                Settings.HIDE_LIVE_CHAT_REPLAY_BUTTON,
                 "live_chat_ep_entrypoint"
         );
 
