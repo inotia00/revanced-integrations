@@ -85,11 +85,7 @@ class SwipeZonesController(
      * validate if provided rect size is not bigger than MAX available size
      */
     private fun validateOverlayRectSize() {
-        if (overlayRectSize <= 0) {
-            throw IllegalArgumentException("Overlay rectangle size must be greater than 0.")
-        }
-
-        if (overlayRectSize > MAXIMUM_OVERLAY_RECT_SIZE) {
+        if (overlayRectSize <= 0 || overlayRectSize > MAXIMUM_OVERLAY_RECT_SIZE) {
             Utils.showToastLong(str("revanced_swipe_overlay_rect_size_warning", MAXIMUM_OVERLAY_RECT_SIZE.toString()))
             Settings.SWIPE_OVERLAY_RECT_SIZE.resetToDefault()
             overlayRectSize = Settings.SWIPE_OVERLAY_RECT_SIZE.get()
