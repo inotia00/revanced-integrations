@@ -30,6 +30,7 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
+import app.revanced.integrations.youtube.whitelist.Whitelist;
 
 /**
  * Handles showing, scheduling, and skipping of all {@link SponsorSegment} for the current video.
@@ -227,6 +228,10 @@ public class SegmentPlaybackController {
             videoId = newlyLoadedVideoId;
             videoLength = newlyLoadedVideoLength;
             Logger.printDebug(() -> "newVideoStarted: " + newlyLoadedVideoId);
+
+            if (Whitelist.isChannelWhitelistedSponsorBlock(newlyLoadedChannelId)) {
+                return;
+            }
 
             Utils.runOnBackgroundThread(() -> {
                 try {

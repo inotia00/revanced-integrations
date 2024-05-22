@@ -302,6 +302,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting OVERLAY_BUTTON_COPY_VIDEO_URL_TIMESTAMP = new BooleanSetting("revanced_overlay_button_copy_video_url_timestamp", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_overlay_button_external_downloader", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_SPEED_DIALOG = new BooleanSetting("revanced_overlay_button_speed_dialog", FALSE);
+    public static final BooleanSetting OVERLAY_BUTTON_WHITELIST = new BooleanSetting("revanced_overlay_button_whitelist", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_TIME_ORDERED_PLAYLIST = new BooleanSetting("revanced_overlay_button_time_ordered_playlist", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_package_name", "com.deniscerri.ytdl");
     public static final BooleanSetting EXTERNAL_DOWNLOADER_ACTION_BUTTON = new BooleanSetting("revanced_external_downloader_action", FALSE);

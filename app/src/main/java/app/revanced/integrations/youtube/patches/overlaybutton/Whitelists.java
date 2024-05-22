@@ -7,21 +7,22 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.VideoUtils;
+import app.revanced.integrations.youtube.settings.preference.WhitelistedChannelsPreference;
+import app.revanced.integrations.youtube.whitelist.Whitelist;
 
 @SuppressWarnings("unused")
-public class TimeOrderedPlaylist extends BottomControlButton {
+public class Whitelists extends BottomControlButton {
     @Nullable
-    private static TimeOrderedPlaylist instance;
+    private static Whitelists instance;
 
-    public TimeOrderedPlaylist(ViewGroup bottomControlsViewGroup) {
+    public Whitelists(ViewGroup bottomControlsViewGroup) {
         super(
                 bottomControlsViewGroup,
-                "time_ordered_playlist_button",
-                Settings.OVERLAY_BUTTON_TIME_ORDERED_PLAYLIST,
-                view -> VideoUtils.playlistFromChannelVideosListener(true),
+                "whitelist_button",
+                Settings.OVERLAY_BUTTON_WHITELIST,
+                view -> Whitelist.showWhitelistDialog(view.getContext()),
                 view -> {
-                    VideoUtils.playlistFromChannelVideosListener(false);
+                    WhitelistedChannelsPreference.showWhitelistedChannelDialog(view.getContext());
                     return true;
                 }
         );
@@ -33,7 +34,7 @@ public class TimeOrderedPlaylist extends BottomControlButton {
     public static void initialize(View bottomControlsViewGroup) {
         try {
             if (bottomControlsViewGroup instanceof ViewGroup viewGroup) {
-                instance = new TimeOrderedPlaylist(viewGroup);
+                instance = new Whitelists(viewGroup);
             }
         } catch (Exception ex) {
             Logger.printException(() -> "initialize failure", ex);

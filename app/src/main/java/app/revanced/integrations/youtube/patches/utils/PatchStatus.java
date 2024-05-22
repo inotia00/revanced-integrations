@@ -17,6 +17,11 @@ public class PatchStatus {
         return false;
     }
 
+    public static boolean SponsorBlock() {
+        // Replace this with true if the SponsorBlock patch succeeds
+        return false;
+    }
+
     public static boolean ToolBarComponents() {
         // Replace this with true if the Toolbar components patch succeeds
         return false;

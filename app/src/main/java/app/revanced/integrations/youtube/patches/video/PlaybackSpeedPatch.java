@@ -9,6 +9,7 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
+import app.revanced.integrations.youtube.whitelist.Whitelist;
 
 @SuppressWarnings("unused")
 public class PlaybackSpeedPatch {
@@ -21,13 +22,16 @@ public class PlaybackSpeedPatch {
                                        @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
                                        final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
         isLiveStream = newlyLoadedLiveStreamValue;
+        Logger.printDebug(() -> "newVideoStarted: " + newlyLoadedVideoId);
 
         if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE.get() && newlyLoadedLiveStreamValue)
             return;
 
-        Logger.printDebug(() -> "newVideoStarted: " + newlyLoadedVideoId);
+        float defaultPlaybackSpeed = Settings.DEFAULT_PLAYBACK_SPEED.get();
+        if (Whitelist.isChannelWhitelistedPlaybackSpeed(newlyLoadedChannelId))
+            defaultPlaybackSpeed = 1.0f;
 
-        VideoInformation.overridePlaybackSpeed(Settings.DEFAULT_PLAYBACK_SPEED.get());
+        VideoInformation.overridePlaybackSpeed(defaultPlaybackSpeed);
     }
 
     /**
@@ -41,9 +45,13 @@ public class PlaybackSpeedPatch {
         if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE.get() && isLiveStream)
             return playbackSpeed;
 
+        float defaultPlaybackSpeed = Settings.DEFAULT_PLAYBACK_SPEED.get();
+        if (Whitelist.isChannelWhitelistedPlaybackSpeed(VideoInformation.getChannelId()))
+            defaultPlaybackSpeed = 1.0f;
+
         Logger.printDebug(() -> "getPlaybackSpeedInShorts: " + playbackSpeed);
 
-        return Settings.DEFAULT_PLAYBACK_SPEED.get();
+        return defaultPlaybackSpeed;
     }
 
     /**

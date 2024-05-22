@@ -189,6 +189,26 @@ public final class VideoInformation {
         return videoId;
     }
 
+    /**
+     * Channel Name of the last video opened.  Includes Shorts.
+     *
+     * @return The channel name of the video.
+     */
+    @NonNull
+    public static String getChannelName() {
+        return channelName;
+    }
+
+    /**
+     * ChannelId of the last video opened.  Includes Shorts.
+     *
+     * @return The channel id of the video.
+     */
+    @NonNull
+    public static String getChannelId() {
+        return channelId;
+    }
+
     public static boolean getLiveStreamState() {
         return videoIsLiveStream;
     }

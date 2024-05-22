@@ -8,6 +8,7 @@ import android.preference.Preference;
 import androidx.annotation.NonNull;
 
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
@@ -48,6 +49,7 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
         SpeedOverlayPreferenceLinks();
         QuickActionsPreferenceLinks();
         TabletLayoutLinks();
+        WhitelistPreferenceLinks();
     }
 
     /**
@@ -199,5 +201,17 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.DISABLE_SPEED_OVERLAY.get(),
                 Settings.SPEED_OVERLAY_VALUE
         );
+    }
+
+    private static void WhitelistPreferenceLinks() {
+        final boolean enabled = PatchStatus.RememberPlaybackSpeed() || PatchStatus.SponsorBlock();
+        final String [] whitelistKey = { Settings.OVERLAY_BUTTON_WHITELIST.key, "revanced_whitelist_settings" };
+
+        for (String key: whitelistKey) {
+            final Preference preference = mPreferenceManager.findPreference(key);
+            if (preference != null) {
+                preference.setEnabled(enabled);
+            }
+        }
     }
 }
