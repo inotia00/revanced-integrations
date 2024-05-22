@@ -57,7 +57,6 @@ android {
 dependencies {
     compileOnly(libs.annotation)
     implementation(libs.lang3)
-    implementation(libs.newpipeextractor)
 
     compileOnly(project(":stub"))
 }
