@@ -81,6 +81,9 @@ public class PlayerPatch {
     private static boolean isDescriptionPanel = false;
 
     public static void setContentDescription(String contentDescription) {
+        if(contentDescription==null){
+            return isDescriptionPanel = false;
+        }
         isDescriptionPanel = contentDescription.equals(descriptionString);
     }
 
