@@ -43,7 +43,6 @@ public final class VideoInformation {
     private static volatile String playerResponseVideoId = "";
     private static volatile boolean playerResponseVideoIdIsShort;
     private static volatile boolean videoIdIsShort;
-    private static volatile boolean videoIsPlaylist;
 
     /**
      * The current playback speed
@@ -213,9 +212,6 @@ public final class VideoInformation {
         return videoIsLiveStream;
     }
 
-    public static boolean getPlaylistState() {
-        return videoIsPlaylist;
-    }
 
     /**
      * Differs from {@link #videoId} as this is the video id for the
@@ -261,7 +257,7 @@ public final class VideoInformation {
      * Injection point.
      */
     @Nullable
-    public static String newPlayerResponseParameter(@NonNull String videoId, @Nullable String playerParameter, @Nullable String playlistId, boolean isShortAndOpeningOrPlaying) {
+    public static String newPlayerResponseParameter(@NonNull String videoId, @Nullable String playerParameter, boolean isShortAndOpeningOrPlaying) {
         final boolean isShort = playerParametersAreShort(playerParameter);
         playerResponseVideoIdIsShort = isShort;
         if (!isShort || isShortAndOpeningOrPlaying) {
@@ -269,7 +265,6 @@ public final class VideoInformation {
                 videoIdIsShort = isShort;
             }
         }
-        videoIsPlaylist = playlistId != null && !playlistId.isEmpty();
         return playerParameter; // Return the original value since we are observing and not modifying.
     }
 
