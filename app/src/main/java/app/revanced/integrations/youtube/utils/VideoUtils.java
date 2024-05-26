@@ -49,7 +49,7 @@ public class VideoUtils extends IntentUtils {
     }
 
     public static void copyTimeStamp() {
-        final String timeStamp = getTimeStamp(VideoInformation.getVideoTime(), false);
+        final String timeStamp = getTimeStamp(VideoInformation.getVideoTime());
         setClipboard(timeStamp, str("revanced_share_copy_timestamp_success", timeStamp));
     }
 
@@ -151,13 +151,13 @@ public class VideoUtils extends IntentUtils {
     public static String getFormattedTimeStamp(long videoTime) {
         return "'" + videoTime +
                 "' (" +
-                getTimeStamp(videoTime, false) +
+                getTimeStamp(videoTime) +
                 ")\n";
     }
 
     @TargetApi(26)
     @SuppressLint("DefaultLocale")
-    public static String getTimeStamp(long time, boolean mills) {
+    public static String getTimeStamp(long time) {
         final Duration duration = Duration.ofMillis(time);
 
         final long hours = duration.toHours();
@@ -165,14 +165,10 @@ public class VideoUtils extends IntentUtils {
         final long seconds = duration.getSeconds() % 60;
         final long millis = duration.toMillis() % 1000;
 
-        if (mills) {
-            return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis);
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
         } else {
-            if (hours > 0) {
-                return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            } else {
-                return String.format("%02d:%02d", minutes, seconds);
-            }
+            return String.format("%02d:%02d", minutes, seconds);
         }
     }
 

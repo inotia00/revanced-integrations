@@ -31,7 +31,6 @@ public class InitializationPatch {
         ExtendedUtils.setApplicationLabel();
         ExtendedUtils.setSmallestScreenWidthDp();
         ExtendedUtils.setVersionName();
-        ExtendedUtils.setYouTabUsed();
         ExtendedUtils.setPlayerFlyoutMenuAdditionalSettings();
     }
 }

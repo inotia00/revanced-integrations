@@ -5,23 +5,9 @@ import androidx.annotation.NonNull;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.PackageUtils;
-import app.revanced.integrations.youtube.patches.components.FeedComponentsFilter;
 import app.revanced.integrations.youtube.settings.Settings;
 
 public class ExtendedUtils extends PackageUtils {
-    /**
-     * Versions of YouTube after this version use the You tab instead of the Library tab.
-     */
-    private static final String CLIENT_VERSIONS_YOU_TAB_USED = "18.36.32";
-    /**
-     * Spoofing this version restores the old library shelves.
-     */
-    private static final String RESTORE_OLD_LIBRARY_SHELF = "18.09.39";
-    /**
-     * This value is used in {@link FeedComponentsFilter}.
-     * In old YouTube client, hiding carousel shelves via navigation tab buttons does not work as intended.
-     */
-    private static boolean youTabUsed = false;
 
     public static boolean isFullscreenHidden() {
         boolean isFullscreenHidden = isTablet() &&
@@ -42,20 +28,6 @@ public class ExtendedUtils extends PackageUtils {
             return false;
 
         return isVersionToLessThan(Settings.SPOOF_APP_VERSION_TARGET.get(), versionName);
-    }
-
-    public static boolean isYouTabUsed() {
-        return youTabUsed;
-    }
-
-    public static void setYouTabUsed() {
-        if (isVersionToLessThan(getVersionName(), CLIENT_VERSIONS_YOU_TAB_USED)) {
-            return;
-        }
-        if (isSpoofingToLessThan(RESTORE_OLD_LIBRARY_SHELF)) {
-            return;
-        }
-        youTabUsed = true;
     }
 
     public static void setCommentPreviewSettings() {

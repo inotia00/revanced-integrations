@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -438,25 +439,23 @@ public class SponsorBlockUtils {
         return String.format(Locale.US, formatPattern, formatArgs);
     }
 
+    @TargetApi(26)
     public static String getTimeSavedString(long totalSecondsSaved) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Duration duration = Duration.ofSeconds(totalSecondsSaved);
-            final long hours = duration.toHours();
-            final long minutes = duration.toMinutes() % 60;
-            // Format all numbers so non-western numbers use a consistent appearance.
-            String minutesFormatted = statsNumberFormatter.format(minutes);
-            if (hours > 0) {
-                String hoursFormatted = statsNumberFormatter.format(hours);
-                return str("revanced_sb_stats_saved_hour_format", hoursFormatted, minutesFormatted);
-            }
-            final long seconds = duration.getSeconds() % 60;
-            String secondsFormatted = statsNumberFormatter.format(seconds);
-            if (minutes > 0) {
-                return str("revanced_sb_stats_saved_minute_format", minutesFormatted, secondsFormatted);
-            }
-            return str("revanced_sb_stats_saved_second_format", secondsFormatted);
+        Duration duration = Duration.ofSeconds(totalSecondsSaved);
+        final long hours = duration.toHours();
+        final long minutes = duration.toMinutes() % 60;
+        // Format all numbers so non-western numbers use a consistent appearance.
+        String minutesFormatted = statsNumberFormatter.format(minutes);
+        if (hours > 0) {
+            String hoursFormatted = statsNumberFormatter.format(hours);
+            return str("revanced_sb_stats_saved_hour_format", hoursFormatted, minutesFormatted);
         }
-        return "error"; // will never be reached.  YouTube requires Android O or greater
+        final long seconds = duration.getSeconds() % 60;
+        String secondsFormatted = statsNumberFormatter.format(seconds);
+        if (minutes > 0) {
+            return str("revanced_sb_stats_saved_minute_format", minutesFormatted, secondsFormatted);
+        }
+        return str("revanced_sb_stats_saved_second_format", secondsFormatted);
     }
 
     private static class EditByHandSaveDialogListener implements DialogInterface.OnClickListener {

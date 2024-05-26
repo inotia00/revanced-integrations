@@ -48,7 +48,7 @@ class SwipeZonesController(
     private val MAXIMUM_OVERLAY_RECT_SIZE = 50
 
     private var overlayRectSize = Settings.SWIPE_OVERLAY_RECT_SIZE.get()
-        set(value) {
+        set (value) {
             field = value
             validateOverlayRectSize()
         }

@@ -16,7 +16,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.ArrayList;
 
-import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 import app.revanced.integrations.youtube.whitelist.VideoChannel;
