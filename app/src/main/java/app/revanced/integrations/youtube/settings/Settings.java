@@ -249,7 +249,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_PIP = new BooleanSetting("revanced_hide_player_flyout_menu_pip", TRUE, true);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_PREMIUM_CONTROLS = new BooleanSetting("revanced_hide_player_flyout_menu_premium_controls", TRUE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_STABLE_VOLUME = new BooleanSetting("revanced_hide_player_flyout_menu_stable_volume", FALSE);
-    public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_STATS_FOR_NERDS = new BooleanSetting("revanced_hide_player_flyout_menu_stats_for_nerds", TRUE);
+    public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_STATS_FOR_NERDS = new BooleanSetting("revanced_hide_player_flyout_menu_stats_for_nerds", FALSE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_WATCH_IN_VR = new BooleanSetting("revanced_hide_player_flyout_menu_watch_in_vr", TRUE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_YT_MUSIC = new BooleanSetting("revanced_hide_player_flyout_menu_listen_with_youtube_music", TRUE);
 
