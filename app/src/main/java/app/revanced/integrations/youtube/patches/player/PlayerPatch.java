@@ -409,8 +409,16 @@ public class PlayerPatch {
         return Settings.DISABLE_AUTO_PLAYER_POPUP_PANELS.get();
     }
 
+    public static boolean disableSpeedOverlay() {
+        return disableSpeedOverlay(true);
+    }
+
     public static boolean disableSpeedOverlay(boolean original) {
         return !Settings.DISABLE_SPEED_OVERLAY.get() && original;
+    }
+
+    public static double speedOverlayValue() {
+        return speedOverlayValue(2.0f);
     }
 
     public static float speedOverlayValue(float original) {
