@@ -38,6 +38,8 @@ import app.revanced.integrations.youtube.shared.VideoInformation;
  */
 public final class ReturnYouTubeDislikeFilterPatch extends Filter {
 
+    private static final String VIDEO_ACTION_BAR_PATH = "video_action_bar.eml";
+
     /**
      * Last unique video id's loaded.  Value is ignored and Map is treated as a Set.
      * Cannot use {@link LinkedHashSet} because it's missing #removeEldestEntry().
@@ -143,6 +145,9 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == glowingEffects) {
+            if (!path.startsWith(VIDEO_ACTION_BAR_PATH)) {
+                return false;
+            }
             return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }
         FilterGroup.FilterGroupResult result = videoIdFilterGroup.check(protobufBufferArray);
