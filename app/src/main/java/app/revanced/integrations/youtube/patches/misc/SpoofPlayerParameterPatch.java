@@ -153,10 +153,10 @@ public class SpoofPlayerParameterPatch {
         if (spoofParameter && !useOriginalStoryboardRenderer) {
             final StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
-                if (returnNullIfLiveStream && renderer.isLiveStream()) {
+                if (returnNullIfLiveStream && renderer.isLiveStream) {
                     return null;
                 }
-                String spec = renderer.getSpec();
+                String spec = renderer.spec;
                 if (spec != null) {
                     return spec;
                 }
@@ -192,7 +192,7 @@ public class SpoofPlayerParameterPatch {
         if (spoofParameter && !useOriginalStoryboardRenderer) {
             final StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
-                Integer recommendedLevel = renderer.getRecommendedLevel();
+                Integer recommendedLevel = renderer.recommendedLevel;
                 if (recommendedLevel != null) return recommendedLevel;
             }
         }
@@ -215,6 +215,6 @@ public class SpoofPlayerParameterPatch {
             // Show empty thumbnails so the seek time and chapters still show up.
             return true;
         }
-        return renderer.getSpec() != null;
+        return renderer.spec != null;
     }
 }
