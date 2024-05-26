@@ -114,7 +114,6 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.HIDE_QUICK_ACTIONS_MORE_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_MIX_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_RELATED_VIDEO,
                 Settings.HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_SHARE_BUTTON,
                 Settings.QUICK_ACTIONS_TOP_MARGIN,
@@ -138,7 +137,6 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.HIDE_QUICK_ACTIONS_MORE_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_MIX_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_RELATED_VIDEO,
                 Settings.HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_SHARE_BUTTON
         );
@@ -171,7 +169,6 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.HIDE_QUICK_ACTIONS_MORE_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_MIX_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_RELATED_VIDEO,
                 Settings.HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_SHARE_BUTTON
         );

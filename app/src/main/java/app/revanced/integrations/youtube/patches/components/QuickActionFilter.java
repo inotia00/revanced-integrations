@@ -53,7 +53,7 @@ public final class QuickActionFilter extends Filter {
                         "|overflow_menu_button"
                 ),
                 new StringFilterGroup(
-                        Settings.HIDE_QUICK_ACTIONS_RELATED_VIDEO,
+                        Settings.HIDE_RELATED_VIDEO_OVERLAY,
                         "fullscreen_related_videos"
                 ),
                 bufferFilterPathRule,
@@ -96,7 +96,7 @@ public final class QuickActionFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == liveChatReplay) {
             return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }

@@ -268,7 +268,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_QUICK_ACTIONS_MORE_BUTTON = new BooleanSetting("revanced_hide_quick_actions_more_button", FALSE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS_OPEN_MIX_PLAYLIST_BUTTON = new BooleanSetting("revanced_hide_quick_actions_open_mix_playlist_button", FALSE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON = new BooleanSetting("revanced_hide_quick_actions_open_playlist_button", FALSE);
-    public static final BooleanSetting HIDE_QUICK_ACTIONS_RELATED_VIDEO = new BooleanSetting("revanced_hide_quick_actions_related_videos", FALSE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON = new BooleanSetting("revanced_hide_quick_actions_save_to_playlist_button", FALSE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS_SHARE_BUTTON = new BooleanSetting("revanced_hide_quick_actions_share_button", FALSE);
     public static final IntegerSetting QUICK_ACTIONS_TOP_MARGIN = new IntegerSetting("revanced_quick_actions_top_margin", 0, true);
