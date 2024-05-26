@@ -29,7 +29,7 @@ public class VideoQualityPatch {
             return;
         if (videoId.equals(newlyLoadedVideoId))
             return;
-        videoId = newlyLoadedVideoId;
+        Utils.runOnMainThreadDelayed(() -> videoId = newlyLoadedVideoId, 5000);
 
         final int defaultQuality = Utils.getNetworkType() == Utils.NetworkType.MOBILE
                 ? mobileQualitySetting.get()
