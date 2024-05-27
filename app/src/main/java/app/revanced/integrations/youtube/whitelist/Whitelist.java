@@ -6,6 +6,7 @@ import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -38,18 +39,31 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
+/** @noinspection deprecation*/
 public class Whitelist {
     private static final String ZERO_WIDTH_SPACE_CHARACTER = "\u200B";
     private static final Map<WhitelistType, ArrayList<VideoChannel>> whitelistMap = parseWhitelist();
 
     private static final WhitelistType whitelistTypePlaybackSpeed = WhitelistType.PLAYBACK_SPEED;
     private static final WhitelistType whitelistTypeSponsorBlock = WhitelistType.SPONSOR_BLOCK;
-    private static final Drawable playbackSpeedDrawable =
-            ResourceUtils.getDrawable("yt_outline_play_arrow_half_circle_black_24");
-    private static final Drawable sponsorBlockDrawable =
-            ResourceUtils.getDrawable("revanced_sb_logo");
     private static final String whitelistIncluded = str("revanced_whitelist_included");
     private static final String whitelistExcluded = str("revanced_whitelist_excluded");
+    private static Drawable playbackSpeedDrawable;
+    private static Drawable sponsorBlockDrawable;
+
+    static {
+        final Resources resource = Utils.getResources();
+
+        final int playbackSpeedDrawableId = ResourceUtils.getDrawableIdentifier("yt_outline_play_arrow_half_circle_black_24");
+        if (playbackSpeedDrawableId != 0) {
+            playbackSpeedDrawable = resource.getDrawable(playbackSpeedDrawableId);
+        }
+
+        final int sponsorBlockDrawableId = ResourceUtils.getDrawableIdentifier("revanced_sb_logo");
+        if (sponsorBlockDrawableId != 0) {
+            sponsorBlockDrawable = resource.getDrawable(sponsorBlockDrawableId);
+        }
+    }
 
     public static boolean isChannelWhitelistedSponsorBlock(String channelId) {
         return isWhitelisted(whitelistTypeSponsorBlock, channelId);
@@ -102,11 +116,11 @@ public class Whitelist {
         final ColorFilter cf = new PorterDuffColorFilter(ThemeUtils.getTextColor(), PorterDuff.Mode.SRC_ATOP);
         Button sponsorBlockButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Button playbackSpeedButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-        if (sponsorBlockButton != null) {
+        if (sponsorBlockButton != null && sponsorBlockDrawable != null) {
             sponsorBlockDrawable.setColorFilter(cf);
             sponsorBlockButton.setCompoundDrawablesWithIntrinsicBounds(null, null, sponsorBlockDrawable, null);
         }
-        if (playbackSpeedButton != null) {
+        if (playbackSpeedButton != null && playbackSpeedDrawable != null) {
             playbackSpeedDrawable.setColorFilter(cf);
             playbackSpeedButton.setCompoundDrawablesWithIntrinsicBounds(playbackSpeedDrawable, null, null, null);
         }
