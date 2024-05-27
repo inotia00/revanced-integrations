@@ -120,6 +120,7 @@ public class Settings extends BaseSettings {
 
 
     // PreferenceScreen: Player
+    public static final BooleanSetting ENABLE_BLACK_PLAYER_BACKGROUND = new BooleanSetting("revanced_enable_black_player_background", FALSE, true);
     public static final BooleanSetting ENABLE_COLOR_MATCH_PLAYER = new BooleanSetting("revanced_enable_color_match_player", TRUE);
     public static final BooleanSetting ENABLE_FORCE_MINIMIZED_PLAYER = new BooleanSetting("revanced_enable_force_minimized_player", TRUE);
     public static final BooleanSetting ENABLE_MINI_PLAYER_NEXT_BUTTON = new BooleanSetting("revanced_enable_mini_player_next_button", TRUE, true);

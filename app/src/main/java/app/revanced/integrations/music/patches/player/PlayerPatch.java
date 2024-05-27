@@ -7,6 +7,7 @@ import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import app.revanced.integrations.music.utils.VideoUtils;
 
 @SuppressWarnings("unused")
 public class PlayerPatch {
+    private static final int MUSIC_VIDEO_GREY_BACKGROUND_COLOR = -12566464;
+    private static final int MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR = -16579837;
+
     @SuppressLint("StaticFieldLeak")
     public static View previousButton;
     @SuppressLint("StaticFieldLeak")
@@ -29,6 +33,13 @@ public class PlayerPatch {
 
     public static boolean enableColorMatchPlayer() {
         return Settings.ENABLE_COLOR_MATCH_PLAYER.get();
+    }
+
+    public static int enableBlackPlayerBackground(int originalColor) {
+        return Settings.ENABLE_BLACK_PLAYER_BACKGROUND.get()
+                && originalColor != MUSIC_VIDEO_GREY_BACKGROUND_COLOR
+                ? Color.BLACK
+                : originalColor;
     }
 
     public static boolean enableForceMinimizedPlayer(boolean original) {
@@ -106,9 +117,6 @@ public class PlayerPatch {
     public static Object enableSwipeToDismissMiniPlayer(Object object) {
         return Settings.ENABLE_SWIPE_TO_DISMISS_MINI_PLAYER.get() ? null : object;
     }
-
-    private static final int MUSIC_VIDEO_GREY_BACKGROUND_COLOR = -12566464;
-    private static final int MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR = -16579837;
 
     public static int enableZenMode(int originalColor) {
         if (Settings.ENABLE_ZEN_MODE.get() && originalColor == MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR) {
