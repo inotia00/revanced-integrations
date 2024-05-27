@@ -87,34 +87,70 @@ public class ResourceUtils extends Utils {
     }
 
     public static Animation getAnimation(@NonNull String str) {
-        return AnimationUtils.loadAnimation(getContext(), getAnimIdentifier(str));
+        int identifier = getAnimIdentifier(str);
+        if (identifier == 0) {
+            handleException(str, ResourceType.ANIM);
+            identifier = android.R.anim.fade_in;
+        }
+        return AnimationUtils.loadAnimation(getContext(), identifier);
     }
 
     public static int getColor(@NonNull String str) {
         final int identifier = getColorIdentifier(str);
-        return identifier == 0 ? 0 : getResources().getColor(identifier);
+        if (identifier == 0) {
+            handleException(str, ResourceType.COLOR);
+            return 0;
+        }
+        return getResources().getColor(identifier);
     }
 
     public static int getDimension(@NonNull String str) {
-        return getResources().getDimensionPixelSize(getDimenIdentifier(str));
+        final int identifier = getDimenIdentifier(str);
+        if (identifier == 0) {
+            handleException(str, ResourceType.DIMEN);
+            return 0;
+        }
+        return getResources().getDimensionPixelSize(identifier);
     }
 
     public static Drawable getDrawable(@NonNull String str) {
-        return getResources().getDrawable(getDrawableIdentifier(str));
+        final int identifier = getDrawableIdentifier(str);
+        if (identifier == 0) {
+            handleException(str, ResourceType.DRAWABLE);
+            return null;
+        }
+        return getResources().getDrawable(identifier);
     }
-
 
     public static String getString(@NonNull String str) {
         final int identifier = getStringIdentifier(str);
-        return identifier == 0 ? str : getResources().getString(identifier);
+        if (identifier == 0) {
+            handleException(str, ResourceType.STRING);
+            return str;
+        }
+        return getResources().getString(identifier);
     }
 
     public static String[] getStringArray(@NonNull String str) {
-        return getResources().getStringArray(getArrayIdentifier(str));
+        final int identifier = getArrayIdentifier(str);
+        if (identifier == 0) {
+            handleException(str, ResourceType.ARRAY);
+            return new String[0];
+        }
+        return getResources().getStringArray(identifier);
     }
 
     public static int getInteger(@NonNull String str) {
-        return getResources().getInteger(getIntegerIdentifier(str));
+        final int identifier = getIntegerIdentifier(str);
+        if (identifier == 0) {
+            handleException(str, ResourceType.INTEGER);
+            return 0;
+        }
+        return getResources().getInteger(identifier);
+    }
+
+    private static void handleException(@NonNull String str, ResourceType resourceType) {
+        Logger.printException(() -> "R." + resourceType.getType() + "." + str + " is null");
     }
 
     public enum ResourceType {
