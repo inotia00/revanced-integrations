@@ -256,7 +256,7 @@ public class SponsorBlockUtils {
                 final long segmentLength = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                         .setTitle(str("revanced_sb_new_segment_confirm_title"))
-                        .setMessage(str("revanced_sb_new_segment_confirm_content",
+                        .setMessage(str("revanced_sb_new_segment_confirm_contents",
                                 formatSegmentTime(newSponsorSegmentStartMillis),
                                 formatSegmentTime(newSponsorSegmentEndMillis),
                                 getTimeSavedString(segmentLength)))

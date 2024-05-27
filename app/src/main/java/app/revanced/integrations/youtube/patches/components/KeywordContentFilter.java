@@ -226,7 +226,7 @@ public final class KeywordContentFilter extends Filter {
 
                 if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
                     // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
-                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", phrase, MINIMUM_KEYWORD_LENGTH));
+                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_keyword", phrase, MINIMUM_KEYWORD_LENGTH));
                     continue;
                 }
 
