@@ -32,6 +32,10 @@ public class CustomPlaybackSpeedPatch {
     public static float[] playbackSpeeds;
     public static String[] customSpeedEntries;
     public static String[] customSpeedEntryValues;
+
+    public static String[] playbackSpeedEntries;
+    public static String[] playbackSpeedEntryValues;
+
     /**
      * The last time the old playback menu was forcefully called.
      */
@@ -133,6 +137,24 @@ public class CustomPlaybackSpeedPatch {
         return isCustomPlaybackSpeedEnabled()
                 ? customSpeedEntryValues
                 : defaultSpeedEntryValues;
+    }
+
+    public static String[] getTrimmedListEntries() {
+        if (playbackSpeedEntries == null) {
+            final String[] playbackSpeedWithAutoEntries = getListEntries();
+            playbackSpeedEntries = Arrays.copyOfRange(playbackSpeedWithAutoEntries, 1, playbackSpeedWithAutoEntries.length);
+        }
+
+        return playbackSpeedEntries;
+    }
+
+    public static String[] getTrimmedListEntryValues() {
+        if (playbackSpeedEntryValues == null) {
+            final String[] playbackSpeedWithAutoEntryValues = getListEntryValues();
+            playbackSpeedEntryValues = Arrays.copyOfRange(playbackSpeedWithAutoEntryValues, 1, playbackSpeedWithAutoEntryValues.length);
+        }
+
+        return playbackSpeedEntryValues;
     }
 
     private static boolean isCustomPlaybackSpeedEnabled() {

@@ -413,7 +413,7 @@ public class SponsorBlockUtils {
 
     private static String formatSegmentTime(long segmentTime) {
         // Use same time formatting as shown in the video player.
-        final long videoLength = VideoInformation.getVideoLength();
+        final long videoLength = SegmentPlaybackController.getVideoLength();
 
         // Cannot use DateFormatter, as videos over 24 hours will rollover and not display correctly.
         final long hours = TimeUnit.MILLISECONDS.toHours(segmentTime);

@@ -13,7 +13,7 @@ import app.revanced.integrations.youtube.whitelist.Whitelist;
 
 @SuppressWarnings("unused")
 public class PlaybackSpeedPatch {
-    private static boolean isLiveStream = false;
+    private static boolean isLiveStream;
 
     /**
      * Injection point.

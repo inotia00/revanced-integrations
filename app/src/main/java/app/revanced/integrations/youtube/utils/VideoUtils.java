@@ -121,11 +121,8 @@ public class VideoUtils extends IntentUtils {
     }
 
     public static void showPlaybackSpeedDialog(@NonNull Context context) {
-        final String[] playbackSpeedWithAutoEntries = CustomPlaybackSpeedPatch.getListEntries();
-        final String[] playbackSpeedWithAutoEntryValues = CustomPlaybackSpeedPatch.getListEntryValues();
-
-        final String[] playbackSpeedEntries = Arrays.copyOfRange(playbackSpeedWithAutoEntries, 1, playbackSpeedWithAutoEntries.length);
-        final String[] playbackSpeedEntryValues = Arrays.copyOfRange(playbackSpeedWithAutoEntryValues, 1, playbackSpeedWithAutoEntryValues.length);
+        final String[] playbackSpeedEntries = CustomPlaybackSpeedPatch.getTrimmedListEntries();
+        final String[] playbackSpeedEntryValues = CustomPlaybackSpeedPatch.getTrimmedListEntryValues();
 
         final float playbackSpeed = VideoInformation.getPlaybackSpeed();
         final int index = Arrays.binarySearch(playbackSpeedEntryValues, String.valueOf(playbackSpeed));
