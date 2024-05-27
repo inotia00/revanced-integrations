@@ -469,7 +469,13 @@ public class PlayerPatch {
         hideViewUnderCondition(Settings.HIDE_SUGGESTED_ACTION.get(), view);
     }
 
+    public static boolean hideSuggestedVideoEndScreen() {
+        return Settings.HIDE_SUGGESTED_VIDEO_END_SCREEN.get();
+    }
+
     public static void skipAutoPlayCountdown(View view) {
+        if (!hideSuggestedVideoEndScreen())
+            return;
         if (!Settings.SKIP_AUTOPLAY_COUNTDOWN.get())
             return;
 
