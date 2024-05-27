@@ -23,18 +23,18 @@ public class CustomPlaybackSpeedPatch {
     /**
      * Maximum playback speed, exclusive value.  Custom speeds must be less than this value.
      */
-    public static final float MAXIMUM_PLAYBACK_SPEED = 8;
-    public static final String[] defaultSpeedEntries;
-    public static final String[] defaultSpeedEntryValues;
+    private static final float MAXIMUM_PLAYBACK_SPEED = 8;
+    private static final String[] defaultSpeedEntries;
+    private static final String[] defaultSpeedEntryValues;
     /**
      * Custom playback speeds.
      */
-    public static float[] playbackSpeeds;
-    public static String[] customSpeedEntries;
-    public static String[] customSpeedEntryValues;
+    private static float[] playbackSpeeds;
+    private static String[] customSpeedEntries;
+    private static String[] customSpeedEntryValues;
 
-    public static String[] playbackSpeedEntries;
-    public static String[] playbackSpeedEntryValues;
+    private static String[] playbackSpeedEntries;
+    private static String[] playbackSpeedEntryValues;
 
     /**
      * The last time the old playback menu was forcefully called.
@@ -67,6 +67,36 @@ public class CustomPlaybackSpeedPatch {
      */
     public static int getSize(int original) {
         return isCustomPlaybackSpeedEnabled() ? 0 : original;
+    }
+
+    public static String[] getListEntries() {
+        return isCustomPlaybackSpeedEnabled()
+                ? customSpeedEntries
+                : defaultSpeedEntries;
+    }
+
+    public static String[] getListEntryValues() {
+        return isCustomPlaybackSpeedEnabled()
+                ? customSpeedEntryValues
+                : defaultSpeedEntryValues;
+    }
+
+    public static String[] getTrimmedListEntries() {
+        if (playbackSpeedEntries == null) {
+            final String[] playbackSpeedWithAutoEntries = getListEntries();
+            playbackSpeedEntries = Arrays.copyOfRange(playbackSpeedWithAutoEntries, 1, playbackSpeedWithAutoEntries.length);
+        }
+
+        return playbackSpeedEntries;
+    }
+
+    public static String[] getTrimmedListEntryValues() {
+        if (playbackSpeedEntryValues == null) {
+            final String[] playbackSpeedWithAutoEntryValues = getListEntryValues();
+            playbackSpeedEntryValues = Arrays.copyOfRange(playbackSpeedWithAutoEntryValues, 1, playbackSpeedWithAutoEntryValues.length);
+        }
+
+        return playbackSpeedEntryValues;
     }
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
@@ -125,36 +155,6 @@ public class CustomPlaybackSpeedPatch {
             if (arrayValue == value) return true;
         }
         return false;
-    }
-
-    public static String[] getListEntries() {
-        return isCustomPlaybackSpeedEnabled()
-                ? customSpeedEntries
-                : defaultSpeedEntries;
-    }
-
-    public static String[] getListEntryValues() {
-        return isCustomPlaybackSpeedEnabled()
-                ? customSpeedEntryValues
-                : defaultSpeedEntryValues;
-    }
-
-    public static String[] getTrimmedListEntries() {
-        if (playbackSpeedEntries == null) {
-            final String[] playbackSpeedWithAutoEntries = getListEntries();
-            playbackSpeedEntries = Arrays.copyOfRange(playbackSpeedWithAutoEntries, 1, playbackSpeedWithAutoEntries.length);
-        }
-
-        return playbackSpeedEntries;
-    }
-
-    public static String[] getTrimmedListEntryValues() {
-        if (playbackSpeedEntryValues == null) {
-            final String[] playbackSpeedWithAutoEntryValues = getListEntryValues();
-            playbackSpeedEntryValues = Arrays.copyOfRange(playbackSpeedWithAutoEntryValues, 1, playbackSpeedWithAutoEntryValues.length);
-        }
-
-        return playbackSpeedEntryValues;
     }
 
     private static boolean isCustomPlaybackSpeedEnabled() {
