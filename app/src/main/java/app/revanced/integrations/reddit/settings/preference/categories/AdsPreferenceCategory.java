@@ -24,19 +24,19 @@ public class AdsPreferenceCategory extends ConditionalPreferenceCategory {
         addPreference(new TogglePreference(
                 context,
                 "Hide comment ads",
-                "Hides ads from comment.",
+                "Hides ads in the comments section.",
                 Settings.HIDE_COMMENT_ADS
         ));
         addPreference(new TogglePreference(
                 context,
                 "Hide feed ads",
-                "Hides ads from feed (old method).",
+                "Hides ads in the feed (old method).",
                 Settings.HIDE_OLD_POST_ADS
         ));
         addPreference(new TogglePreference(
                 context,
                 "Hide feed ads",
-                "Hides ads from feed (new method).",
+                "Hides ads in the feed (new method).",
                 Settings.HIDE_NEW_POST_ADS
         ));
     }
