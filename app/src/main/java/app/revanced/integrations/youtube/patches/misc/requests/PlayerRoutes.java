@@ -21,9 +21,23 @@ public final class PlayerRoutes {
                     "playabilityStatus.errorScreen"
     ).compile();
 
-    public static final String WEB_INNER_TUBE_BODY;
-    public static final String ANDROID_INNER_TUBE_BODY;
-    public static final String TV_EMBED_INNER_TUBE_BODY;
+    private static final String ANDROID_CLIENT_VERSION = PackageUtils.getVersionName();
+    private static final String ANDROID_USER_AGENT = "com.google.android.youtube/" +
+            ANDROID_CLIENT_VERSION +
+            " (Linux; U; Android 14; GB) gzip";
+
+    private static final String TVHTML5_SIMPLY_EMBED_CLIENT_VERSION = "2.0";
+    private static final String TVHTML5_SIMPLY_EMBED_USER_AGENT = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5)" +
+            " AppleWebKit/537.36 (KHTML, like Gecko)" +
+            " 85.0.4183.93/6.5 TV Safari/537.36";
+    private static final String WEB_CLIENT_VERSION = "2.20240304.00.00";
+    private static final String WEB_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; SM-G981B)" +
+            " AppleWebKit/537.36 (KHTML, like Gecko)" +
+            " Chrome/80.0.3987.162 Mobile Safari/537.36";
+
+    private static final String ANDROID_INNER_TUBE_BODY;
+    private static final String TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY;
+    private static final String WEB_INNER_TUBE_BODY;
 
     private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
 
@@ -33,25 +47,28 @@ public final class PlayerRoutes {
     private static final int CONNECTION_TIMEOUT_MILLISECONDS = 10 * 1000; // 10 Seconds.
 
     static {
-        JSONObject innerTubeBody = new JSONObject();
+        JSONObject androidInnerTubeBody = new JSONObject();
 
         try {
             JSONObject context = new JSONObject();
 
             JSONObject client = new JSONObject();
             client.put("clientName", "ANDROID");
-            client.put("clientVersion", PackageUtils.getVersionName());
-            client.put("androidSdkVersion", 33);
+            client.put("clientVersion", ANDROID_CLIENT_VERSION);
+            client.put("platform", "MOBILE");
+            client.put("androidSdkVersion", 34);
+            client.put("osName", "Android");
+            client.put("osVersion", "14");
 
             context.put("client", client);
 
-            innerTubeBody.put("context", context);
-            innerTubeBody.put("videoId", "%s");
+            androidInnerTubeBody.put("context", context);
+            androidInnerTubeBody.put("videoId", "%s");
         } catch (JSONException e) {
-            Logger.printException(() -> "Failed to create innerTubeBody", e);
+            Logger.printException(() -> "Failed to create Android innerTubeBody", e);
         }
 
-        ANDROID_INNER_TUBE_BODY = innerTubeBody.toString();
+        ANDROID_INNER_TUBE_BODY = androidInnerTubeBody.toString();
 
         JSONObject tvEmbedInnerTubeBody = new JSONObject();
 
@@ -60,7 +77,7 @@ public final class PlayerRoutes {
 
             JSONObject client = new JSONObject();
             client.put("clientName", "TVHTML5_SIMPLY_EMBEDDED_PLAYER");
-            client.put("clientVersion", "2.0");
+            client.put("clientVersion", TVHTML5_SIMPLY_EMBED_CLIENT_VERSION);
             client.put("platform", "TV");
             client.put("clientScreen", "EMBED");
 
@@ -73,10 +90,10 @@ public final class PlayerRoutes {
             tvEmbedInnerTubeBody.put("context", context);
             tvEmbedInnerTubeBody.put("videoId", "%s");
         } catch (JSONException e) {
-            Logger.printException(() -> "Failed to create tvEmbedInnerTubeBody", e);
+            Logger.printException(() -> "Failed to create TV Embed innerTubeBody", e);
         }
 
-        TV_EMBED_INNER_TUBE_BODY = tvEmbedInnerTubeBody.toString();
+        TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY = tvEmbedInnerTubeBody.toString();
 
         JSONObject webInnerTubeBody = new JSONObject();
 
@@ -85,7 +102,7 @@ public final class PlayerRoutes {
 
             JSONObject client = new JSONObject();
             client.put("clientName", "WEB");
-            client.put("clientVersion", "2.20240201.01.00");
+            client.put("clientVersion", WEB_CLIENT_VERSION);
             client.put("clientScreen", "WATCH");
 
             context.put("client", client);
@@ -93,7 +110,7 @@ public final class PlayerRoutes {
             webInnerTubeBody.put("context", context);
             webInnerTubeBody.put("videoId", "%s");
         } catch (JSONException e) {
-            Logger.printException(() -> "Failed to create webInnerTubeBody", e);
+            Logger.printException(() -> "Failed to create Web innerTubeBody", e);
         }
 
         WEB_INNER_TUBE_BODY = webInnerTubeBody.toString();
@@ -105,14 +122,10 @@ public final class PlayerRoutes {
     /**
      * @noinspection SameParameterValue
      */
-    public static HttpURLConnection getPlayerResponseConnectionFromRoute(Route.CompiledRoute route) throws IOException {
+    public static HttpURLConnection getPlayerResponseConnectionFromRoute(Route.CompiledRoute route, String userAgent) throws IOException {
         var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, route);
 
-        connection.setRequestProperty(
-                "User-Agent", "com.google.android.youtube/" +
-                        PackageUtils.getVersionName() +
-                        "(Linux; U; Android 13; en_US; sdk_gphone64_x86_64 Build/UPB4.230623.005) gzip"
-        );
+        connection.setRequestProperty("User-Agent", userAgent);
         connection.setRequestProperty("X-Goog-Api-Format-Version", "2");
         connection.setRequestProperty("Content-Type", "application/json");
 
@@ -122,5 +135,19 @@ public final class PlayerRoutes {
         connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         connection.setReadTimeout(CONNECTION_TIMEOUT_MILLISECONDS);
         return connection;
+    }
+
+    public enum RequestClient {
+        ANDROID(ANDROID_INNER_TUBE_BODY, ANDROID_USER_AGENT),
+        TVHTML5_SIMPLY_EMBED(TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY, TVHTML5_SIMPLY_EMBED_USER_AGENT),
+        WEB(WEB_INNER_TUBE_BODY, WEB_USER_AGENT);
+
+        final String innerTubeBody;
+        final String userAgent;
+
+        RequestClient(String innerTubeBody, String userAgent) {
+            this.innerTubeBody = innerTubeBody;
+            this.userAgent = userAgent;
+        }
     }
 }
