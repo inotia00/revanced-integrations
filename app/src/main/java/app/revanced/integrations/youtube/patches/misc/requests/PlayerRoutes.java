@@ -84,6 +84,13 @@ public final class PlayerRoutes {
      */
     private static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
 
+    private static final String ANDROID_VR_OS_RELEASE_VERSION = "12";
+    /**
+     * The SDK version for Android 12 is 31,
+     * but for some reason the build.props for the {@code Quest 3} state that the SDK version is 32.
+     */
+    private static final int ANDROID_VR_OS_SDK_VERSION = 32;
+
     /**
      * Package name for YouTube VR (Google DayDream): com.google.android.apps.youtube.vr (Deprecated)
      * Package name for YouTube VR (Meta Quests): com.google.android.apps.youtube.vr.oculus
@@ -254,9 +261,9 @@ public final class PlayerRoutes {
             client.put("clientName", "ANDROID_VR");
             client.put("clientVersion", ANDROID_VR_CLIENT_VERSION);
             client.put("platform", "MOBILE");
-            client.put("androidSdkVersion", 32);
+            client.put("androidSdkVersion", ANDROID_VR_OS_SDK_VERSION);
             client.put("osName", "Android");
-            client.put("osVersion", "12");
+            client.put("osVersion", ANDROID_VR_OS_RELEASE_VERSION);
 
             context.put("client", client);
 
@@ -360,8 +367,10 @@ public final class PlayerRoutes {
         ANDROID_UNPLUGGED(29, ANDROID_UNPLUGGED_DEVICE_MODEL, ANDROID_UNPLUGGED_CLIENT_VERSION, ANDROID_UNPLUGGED_INNER_TUBE_BODY, ANDROID_UNPLUGGED_USER_AGENT),
         ANDROID_VR(28, ANDROID_VR_DEVICE_MODEL, ANDROID_VR_CLIENT_VERSION, ANDROID_VR_INNER_TUBE_BODY, ANDROID_VR_USER_AGENT),
         IOS(5, IOS_DEVICE_MODEL, IOS_CLIENT_VERSION, IOS_INNER_TUBE_BODY, IOS_USER_AGENT),
-        TVHTML5_SIMPLY_EMBEDDED_PLAYER(85, "", TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION, TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY, TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT),
-        WEB(1, "", WEB_CLIENT_VERSION, WEB_INNER_TUBE_BODY, WEB_USER_AGENT);
+        // No suitable model name was found for TVHTML5_SIMPLY_EMBEDDED_PLAYER. Use the model name of ANDROID.
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER(85, ANDROID_DEVICE_MODEL, TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION, TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY, TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT),
+        // No suitable model name was found for WEB. Use the model name of ANDROID.
+        WEB(1, ANDROID_DEVICE_MODEL, WEB_CLIENT_VERSION, WEB_INNER_TUBE_BODY, WEB_USER_AGENT);
 
         public final int id;
         public final String model;

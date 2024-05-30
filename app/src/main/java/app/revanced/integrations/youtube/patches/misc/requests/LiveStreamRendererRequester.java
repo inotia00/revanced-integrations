@@ -46,14 +46,14 @@ public class LiveStreamRendererRequester {
             if (responseCode == 200) return Requester.parseJSONObject(connection);
 
             // Always show a toast for this, as a non 200 response means something is broken.
-            handleConnectionError("Spoof storyboard not available: " + responseCode, null);
+            handleConnectionError("Fetch livestreams not available: " + responseCode, null);
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
-            handleConnectionError("Spoof storyboard temporarily not available (API timed out)", ex);
+            handleConnectionError("Fetch livestreams temporarily not available (API timed out)", ex);
         } catch (IOException ex) {
-            handleConnectionError("Spoof storyboard temporarily not available: " + ex.getMessage(), ex);
+            handleConnectionError("Fetch livestreams temporarily not available: " + ex.getMessage(), ex);
         } catch (Exception ex) {
-            Logger.printException(() -> "Spoof storyboard fetch failed", ex); // Should never happen.
+            Logger.printException(() -> "Fetch livestreams failed", ex); // Should never happen.
         } finally {
             Logger.printDebug(() -> "Request took: " + (System.currentTimeMillis() - startTime) + "ms");
         }
