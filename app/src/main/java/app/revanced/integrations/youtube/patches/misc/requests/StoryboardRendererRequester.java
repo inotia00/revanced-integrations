@@ -2,8 +2,6 @@ package app.revanced.integrations.youtube.patches.misc.requests;
 
 import static app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.GET_STORYBOARD_SPEC_RENDERER;
 
-import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.RequestClient;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -20,6 +18,7 @@ import app.revanced.integrations.shared.requests.Requester;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.StoryboardRenderer;
+import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
 
 public class StoryboardRendererRequester {
 
@@ -102,7 +101,7 @@ public class StoryboardRendererRequester {
     @Nullable
     private static StoryboardRenderer getTrailerStoryboardRenderer(@NonNull String videoId) {
         try {
-            final RequestClient requestClient = RequestClient.WEB;
+            final ClientType requestClient = ClientType.WEB;
             final JSONObject playerResponse = fetchPlayerResponse(String.format(requestClient.innerTubeBody, videoId), requestClient.userAgent);
 
             if (playerResponse == null)
@@ -159,20 +158,22 @@ public class StoryboardRendererRequester {
     public static StoryboardRenderer getStoryboardRenderer(@NonNull String videoId) {
         Objects.requireNonNull(videoId);
 
-        RequestClient requestClient = RequestClient.ANDROID;
+        // Storyboards can no longer be fetched through Android client requests.
+        // Fetch with iOS client.
+        ClientType clientType = ClientType.IOS;
         StoryboardRenderer renderer = getStoryboardRendererUsingBody(
                 videoId,
-                String.format(requestClient.innerTubeBody, videoId),
-                requestClient.userAgent
+                String.format(clientType.innerTubeBody, videoId),
+                clientType.userAgent
         );
         if (renderer == null) {
-            Logger.printDebug(() -> videoId + " not available using Android client");
+            Logger.printDebug(() -> videoId + " not available using iOS client");
 
-            requestClient = RequestClient.TVHTML5_SIMPLY_EMBED;
+            clientType = ClientType.TVHTML5_SIMPLY_EMBEDDED_PLAYER;
             renderer = getStoryboardRendererUsingBody(
                     videoId,
-                    String.format(requestClient.innerTubeBody, videoId, videoId),
-                    requestClient.userAgent
+                    String.format(clientType.innerTubeBody, videoId, videoId),
+                    clientType.userAgent
             );
             if (renderer == null) {
                 Logger.printDebug(() -> videoId + " not available using TV html5 embedded client");

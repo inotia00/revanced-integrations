@@ -1,5 +1,8 @@
 package app.revanced.integrations.youtube.patches.misc;
 
+import static app.revanced.integrations.shared.utils.Utils.submitOnBackgroundThread;
+import static app.revanced.integrations.youtube.patches.misc.requests.LiveStreamRendererRequester.getLiveStreamRenderer;
+
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -7,7 +10,13 @@ import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
@@ -16,49 +25,6 @@ import app.revanced.integrations.youtube.shared.PlayerType;
  */
 public class SpoofClientPatch {
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final boolean SPOOF_CLIENT_USE_IOS = Settings.SPOOF_CLIENT_USE_IOS.get();
-
-    /**
-     * The device machine id for the Meta Quest 3, used to get opus codec with the Android VR client.
-     *
-     * <p>
-     * See <a href="https://dumps.tadiphone.dev/dumps/oculus/eureka">this GitLab</a> for more
-     * information.
-     * </p>
-     */
-    private static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
-
-    /**
-     * The hardcoded client version of the Android VR app used for InnerTube requests with this client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app on
-     * <a href="https://www.meta.com/en-us/experiences/2002317119880945/">the App
-     * Store page of the YouTube app</a>, in the {@code Additional details} section.
-     * </p>
-     */
-    private static final String ANDROID_VR_YOUTUBE_CLIENT_VERSION = "1.56.21";
-
-    /**
-     * The device machine id for the iPhone 15 Pro Max, used to get 60fps with the iOS client.
-     *
-     * <p>
-     * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
-     * information.
-     * </p>
-     */
-    private static final String IOS_DEVICE_MODEL = "iPhone16,2";
-
-    /**
-     * The hardcoded client version of the iOS app used for InnerTube requests with this client.
-     *
-     * <p>
-     * It can be extracted by getting the latest release version of the app on
-     * <a href="https://apps.apple.com/us/app/youtube-watch-listen-stream/id544007664/">the App
-     * Store page of the YouTube app</a>, in the {@code What’s New} section.
-     * </p>
-     */
-    private static final String IOS_YOUTUBE_CLIENT_VERSION = "19.20.2";
 
     /**
      * Clips or Shorts Parameters.
@@ -71,13 +37,22 @@ public class SpoofClientPatch {
     /**
      * iOS client is used for Clips or Shorts.
      */
-    private static volatile boolean useIOSClient;
+    private static volatile boolean isShortsOrClips;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
+
+    /**
+     * Last video id loaded. Used to prevent reloading the same spec multiple times.
+     */
+    @Nullable
+    private static volatile String lastPlayerResponseVideoId;
+
+    @Nullable
+    private static volatile Future<LiveStreamRenderer> rendererFuture;
 
     /**
      * Injection point.
@@ -116,9 +91,17 @@ public class SpoofClientPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
-                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning unreachable url");
+                    String replacementUriString = (getSpoofClientType() != ClientType.ANDROID_TESTSUITE)
+                            ? UNREACHABLE_HOST_URI_STRING
+                            // TODO: Ideally, a local proxy could be setup and block
+                            //  the request the same way as Burp Suite is capable of
+                            //  because that way the request is never sent to YouTube unnecessarily.
+                            //  Just using localhost unfortunately does not work.
+                            : originalUri.buildUpon().clearQuery().build().toString();
 
-                    return UNREACHABLE_HOST_URI_STRING;
+                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning: " + replacementUriString);
+
+                    return replacementUriString;
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "blockInitPlaybackRequest failure", ex);
@@ -129,10 +112,19 @@ public class SpoofClientPatch {
     }
 
     private static ClientType getSpoofClientType() {
-        if (SPOOF_CLIENT_USE_IOS || useIOSClient) {
-            return ClientType.IOS;
+        if (isShortsOrClips) {
+            return Settings.SPOOF_CLIENT_SHORTS.get();
         }
-        return ClientType.ANDROID_VR;
+        LiveStreamRenderer renderer = getRenderer(false);
+        if (renderer != null) {
+            if (renderer.isLive) {
+                return Settings.SPOOF_CLIENT_LIVESTREAM.get();
+            }
+            if (!renderer.playabilityOk) {
+                return Settings.SPOOF_CLIENT_FALLBACK.get();
+            }
+        }
+        return Settings.SPOOF_CLIENT_GENERAL.get();
     }
 
     /**
@@ -186,7 +178,13 @@ public class SpoofClientPatch {
      * Injection point.
      */
     public static String setPlayerResponseVideoId(@NonNull String videoId, @Nullable String parameters, boolean isShortAndOpeningOrPlaying) {
-        useIOSClient = playerParameterIsClipsOrShorts(parameters);
+        if (SPOOF_CLIENT_ENABLED) {
+            isShortsOrClips = playerParameterIsClipsOrShorts(parameters);
+
+            if (!isShortsOrClips) {
+                fetchLiveStreamRenderer(videoId, Settings.SPOOF_CLIENT_GENERAL.get());
+            }
+        }
 
         return parameters; // Return the original value since we are observing and not modifying.
     }
@@ -202,18 +200,32 @@ public class SpoofClientPatch {
         return playerParameter != null && StringUtils.startsWithAny(playerParameter, CLIPS_OR_SHORTS_PARAMETERS);
     }
 
-    private enum ClientType {
-        ANDROID_VR(28, ANDROID_VR_DEVICE_MODEL, ANDROID_VR_YOUTUBE_CLIENT_VERSION),
-        IOS(5, IOS_DEVICE_MODEL, IOS_YOUTUBE_CLIENT_VERSION);
-
-        final int id;
-        final String model;
-        final String version;
-
-        ClientType(int id, String model, String version) {
-            this.id = id;
-            this.model = model;
-            this.version = version;
+    private static void fetchLiveStreamRenderer(@NonNull String videoId, @NonNull ClientType clientType) {
+        if (!videoId.equals(lastPlayerResponseVideoId)) {
+            rendererFuture = submitOnBackgroundThread(() -> getLiveStreamRenderer(videoId, clientType));
+            lastPlayerResponseVideoId = videoId;
         }
+        // Block until the renderer fetch completes.
+        // This is desired because if this returns without finishing the fetch
+        // then video will start playback but the storyboard is not ready yet.
+        getRenderer(true);
+    }
+
+    @Nullable
+    private static LiveStreamRenderer getRenderer(boolean waitForCompletion) {
+        Future<LiveStreamRenderer> future = rendererFuture;
+        if (future != null) {
+            try {
+                if (waitForCompletion || future.isDone()) {
+                    return future.get(20000, TimeUnit.MILLISECONDS); // Any arbitrarily large timeout.
+                } // else, return null.
+            } catch (TimeoutException ex) {
+                Logger.printDebug(() -> "Could not get renderer (get timed out)");
+            } catch (ExecutionException | InterruptedException ex) {
+                // Should never happen.
+                Logger.printException(() -> "Could not get renderer", ex);
+            }
+        }
+        return null;
     }
 }
