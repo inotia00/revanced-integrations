@@ -31,20 +31,20 @@ public final class PlayerRoutes {
     ).compile();
 
 
-    public static final String ANDROID_CLIENT_VERSION = PackageUtils.getVersionName();
-    public static final String ANDROID_DEVICE_MODEL = Build.MODEL;
-    public static final String ANDROID_OS_RELEASE_VERSION = Build.VERSION.RELEASE;
-    public static final int ANDROID_OS_SDK_VERSION = Build.VERSION.SDK_INT;
-    public static final String ANDROID_USER_AGENT = "com.google.android.youtube/" +
+    private static final String ANDROID_CLIENT_VERSION = PackageUtils.getVersionName();
+    private static final String ANDROID_DEVICE_MODEL = Build.MODEL;
+    private static final String ANDROID_OS_RELEASE_VERSION = Build.VERSION.RELEASE;
+    private static final int ANDROID_OS_SDK_VERSION = Build.VERSION.SDK_INT;
+    private static final String ANDROID_USER_AGENT = "com.google.android.youtube/" +
             ANDROID_CLIENT_VERSION +
             " (Linux; U; Android " +
             ANDROID_OS_RELEASE_VERSION +
             "; GB) gzip";
 
-    public static final String ANDROID_TESTSUITE_CLIENT_VERSION = "1.9";
+    private static final String ANDROID_TESTSUITE_CLIENT_VERSION = "1.9";
 
 
-    public static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.21.0";
+    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.21.0";
     /**
      * The device machine id for the Chromecast with Google TV 4K.
      *
@@ -53,10 +53,10 @@ public final class PlayerRoutes {
      * information.
      * </p>
      */
-    public static final String ANDROID_UNPLUGGED_DEVICE_MODEL = "Chromecast";
-    public static final String ANDROID_UNPLUGGED_OS_RELEASE_VERSION = "12";
-    public static final int ANDROID_UNPLUGGED_OS_SDK_VERSION = 31;
-    public static final String ANDROID_UNPLUGGED_USER_AGENT = "com.google.android.apps.youtube.unplugged/" +
+    private static final String ANDROID_UNPLUGGED_DEVICE_MODEL = "Chromecast";
+    private static final String ANDROID_UNPLUGGED_OS_RELEASE_VERSION = "12";
+    private static final int ANDROID_UNPLUGGED_OS_SDK_VERSION = 31;
+    private static final String ANDROID_UNPLUGGED_USER_AGENT = "com.google.android.apps.youtube.unplugged/" +
             ANDROID_UNPLUGGED_CLIENT_VERSION +
             " (Linux; U; Android " +
             ANDROID_UNPLUGGED_OS_RELEASE_VERSION +
@@ -72,7 +72,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code Additional details} section.
      * </p>
      */
-    public static final String ANDROID_VR_CLIENT_VERSION = "1.56.21";
+    private static final String ANDROID_VR_CLIENT_VERSION = "1.56.21";
 
     /**
      * The device machine id for the Meta Quest 3, used to get opus codec with the Android VR client.
@@ -82,14 +82,14 @@ public final class PlayerRoutes {
      * information.
      * </p>
      */
-    public static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
+    private static final String ANDROID_VR_DEVICE_MODEL = "Quest 3";
 
     /**
      * Package name for YouTube VR (Google DayDream): com.google.android.apps.youtube.vr (Deprecated)
      * Package name for YouTube VR (Meta Quests): com.google.android.apps.youtube.vr.oculus
      * Package name for YouTube VR (ByteDance Pico 4): com.google.android.apps.youtube.vr.pico
      */
-    public static final String ANDROID_VR_USER_AGENT = "com.google.android.apps.youtube.vr.oculus/" +
+    private static final String ANDROID_VR_USER_AGENT = "com.google.android.apps.youtube.vr.oculus/" +
             ANDROID_VR_CLIENT_VERSION +
             " (Linux; U; Android 12; GB) gzip";
 
@@ -103,7 +103,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    public static final String IOS_CLIENT_VERSION = "19.20.2";
+    private static final String IOS_CLIENT_VERSION = "19.20.2";
     /**
      * The device machine id for the iPhone 14 Pro Max, used to get 60fps with the iOS client.
      *
@@ -112,10 +112,10 @@ public final class PlayerRoutes {
      * information.
      * </p>
      */
-    public static final String IOS_DEVICE_MODEL = "iPhone15,3";
-    public static final String IOS_OS_VERSION = "17.5.1.21F90";
-    public static final String IOS_USER_AGENT_VERSION = "17_5_1";
-    public static final String IOS_USER_AGENT = "com.google.ios.youtube/" +
+    private static final String IOS_DEVICE_MODEL = "iPhone15,3";
+    private static final String IOS_OS_VERSION = "17.5.1.21F90";
+    private static final String IOS_USER_AGENT_VERSION = "17_5_1";
+    private static final String IOS_USER_AGENT = "com.google.ios.youtube/" +
             IOS_CLIENT_VERSION +
             "(" +
             IOS_DEVICE_MODEL +
@@ -123,12 +123,12 @@ public final class PlayerRoutes {
             IOS_USER_AGENT_VERSION +
             " like Mac OS X)";
 
-    public static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION = "2.0";
-    public static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5)" +
+    private static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION = "2.0";
+    private static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
             " 85.0.4183.93/6.5 TV Safari/537.36";
-    public static final String WEB_CLIENT_VERSION = "2.20240304.00.00";
-    public static final String WEB_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; SM-G981B)" +
+    private static final String WEB_CLIENT_VERSION = "2.20240304.00.00";
+    private static final String WEB_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; SM-G981B)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
             " Chrome/80.0.3987.162 Mobile Safari/537.36";
 

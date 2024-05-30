@@ -130,19 +130,13 @@ public class LiveStreamRendererRequester {
     public static LiveStreamRenderer getLiveStreamRenderer(@NonNull String videoId, @NonNull ClientType clientType) {
         Objects.requireNonNull(videoId);
 
-        LiveStreamRenderer renderer = getLiveStreamRendererUsingBody(
-                videoId,
-                clientType
-        );
+        LiveStreamRenderer renderer = getLiveStreamRendererUsingBody(videoId, clientType);
         if (renderer == null) {
             String finalClientName1 = clientType.name();
             Logger.printDebug(() -> videoId + " not available using " + finalClientName1 + " client");
 
             clientType = ClientType.TVHTML5_SIMPLY_EMBEDDED_PLAYER;
-            renderer = getLiveStreamRendererUsingBody(
-                    videoId,
-                    clientType
-            );
+            renderer = getLiveStreamRendererUsingBody(videoId, clientType);
             if (renderer == null) {
                 String finalClientName2 = clientType.name();
                 Logger.printDebug(() -> videoId + " not available using " + finalClientName2 + " client");
