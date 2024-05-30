@@ -4,6 +4,7 @@ import static app.revanced.integrations.shared.utils.Utils.submitOnBackgroundThr
 import static app.revanced.integrations.youtube.patches.misc.requests.LiveStreamRendererRequester.getLiveStreamRenderer;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,10 +47,15 @@ public class SpoofClientPatch {
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
     /**
+     * Last spoofed client type.
+     */
+    private static volatile ClientType lastSpoofedClientType;
+
+    /**
      * Last video id loaded. Used to prevent reloading the same spec multiple times.
      */
-    @Nullable
-    private static volatile String lastPlayerResponseVideoId;
+    @NonNull
+    private static volatile String lastPlayerResponseVideoId = "";
 
     @Nullable
     private static volatile Future<LiveStreamRenderer> rendererFuture;
@@ -113,18 +119,22 @@ public class SpoofClientPatch {
 
     private static ClientType getSpoofClientType() {
         if (isShortsOrClips) {
-            return Settings.SPOOF_CLIENT_SHORTS.get();
+            lastSpoofedClientType = Settings.SPOOF_CLIENT_SHORTS.get();
+            return lastSpoofedClientType;
         }
         LiveStreamRenderer renderer = getRenderer(false);
         if (renderer != null) {
             if (renderer.isLive) {
-                return Settings.SPOOF_CLIENT_LIVESTREAM.get();
+                lastSpoofedClientType = Settings.SPOOF_CLIENT_LIVESTREAM.get();
+                return lastSpoofedClientType;
             }
             if (!renderer.playabilityOk) {
-                return Settings.SPOOF_CLIENT_FALLBACK.get();
+                lastSpoofedClientType = Settings.SPOOF_CLIENT_FALLBACK.get();
+                return lastSpoofedClientType;
             }
         }
-        return Settings.SPOOF_CLIENT_GENERAL.get();
+        lastSpoofedClientType = Settings.SPOOF_CLIENT_GENERAL.get();
+        return lastSpoofedClientType;
     }
 
     /**
@@ -172,6 +182,23 @@ public class SpoofClientPatch {
      */
     public static boolean enablePlayerGesture(boolean original) {
         return SPOOF_CLIENT_ENABLED || original;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static String appendSpoofedClient(String videoFormat) {
+        try {
+            if (SPOOF_CLIENT_ENABLED && Settings.SPOOF_CLIENT_STATS_FOR_NERDS.get()
+                    && !TextUtils.isEmpty(videoFormat)) {
+                // Force LTR layout, to match the same LTR video time/length layout YouTube uses for all languages
+                return "\u202D" + videoFormat + String.format("\u2009(%s)", lastSpoofedClientType.friendlyName); // u202D = left to right override
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "appendSpoofedClient failure", ex);
+        }
+
+        return videoFormat;
     }
 
     /**

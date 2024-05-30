@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.patches.misc.requests;
 
+import static app.revanced.integrations.shared.utils.StringRef.str;
+
 import android.os.Build;
 
 import org.json.JSONException;
@@ -372,6 +374,7 @@ public final class PlayerRoutes {
         // No suitable model name was found for WEB. Use the model name of ANDROID.
         WEB(1, ANDROID_DEVICE_MODEL, WEB_CLIENT_VERSION, WEB_INNER_TUBE_BODY, WEB_USER_AGENT);
 
+        public final String friendlyName;
         public final int id;
         public final String model;
         public final String version;
@@ -380,6 +383,7 @@ public final class PlayerRoutes {
 
         ClientType(int id, String model, String version,
                    String innerTubeBody, String userAgent) {
+            this.friendlyName = str("revanced_spoof_client_options_entry_" + name().toLowerCase());
             this.id = id;
             this.model = model;
             this.version = version;
