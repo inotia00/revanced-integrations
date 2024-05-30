@@ -52,8 +52,8 @@ public class LayoutPreferenceCategory extends ConditionalPreferenceCategory {
         if (SettingsStatus.recentlyVisitedShelfEnabled) {
             addPreference(new TogglePreference(
                     context,
-                    "Hide 'Recently Visited' shelf",
-                    "Hides the 'Recently Visited' shelf in the sidebar.",
+                    "Hide Recently Visited shelf",
+                    "Hides the Recently Visited shelf in the sidebar.",
                     Settings.HIDE_RECENTLY_VISITED_SHELF
             ));
         }
