@@ -178,6 +178,13 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
+    public static boolean enablePlayerGesture(boolean original) {
+        return SPOOF_CLIENT_ENABLED || original;
+    }
+
+    /**
+     * Injection point.
+     */
     public static String setPlayerResponseVideoId(@NonNull String videoId, @Nullable String parameters, boolean isShortAndOpeningOrPlaying) {
         useIOSClient = playerParameterIsClipsOrShorts(parameters);
 
