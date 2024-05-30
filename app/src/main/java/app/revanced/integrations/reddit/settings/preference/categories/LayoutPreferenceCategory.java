@@ -25,35 +25,35 @@ public class LayoutPreferenceCategory extends ConditionalPreferenceCategory {
             addPreference(new TogglePreference(
                     context,
                     "Disable screenshot popup",
-                    "Disables the popup that shows up when taking a screenshot.",
+                    "Disables the popup that appears when taking a screenshot.",
                     Settings.DISABLE_SCREENSHOT_POPUP
             ));
         }
         if (SettingsStatus.navigationButtonsEnabled) {
             addPreference(new TogglePreference(
                     context,
-                    "Hide chat button",
-                    "Hides the chat button in the navigation bar.",
+                    "Hide Chat button",
+                    "Hides the Chat button in the navigation bar.",
                     Settings.HIDE_CHAT_BUTTON
             ));
             addPreference(new TogglePreference(
                     context,
-                    "Hide create button",
-                    "Hides the create button in the navigation bar.",
+                    "Hide Create button",
+                    "Hides the Create button in the navigation bar.",
                     Settings.HIDE_CREATE_BUTTON
             ));
             addPreference(new TogglePreference(
                     context,
-                    "Hide discover or community button",
-                    "Hides the discover or communities button in the navigation bar.",
+                    "Hide Discover or Communities button",
+                    "Hides the Discover or Communities button in the navigation bar.",
                     Settings.HIDE_DISCOVER_BUTTON
             ));
         }
         if (SettingsStatus.recentlyVisitedShelfEnabled) {
             addPreference(new TogglePreference(
                     context,
-                    "Hide recently visited shelf",
-                    "Hides the recently visited shelf in the sidebar.",
+                    "Hide Recently Visited shelf",
+                    "Hides the Recently Visited shelf in the sidebar.",
                     Settings.HIDE_RECENTLY_VISITED_SHELF
             ));
         }
