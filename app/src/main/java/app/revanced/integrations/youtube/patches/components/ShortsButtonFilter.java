@@ -10,8 +10,15 @@ import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
 
+import java.util.regex.Pattern;
+
 @SuppressWarnings("unused")
 public final class ShortsButtonFilter extends Filter {
+    // Pattern: reel_comment_button … number of comments … 4 (random number),
+    // previous pattern: reel_comment_button … number of comments,
+    // probably unstable.
+    // If comment button does not have number of comments, then there is "disabled" or "0" label.
+    private static final Pattern REEL_COMMENTS_DISABLED_PATTERN = Pattern.compile("reel_comment_button.+\\d+.+4");
     private final static String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
     private final static String REEL_LIVE_HEADER_PATH = "immersive_live_header.eml";
     /**
@@ -25,6 +32,8 @@ public final class ShortsButtonFilter extends Filter {
     private final StringFilterGroup joinButton;
     private final StringFilterGroup paidPromotionButton;
     private final StringFilterGroup pausedOverlayButtons;
+
+    private final ByteArrayFilterGroup shortsCommentDisabled;
 
     private final StringFilterGroup suggestedAction;
     private final ByteArrayFilterGroupList suggestedActionsGroupList =  new ByteArrayFilterGroupList();
@@ -68,6 +77,11 @@ public final class ShortsButtonFilter extends Filter {
                 "shorts_info_panel_overview"
         );
 
+        StringFilterGroup liveHeader = new StringFilterGroup(
+                Settings.HIDE_SHORTS_LIVE_HEADER,
+                "immersive_live_header"
+        );
+
         joinButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
@@ -96,7 +110,7 @@ public final class ShortsButtonFilter extends Filter {
         addPathCallbacks(
                 suggestedAction, actionBar, joinButton, subscribeButton,
                 paidPromotionButton, pausedOverlayButtons, channelBar, fullVideoLinkLabel,
-                videoTitle, reelSoundMetadata, infoPanel
+                videoTitle, reelSoundMetadata, infoPanel, liveHeader
         );
 
         //
@@ -105,6 +119,12 @@ public final class ShortsButtonFilter extends Filter {
         //
         // Action buttons
         //
+        shortsCommentDisabled =
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_COMMENTS_DISABLED_BUTTON,
+                        "reel_comment_button"
+                );
+
         videoActionButtonGroupList.addAll(
                 // This also appears as the path item 'shorts_like_button.eml'
                 new ByteArrayFilterGroup(
@@ -160,7 +180,7 @@ public final class ShortsButtonFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == subscribeButton || matchedGroup == joinButton || matchedGroup == paidPromotionButton) {
             // Selectively filter to avoid false positive filtering of other subscribe/join buttons.
             if (StringUtils.startsWithAny(path, REEL_CHANNEL_BAR_PATH, REEL_LIVE_HEADER_PATH, REEL_METAPANEL_PATH)) {
@@ -171,6 +191,11 @@ public final class ShortsButtonFilter extends Filter {
 
         // Video action buttons (like, dislike, comment, share, remix) have the same path.
         if (matchedGroup == actionBar) {
+            String protobufString = new String(protobufBufferArray);
+            if (shortsCommentDisabled.check(protobufBufferArray).isFiltered()) {
+                return !REEL_COMMENTS_DISABLED_PATTERN.matcher(protobufString).find();
+            }
+
             if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
