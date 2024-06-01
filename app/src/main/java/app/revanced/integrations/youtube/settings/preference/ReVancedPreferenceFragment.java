@@ -208,6 +208,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     }
 
     // TODO: SEARCH BAR
+    //  0. Add ability to search for SB and RYD settings
     //  1. Structure settings
     //   1.1. Add each parent PreferenceScreen as PreferenceCategory while searching.
     //   or
