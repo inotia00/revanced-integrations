@@ -156,7 +156,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
                 return true;
             });
 
-            addCreateSegmentCategory(context, preferenceScreen);
             addAppearanceCategory(context, preferenceScreen);
 
             segmentCategory = new PreferenceCategory(context);
@@ -164,6 +163,8 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             segmentCategory.setLayoutResource(preferencesCategoryLayout);
             preferenceScreen.addPreference(segmentCategory);
             updateSegmentCategories();
+
+            addCreateSegmentCategory(context, preferenceScreen);
 
             addGeneralCategory(context, preferenceScreen);
 
