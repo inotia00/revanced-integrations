@@ -32,13 +32,8 @@ import app.revanced.integrations.youtube.shared.VideoInformation;
  * But the correct video id does appear in the protobuffer just before a Shorts litho span is created.
  *
  * Once a way to asynchronously update litho text is found, this strategy will no longer be needed.
- *
- * TODO: RVX can now fetch the correct video ID from Shorts, this filters is no longer needed.
- *       Keep this filters until refactoring is done for the RYD patch.
  */
 public final class ReturnYouTubeDislikeFilterPatch extends Filter {
-
-    private static final String VIDEO_ACTION_BAR_PATH = "video_action_bar.eml";
 
     /**
      * Last unique video id's loaded.  Value is ignored and Map is treated as a Set.
@@ -59,19 +54,8 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     };
     private final ByteArrayFilterGroupList videoIdFilterGroup = new ByteArrayFilterGroupList();
 
-    /**
-     * In some videos, the like and dislike containers glow out. (Maybe A/B tests)
-     * https://github.com/ReVanced/revanced-patches/issues/2508
-     *
-     * When RYD is enabled, glowing effects appear in incorrect positions.
-     * This issue isn't easy to fix, so simply hide the glowing effects.
-     */
-    private final StringFilterGroup glowingEffects;
-
     public ReturnYouTubeDislikeFilterPatch() {
-        final StringFilterGroup dislikeButton = new StringFilterGroup(Settings.RYD_SHORTS, "|shorts_dislike_button.eml|");
-        glowingEffects = new StringFilterGroup(Settings.RYD_ENABLED, "|animated_button_border.eml|");
-        addPathCallbacks(dislikeButton, glowingEffects);
+        addPathCallbacks(new StringFilterGroup(Settings.RYD_SHORTS, "|shorts_dislike_button.eml|"));
         // After the dislikes icon name is some binary data and then the video id for that specific short.
         videoIdFilterGroup.addAll(
                 // Video was previously disliked before video was opened.
@@ -143,13 +127,7 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (matchedGroup == glowingEffects) {
-            if (!path.startsWith(VIDEO_ACTION_BAR_PATH)) {
-                return false;
-            }
-            return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
-        }
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         FilterGroup.FilterGroupResult result = videoIdFilterGroup.check(protobufBufferArray);
         if (result.isFiltered()) {
             String matchedVideoId = findVideoId(protobufBufferArray);

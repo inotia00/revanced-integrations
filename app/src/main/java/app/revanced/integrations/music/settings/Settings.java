@@ -138,7 +138,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting RESTORE_OLD_COMMENTS_POPUP_PANELS = new BooleanSetting("revanced_restore_old_comments_popup_panels", FALSE, true);
     public static final BooleanSetting RESTORE_OLD_PLAYER_BACKGROUND = new BooleanSetting("revanced_restore_old_player_background", FALSE, true);
     public static final BooleanSetting RESTORE_OLD_PLAYER_LAYOUT = new BooleanSetting("revanced_restore_old_player_layout", FALSE, true);
-    public static final BooleanSetting REPLACE_PLAYER_CAST_BUTTON = new BooleanSetting("revanced_replace_player_cast_button", FALSE, true);
 
 
     // PreferenceScreen: Video
