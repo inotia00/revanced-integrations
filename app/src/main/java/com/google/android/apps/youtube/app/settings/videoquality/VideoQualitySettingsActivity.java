@@ -23,9 +23,9 @@ import app.revanced.integrations.youtube.utils.ThemeUtils;
 @SuppressWarnings("deprecation")
 public class VideoQualitySettingsActivity extends Activity {
 
+    private static final String rvxSettingsLabel = ResourceUtils.getString("revanced_extended_settings_title");
     private static WeakReference<SearchView> searchViewRef = new WeakReference<>(null);
     private static WeakReference<TextView> textViewRef = new WeakReference<>(null);
-    private static final String rvxSettingsLabel = ResourceUtils.getString("revanced_extended_settings_title");
     private ReVancedPreferenceFragment fragment;
 
     private final OnQueryTextListener onQueryTextListener = new OnQueryTextListener() {
