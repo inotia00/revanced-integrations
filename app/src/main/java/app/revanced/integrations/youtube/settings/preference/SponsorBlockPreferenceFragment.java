@@ -1,10 +1,11 @@
 package app.revanced.integrations.youtube.settings.preference;
 
 import static android.text.Html.fromHtml;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getDrawableIdentifier;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getLayoutIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.shared.utils.Utils.getChildView;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -23,20 +24,14 @@ import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.InputType;
 import android.util.TypedValue;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.Objects;
-
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.preference.ResettableEditTextPreference;
 import app.revanced.integrations.shared.utils.Logger;
-import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
@@ -133,6 +128,12 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         }
     }
 
+    private void setPreferenceIcon(Preference preference, String str) {
+        final int iconResourceId = getDrawableIdentifier(str);
+        if (iconResourceId == 0) return;
+        preference.setIcon(iconResourceId);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,10 +185,12 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        final ViewGroup toolBarParent = Objects.requireNonNull(getActivity().findViewById(getIdIdentifier("revanced_toolbar_parent")));
-        Toolbar toolbar = (Toolbar) toolBarParent.getChildAt(0);
-        TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
-        toolbarTextView.setText(ResourceUtils.getString("revanced_extended_settings_title"));
+
+        // Restore toolbar text
+        setToolbarText();
+
+        // Show the search bar
+        setSearchViewVisibility(true);
     }
 
     private void addAppearanceCategory(Context context, PreferenceScreen screen) {
@@ -195,17 +198,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         screen.addPreference(category);
         category.setLayoutResource(preferencesCategoryLayout);
         category.setTitle(str("revanced_sb_appearance_category"));
-
-        votingEnabled = new SwitchPreference(context);
-        votingEnabled.setTitle(str("revanced_sb_enable_voting"));
-        votingEnabled.setSummaryOn(str("revanced_sb_enable_voting_sum_on"));
-        votingEnabled.setSummaryOff(str("revanced_sb_enable_voting_sum_off"));
-        category.addPreference(votingEnabled);
-        votingEnabled.setOnPreferenceChangeListener((preference1, newValue) -> {
-            Settings.SB_VOTING_BUTTON.save((Boolean) newValue);
-            updateUI();
-            return true;
-        });
 
         compactSkipButton = new SwitchPreference(context);
         compactSkipButton.setTitle(str("revanced_sb_enable_compact_skip_button"));
@@ -266,7 +258,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         addNewSegment.setTitle(str("revanced_sb_enable_create_segment"));
         addNewSegment.setSummaryOn(str("revanced_sb_enable_create_segment_sum_on"));
         addNewSegment.setSummaryOff(str("revanced_sb_enable_create_segment_sum_off"));
-        category.addPreference(addNewSegment);
         addNewSegment.setOnPreferenceChangeListener((preference1, o) -> {
             Boolean newValue = (Boolean) o;
             if (newValue && !Settings.SB_SEEN_GUIDELINES.get()) {
@@ -283,6 +274,8 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return true;
         });
+        setPreferenceIcon(addNewSegment, "sb_enable_create_segment_icon");
+        category.addPreference(addNewSegment);
 
         newSegmentStep = new ResettableEditTextPreference(context);
         newSegmentStep.setTitle(str("revanced_sb_general_adjusting"));
@@ -298,6 +291,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             Settings.SB_CREATE_NEW_SEGMENT_STEP.save(newAdjustmentValue);
             return true;
         });
+        setPreferenceIcon(newSegmentStep, "empty_icon");
         category.addPreference(newSegmentStep);
 
         Preference guidelinePreferences = new Preference(context);
@@ -307,7 +301,20 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             openGuidelines();
             return true;
         });
+        setPreferenceIcon(guidelinePreferences, "empty_icon");
         category.addPreference(guidelinePreferences);
+
+        votingEnabled = new SwitchPreference(context);
+        votingEnabled.setTitle(str("revanced_sb_enable_voting"));
+        votingEnabled.setSummaryOn(str("revanced_sb_enable_voting_sum_on"));
+        votingEnabled.setSummaryOff(str("revanced_sb_enable_voting_sum_off"));
+        votingEnabled.setOnPreferenceChangeListener((preference1, newValue) -> {
+            Settings.SB_VOTING_BUTTON.save((Boolean) newValue);
+            updateUI();
+            return true;
+        });
+        setPreferenceIcon(votingEnabled, "sb_enable_voting_icon");
+        category.addPreference(votingEnabled);
     }
 
     @TargetApi(26)

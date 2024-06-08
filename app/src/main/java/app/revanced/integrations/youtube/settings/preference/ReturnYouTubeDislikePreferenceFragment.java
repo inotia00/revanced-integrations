@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getLayoutIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.shared.utils.Utils.getChildView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,20 +15,14 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toolbar;
-
-import java.util.Objects;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
-import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.youtube.patches.utils.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.settings.Settings;
 
-/** @noinspection deprecation*/
+@SuppressWarnings("deprecation")
 public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
 
     /**
@@ -171,10 +165,11 @@ public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        final ViewGroup toolBarParent = Objects.requireNonNull(getActivity().findViewById(getIdIdentifier("revanced_toolbar_parent")));
-        Toolbar toolbar = (Toolbar) toolBarParent.getChildAt(0);
-        TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
-        toolbarTextView.setText(ResourceUtils.getString("revanced_extended_settings_title"));
-    }
 
+        // Restore toolbar text
+        setToolbarText();
+
+        // Show the search bar
+        setSearchViewVisibility(true);
+    }
 }
