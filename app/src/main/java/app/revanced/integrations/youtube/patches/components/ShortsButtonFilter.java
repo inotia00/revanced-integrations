@@ -191,13 +191,15 @@ public final class ShortsButtonFilter extends Filter {
 
         // Video action buttons (like, dislike, comment, share, remix) have the same path.
         if (matchedGroup == actionBar) {
-            String protobufString = new String(protobufBufferArray);
-            if (shortsCommentDisabled.check(protobufBufferArray).isFiltered()) {
-                return !REEL_COMMENTS_DISABLED_PATTERN.matcher(protobufString).find();
-            }
-
+            // If the Comment button is hidden, there is no need to check {@code REEL_COMMENTS_DISABLED_PATTERN}.
+            // Check {@code videoActionButtonGroupList} first.
             if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            if (shortsCommentDisabled.check(protobufBufferArray).isFiltered()) {
+                if (REEL_COMMENTS_DISABLED_PATTERN.matcher(new String(protobufBufferArray)).find()) {
+                    return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+                }
             }
             return false;
         }
