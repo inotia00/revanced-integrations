@@ -1,6 +1,10 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
+
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -34,9 +38,6 @@ import static app.revanced.integrations.shared.utils.Utils.getChildView;
 import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 import static app.revanced.integrations.youtube.settings.Settings.*;
 
-/**
- * @noinspection ALL
- */
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
     private static final int READ_REQUEST_CODE = 42;
@@ -113,7 +114,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         // Required empty public constructor
     }
 
-    @SuppressLint("NewApi")
+    @TargetApi(26)
     public void setPreferenceFragmentToolbar(final String key) {
         PreferenceFragment fragment;
         switch (key) {
@@ -130,15 +131,15 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             return;
         }
         mPreference.setOnPreferenceClickListener(pref -> {
-            final int fragmentId = getIdIdentifier("revanced_settings_fragments");
-            final ViewGroup toolBarParent = Objects.requireNonNull(getActivity().findViewById(getIdIdentifier("revanced_toolbar_parent")));
-            Toolbar toolbar = (Toolbar) toolBarParent.getChildAt(0);
-            TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
-            toolbarTextView.setText(pref.getTitle());
+            // Set toolbar text
+            setToolbarText(pref.getTitle());
+
+            // Hide the search bar
+            setSearchViewVisibility(false);
 
             getFragmentManager()
                     .beginTransaction()
-                    .replace(fragmentId, fragment)
+                    .replace(getIdIdentifier("revanced_settings_fragments"), fragment)
                     .addToBackStack(null)
                     .setReorderingAllowed(true)
                     .commitAllowingStateLoss();
@@ -157,24 +158,16 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
         PreferenceScreen rootPreferenceScreen = getPreferenceScreen();
         for (Preference preference : getAllPreferencesBy(rootPreferenceScreen)) {
-
             if (!(preference instanceof PreferenceGroup preferenceGroup)) continue;
-
             putPreferenceScreenMap(preferenceScreenMap, preferenceGroup);
-
             for (Preference childPreference : getAllPreferencesBy(preferenceGroup)) {
-
                 if (!(childPreference instanceof PreferenceGroup nestedPreferenceGroup)) continue;
-
                 putPreferenceScreenMap(preferenceScreenMap, nestedPreferenceGroup);
-
                 for (Preference nestedPreference : getAllPreferencesBy(nestedPreferenceGroup)) {
                     if (!(nestedPreference instanceof PreferenceGroup childPreferenceGroup)) continue;
-
                     putPreferenceScreenMap(preferenceScreenMap, childPreferenceGroup);
                 }
             }
-
         }
 
         for (PreferenceScreen mPreferenceScreen : preferenceScreenMap.values()) {
@@ -198,8 +191,10 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                         toolbar.setTitleMargin(margin, 0, margin, 0);
 
                         TextView toolbarTextView = getChildView(toolbar, TextView.class::isInstance);
+                        if (toolbarTextView != null) {
+                            toolbarTextView.setTextColor(ThemeUtils.getTextColor());
+                        }
 
-                        toolbarTextView.setTextColor(ThemeUtils.getTextColor());
                         rootView.addView(toolbar, 0);
                         return false;
                     }
@@ -218,11 +213,11 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     //  3. Make search bar look more like YouTube search.
 
     // List to store all preferences
-    private List<Preference> allPreferences = new ArrayList<>();
+    private final List<Preference> allPreferences = new ArrayList<>();
     // Map to store dependencies: key is the preference key, value is a list of dependent preferences
-    private Map<String, List<Preference>> dependencyMap = new HashMap<>();
+    private final Map<String, List<Preference>> dependencyMap = new HashMap<>();
     // Set to track already added preferences to avoid duplicates
-    private Set<String> addedPreferences = new HashSet<>();
+    private final Set<String> addedPreferences = new HashSet<>();
 
     @SuppressLint("ResourceType")
     @Override
@@ -314,7 +309,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     /**
      * Filters preferences based on the search query.
-     *
+     * <p>
      * This method searches within the preference's title, summary, entries, and values.
      *
      * @param query The search query.
@@ -357,8 +352,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             }
 
             // Additional check for SwitchPreference with summaryOn and summaryOff
-            if (!matches && preference instanceof SwitchPreference) {
-                SwitchPreference switchPreference = (SwitchPreference) preference;
+            if (!matches && preference instanceof SwitchPreference switchPreference) {
                 CharSequence summaryOn = switchPreference.getSummaryOn();
                 CharSequence summaryOff = switchPreference.getSummaryOff();
 
@@ -374,9 +368,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             }
 
             // Check if the entries or values contain the query string (for ListPreference)
-            if (!matches && preference instanceof ListPreference) {
-                ListPreference listPreference = (ListPreference) preference;
-
+            if (!matches && preference instanceof ListPreference listPreference) {
                 // Check entries
                 CharSequence[] entries = listPreference.getEntries();
                 if (entries != null) {
@@ -443,7 +435,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             // Add dependent preferences
             if (dependencyMap.containsKey(key)) {
                 Logger.printDebug(() -> "SearchFragment: Adding dependent preferences for key: " + key);
-                for (Preference dependentPreference : dependencyMap.get(key)) {
+                for (Preference dependentPreference : Objects.requireNonNull(dependencyMap.get(key))) {
                     addPreferenceWithDependencies(preferenceGroup, dependentPreference);
                 }
             }

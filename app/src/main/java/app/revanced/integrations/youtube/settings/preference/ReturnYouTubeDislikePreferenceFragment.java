@@ -1,12 +1,11 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
+import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getLayoutIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.shared.utils.Utils.getChildView;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,22 +15,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.TextView;
-import android.widget.Toolbar;
-
-import java.util.Objects;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
-import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.youtube.patches.utils.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.settings.Settings;
 
-/** @noinspection deprecation*/
 @SuppressWarnings("deprecation")
 public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
 
@@ -167,12 +157,6 @@ public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
                 return false;
             });
             aboutCategory.addPreference(aboutWebsitePreference);
-
-            // remove the search bar
-            View searchBar = getActivity().findViewById(getIdIdentifier("search_view"));
-            if (searchBar != null) {
-                searchBar.setVisibility(View.GONE);
-            }
         } catch (Exception ex) {
             Logger.printException(() -> "onCreate failure", ex);
         }
@@ -181,38 +165,11 @@ public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        final ViewGroup toolBarParent = Objects.requireNonNull(getActivity().findViewById(getIdIdentifier("revanced_toolbar_parent")));
-        Toolbar toolbar = (Toolbar) toolBarParent.getChildAt(0);
-        TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
-        toolbarTextView.setText(ResourceUtils.getString("revanced_extended_settings_title"));
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Hide the search bar
-        View searchBar = getActivity().findViewById(getIdIdentifier("search_view"));
-        if (searchBar != null) {
-            searchBar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Show the search bar when the fragment is paused, otherwise it will not be shown on the main settings fragment.
-     * Need also a check for ReVancedPreferenceFragment to prevent the search bar from appearing
-     * for a split second when switching between fragments.
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-        Fragment currentFragment = getFragmentManager().findFragmentById(getIdIdentifier("revanced_settings_fragments"));
-        // the search bar should only be shown on the main settings fragment
-        if (!(currentFragment instanceof ReVancedPreferenceFragment)) return;
+        // Restore toolbar text
+        setToolbarText();
 
         // Show the search bar
-        View searchBar = getActivity().findViewById(getIdIdentifier("search_view"));
-        if (searchBar != null) {
-            searchBar.setVisibility(View.VISIBLE);
-        }
+        setSearchViewVisibility(true);
     }
 }

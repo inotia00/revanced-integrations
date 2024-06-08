@@ -72,6 +72,7 @@ public abstract class BottomControlButton {
         this(bottomControlsViewGroup, imageViewButtonId, booleanSetting, null, null, onClickListener, longClickListener);
     }
 
+    @SuppressWarnings("unused")
     public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId, @NonNull BooleanSetting booleanSetting, @Nullable BooleanSetting primaryInteractionSetting,
                                @NonNull View.OnClickListener onClickListener, @Nullable View.OnLongClickListener longClickListener) {
         this(bottomControlsViewGroup, imageViewButtonId, booleanSetting, primaryInteractionSetting, null, onClickListener, longClickListener);
