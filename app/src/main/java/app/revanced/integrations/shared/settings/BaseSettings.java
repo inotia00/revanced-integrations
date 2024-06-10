@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.settings;
 
 import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Settings shared across multiple apps.
@@ -16,5 +17,8 @@ public class BaseSettings {
      */
     public static final BooleanSetting ENABLE_DEBUG_BUFFER_LOGGING = new BooleanSetting("revanced_enable_debug_buffer_logging", FALSE);
     public static final BooleanSetting SETTINGS_INITIALIZED = new BooleanSetting("revanced_settings_initialized", FALSE, false, false);
+
+    public static final BooleanSetting HIDE_FULLSCREEN_ADS = new BooleanSetting("revanced_hide_fullscreen_ads", TRUE, true);
+    public static final BooleanSetting HIDE_FULLSCREEN_ADS_TYPE = new BooleanSetting("revanced_hide_fullscreen_ads_type", TRUE, true);
 
 }
