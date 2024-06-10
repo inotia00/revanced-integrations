@@ -1,7 +1,5 @@
 package app.revanced.integrations.shared.utils;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -150,7 +148,7 @@ public class Utils {
      * @noinspection unchecked
      */
     public static <R extends View> R getChildView(@NonNull View view, @NonNull String str) {
-        view = view.findViewById(getIdIdentifier(str));
+        view = view.findViewById(ResourceUtils.getIdIdentifier(str));
         if (view != null) {
             return (R) view;
         } else {
@@ -313,6 +311,12 @@ public class Utils {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 && toastMessage != null) {
             showToastShort(toastMessage);
         }
+    }
+
+    public static void setPreferenceIcon(Preference preference, String str) {
+        final int iconResourceId = ResourceUtils.getDrawableIdentifier(str);
+        if (iconResourceId == 0) return;
+        preference.setIcon(iconResourceId);
     }
 
     public static void setEditTextDialogTheme(final AlertDialog.Builder builder) {
@@ -513,7 +517,10 @@ public class Utils {
             ViewGroup.LayoutParams layoutParams5 = new ViewGroup.LayoutParams(0, 0);
             view.setLayoutParams(layoutParams5);
         } else {
-            Logger.printDebug(() -> "Hidden view with id " + view.getId());
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            params.width = 0;
+            params.height = 0;
+            view.setLayoutParams(params);
         }
     }
 
@@ -593,16 +600,13 @@ public class Utils {
 
             final String sortValue;
             switch (preferenceSort) {
-                case BY_TITLE:
-                    sortValue = removePunctuationConvertToLowercase(preference.getTitle());
-                    break;
-                case BY_KEY:
-                    sortValue = preference.getKey();
-                    break;
-                case UNSORTED:
+                case BY_TITLE ->
+                        sortValue = removePunctuationConvertToLowercase(preference.getTitle());
+                case BY_KEY -> sortValue = preference.getKey();
+                case UNSORTED -> {
                     continue; // Keep original sorting.
-                default:
-                    throw new IllegalStateException();
+                }
+                default -> throw new IllegalStateException();
             }
 
             preferences.put(sortValue, preference);

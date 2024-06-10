@@ -3,7 +3,6 @@ package app.revanced.integrations.youtube.settings.preference;
 import static android.text.Html.fromHtml;
 import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
 import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getDrawableIdentifier;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getLayoutIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 
@@ -126,12 +125,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         } catch (Exception ex) {
             Logger.printException(() -> "update settings UI failure", ex);
         }
-    }
-
-    private void setPreferenceIcon(Preference preference, String str) {
-        final int iconResourceId = getDrawableIdentifier(str);
-        if (iconResourceId == 0) return;
-        preference.setIcon(iconResourceId);
     }
 
     @Override
@@ -274,7 +267,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return true;
         });
-        setPreferenceIcon(addNewSegment, "sb_enable_create_segment_icon");
+        Utils.setPreferenceIcon(addNewSegment, "sb_enable_create_segment_icon");
         category.addPreference(addNewSegment);
 
         newSegmentStep = new ResettableEditTextPreference(context);
@@ -291,7 +284,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             Settings.SB_CREATE_NEW_SEGMENT_STEP.save(newAdjustmentValue);
             return true;
         });
-        setPreferenceIcon(newSegmentStep, "empty_icon");
+        Utils.setPreferenceIcon(newSegmentStep, "empty_icon");
         category.addPreference(newSegmentStep);
 
         Preference guidelinePreferences = new Preference(context);
@@ -301,7 +294,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             openGuidelines();
             return true;
         });
-        setPreferenceIcon(guidelinePreferences, "empty_icon");
+        Utils.setPreferenceIcon(guidelinePreferences, "empty_icon");
         category.addPreference(guidelinePreferences);
 
         votingEnabled = new SwitchPreference(context);
@@ -313,7 +306,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return true;
         });
-        setPreferenceIcon(votingEnabled, "sb_enable_voting_icon");
+        Utils.setPreferenceIcon(votingEnabled, "sb_enable_voting_icon");
         category.addPreference(votingEnabled);
     }
 
