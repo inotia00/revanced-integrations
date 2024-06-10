@@ -186,6 +186,32 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
+     * When spoofing the client to iOS or Android Testsuite the playback speed menu is missing from the player response.
+     * Return true to force create the playback speed menu.
+     */
+    public static boolean forceCreatePlaybackSpeedMenu(boolean original) {
+        if (SPOOF_CLIENT_ENABLED) {
+            return true;
+        }
+
+        return original;
+    }
+
+    /**
+     * Injection point.
+     * When spoofing the client to Android TV the playback speed menu is missing from the player response.
+     * Return false to force create the playback speed menu.
+     */
+    public static boolean forceCreatePlaybackSpeedMenuReversed(boolean original) {
+        if (SPOOF_CLIENT_ENABLED) {
+            return false;
+        }
+
+        return original;
+    }
+
+    /**
+     * Injection point.
      */
     public static String appendSpoofedClient(String videoFormat) {
         try {
