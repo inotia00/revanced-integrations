@@ -14,16 +14,10 @@ import app.revanced.integrations.youtube.shared.RootView;
 
 @SuppressWarnings("unused")
 public final class FeedComponentsFilter extends Filter {
-    private static final String BROWSE_STORE_BUTTON_PATH = "|ContainerType|button.eml|";
     private static final String CONVERSATION_CONTEXT_FEED_IDENTIFIER =
             "horizontalCollectionSwipeProtector=null";
     private static final String CONVERSATION_CONTEXT_SUBSCRIPTIONS_IDENTIFIER =
             "heightConstraint=null";
-    private static final ByteArrayFilterGroup browseStoreButton =
-            new ByteArrayFilterGroup(
-                    null,
-                    "header_store_button"
-            );
     private static final ByteArrayFilterGroup mixPlaylists =
             new ByteArrayFilterGroup(
                     Settings.HIDE_MIX_PLAYLISTS,
@@ -38,8 +32,9 @@ public final class FeedComponentsFilter extends Filter {
     private static final StringTrieSearch mixPlaylistsContextExceptions = new StringTrieSearch();
 
     public final StringFilterGroup carouselShelf;
-    private final StringFilterGroup channelProfileButtonRule;
+    private final StringFilterGroup channelProfile;
     private final StringFilterGroup communityPosts;
+    private final ByteArrayFilterGroup visitStoreButton;
 
     private static final StringTrieSearch communityPostsFeedGroupSearch = new StringTrieSearch();
     private final StringFilterGroupList communityPostsFeedGroup = new StringFilterGroupList();
@@ -87,9 +82,14 @@ public final class FeedComponentsFilter extends Filter {
                 "official_card"
         );
 
-        channelProfileButtonRule = new StringFilterGroup(
+        channelProfile = new StringFilterGroup(
                 Settings.HIDE_BROWSE_STORE_BUTTON,
-                "|channel_profile_"
+                "channel_profile.eml"
+        );
+
+        visitStoreButton = new ByteArrayFilterGroup(
+                Settings.HIDE_BROWSE_STORE_BUTTON,
+                "header_store_button"
         );
 
         final StringFilterGroup channelMemberShelf = new StringFilterGroup(
@@ -166,7 +166,7 @@ public final class FeedComponentsFilter extends Filter {
 
         addPathCallbacks(
                 albumCard,
-                channelProfileButtonRule,
+                channelProfile,
                 channelMemberShelf,
                 channelProfileLinks,
                 communityPosts,
@@ -233,8 +233,8 @@ public final class FeedComponentsFilter extends Filter {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
-        } else if (matchedGroup == channelProfileButtonRule) {
-            if (browseStoreButton.check(protobufBufferArray).isFiltered()) {
+        } else if (matchedGroup == channelProfile) {
+            if (visitStoreButton.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
