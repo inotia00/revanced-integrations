@@ -74,7 +74,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code Additional details} section.
      * </p>
      */
-    private static final String ANDROID_VR_CLIENT_VERSION = "1.56.21";
+    private static final String ANDROID_VR_CLIENT_VERSION = "1.57.29";
 
     /**
      * The device machine id for the Meta Quest 3, used to get opus codec with the Android VR client.
