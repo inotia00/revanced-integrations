@@ -19,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.PlayerType;
 
 /**
  * @noinspection ALL
@@ -232,7 +231,7 @@ public class SpoofClientPatch {
      */
     public static String setPlayerResponseVideoId(@NonNull String videoId, @Nullable String parameters, boolean isShortAndOpeningOrPlaying) {
         if (SPOOF_CLIENT_ENABLED) {
-            isShortsOrClips = playerParameterIsClipsOrShorts(parameters);
+            isShortsOrClips = playerParameterIsClipsOrShorts(parameters, isShortAndOpeningOrPlaying);
 
             if (!isShortsOrClips) {
                 fetchLiveStreamRenderer(videoId, Settings.SPOOF_CLIENT_GENERAL.get());
@@ -245,8 +244,8 @@ public class SpoofClientPatch {
     /**
      * @return If the player parameters are for a Short or Clips.
      */
-    private static boolean playerParameterIsClipsOrShorts(@Nullable String playerParameter) {
-        if (PlayerType.getCurrent().isNoneOrHidden()) {
+    private static boolean playerParameterIsClipsOrShorts(@Nullable String playerParameter, boolean isShortAndOpeningOrPlaying) {
+        if (isShortAndOpeningOrPlaying) {
             return true;
         }
 
