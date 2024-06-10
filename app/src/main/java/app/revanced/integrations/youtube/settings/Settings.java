@@ -433,6 +433,8 @@ public class Settings extends BaseSettings {
             // Use {@code ClientType.ANDROID_TESTSUITE}.
             ClientType.ANDROID_TESTSUITE);
 
+    public static final BooleanSetting ENABLE_OPUS_CODEC = new BooleanSetting("revanced_enable_opus_codec", FALSE, true);
+
     @Deprecated
     public static final BooleanSetting SPOOF_PLAYER_PARAMETER = new BooleanSetting("revanced_spoof_player_parameter", FALSE, true);
     @Deprecated
