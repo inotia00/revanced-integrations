@@ -493,18 +493,24 @@ public class PlayerPatch {
 
     // region [Hide player flyout menu] patch
 
-    public static void hideFooterCaptions(View view) {
+    public static void hidePlayerFlyoutMenuCaptionsFooter(View view) {
         Utils.hideViewUnderCondition(
                 Settings.HIDE_PLAYER_FLYOUT_MENU_CAPTIONS_FOOTER.get(),
                 view
         );
     }
 
-    public static void hideFooterQuality(View view) {
+    public static void hidePlayerFlyoutMenuQualityFooter(View view) {
         Utils.hideViewUnderCondition(
                 Settings.HIDE_PLAYER_FLYOUT_MENU_QUALITY_FOOTER.get(),
                 view
         );
+    }
+
+    public static View hidePlayerFlyoutMenuQualityHeader(View view) {
+        return Settings.HIDE_PLAYER_FLYOUT_MENU_QUALITY_HEADER.get()
+                ? new View(view.getContext()) // empty view
+                : view;
     }
 
     /**

@@ -239,6 +239,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_LOCK_SCREEN = new BooleanSetting("revanced_hide_player_flyout_menu_lock_screen", FALSE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_MORE = new BooleanSetting("revanced_hide_player_flyout_menu_more_info", FALSE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_PLAYBACK_SPEED = new BooleanSetting("revanced_hide_player_flyout_menu_playback_speed", FALSE);
+    public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_QUALITY_HEADER = new BooleanSetting("revanced_hide_player_flyout_menu_quality_header", FALSE);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_QUALITY_FOOTER = new BooleanSetting("revanced_hide_player_flyout_menu_quality_footer", TRUE, true);
     public static final BooleanSetting HIDE_PLAYER_FLYOUT_MENU_REPORT = new BooleanSetting("revanced_hide_player_flyout_menu_report", TRUE);
 
