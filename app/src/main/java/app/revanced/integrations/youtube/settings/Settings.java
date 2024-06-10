@@ -107,6 +107,7 @@ public class Settings extends BaseSettings {
             parentsAny(HIDE_KEYWORD_CONTENT_HOME, HIDE_KEYWORD_CONTENT_SEARCH, HIDE_KEYWORD_CONTENT_SUBSCRIPTIONS, HIDE_KEYWORD_CONTENT_COMMENTS));
 
     public static final BooleanSetting HIDE_RECOMMENDED_VIDEO = new BooleanSetting("revanced_hide_recommended_video", FALSE);
+    public static final BooleanSetting HIDE_LOW_VIEWS_VIDEO = new BooleanSetting("revanced_hide_low_views_video", TRUE);
 
     public static final BooleanSetting HIDE_VIDEO_BY_DURATION = new BooleanSetting("revanced_hide_video_by_duration", FALSE);
     public static final StringSetting HIDE_VIDEO_BY_DURATION_SHORTER_THAN = new StringSetting("revanced_hide_video_by_duration_shorter_than", "0:10", parent(HIDE_VIDEO_BY_DURATION));
