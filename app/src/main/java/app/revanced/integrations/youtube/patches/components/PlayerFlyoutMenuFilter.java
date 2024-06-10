@@ -18,6 +18,7 @@ public final class PlayerFlyoutMenuFilter extends Filter {
     private final StringTrieSearch pathBuilderException = new StringTrieSearch();
     private final StringTrieSearch playerFlyoutMenuFooter = new StringTrieSearch();
     private final StringFilterGroup playerFlyoutMenu;
+    private final StringFilterGroup qualityHeader;
 
     public PlayerFlyoutMenuFilter() {
         byteArrayException = new ByteArrayFilterGroup(
@@ -44,12 +45,18 @@ public final class PlayerFlyoutMenuFilter extends Filter {
                 "|divider.eml|"
         );
 
+        qualityHeader = new StringFilterGroup(
+                Settings.HIDE_PLAYER_FLYOUT_MENU_QUALITY_HEADER,
+                "quality_sheet_header.eml"
+        );
+
         playerFlyoutMenu = new StringFilterGroup(null, "overflow_menu_item.eml|");
 
         // Using pathFilterGroupList due to new flyout panel(A/B)
         addPathCallbacks(
                 captionsFooter,
                 qualityFooter,
+                qualityHeader,
                 playerFlyoutMenu
         );
 
@@ -138,6 +145,13 @@ public final class PlayerFlyoutMenuFilter extends Filter {
                 // Super class handles logging.
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
+        } else if (matchedGroup == qualityHeader) {
+            // Quality header is always the start of the path.
+            if (contentIndex != 0) {
+                return false;
+            }
+            // Super class handles logging.
+            return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
         } else {
             // Components other than the footer separator are not filtered.
             if (pathBuilderException.matches(path) || !playerFlyoutMenuFooter.matches(path)) {
