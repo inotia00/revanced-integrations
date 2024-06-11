@@ -10,24 +10,21 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class ActionButtonsFilter extends Filter {
+    private static final String VIDEO_ACTION_BAR_PATH_PREFIX = "video_action_bar.eml";
+    private static final String ANIMATED_VECTOR_TYPE_PATH = "AnimatedVectorType";
 
-    private static final String VIDEO_ACTION_BAR_PATH = "video_action_bar.eml";
-
-    private final StringFilterGroup actionBarRule;
     private final StringFilterGroup bufferFilterPathRule;
+    private final StringFilterGroup likeSubscribeGlow;
     private final ByteArrayFilterGroupList bufferButtonsGroupList = new ByteArrayFilterGroupList();
 
     public ActionButtonsFilter() {
-        actionBarRule = new StringFilterGroup(
-                null,
-                VIDEO_ACTION_BAR_PATH
-        );
-        addIdentifierCallbacks(actionBarRule);
-
-
         bufferFilterPathRule = new StringFilterGroup(
                 null,
                 "|ContainerType|button.eml|"
+        );
+        likeSubscribeGlow = new StringFilterGroup(
+                Settings.DISABLE_LIKE_DISLIKE_GLOW,
+                "animated_button_border.eml"
         );
         addPathCallbacks(
                 new StringFilterGroup(
@@ -50,7 +47,8 @@ public final class ActionButtonsFilter extends Filter {
                         Settings.HIDE_REWARDS_BUTTON,
                         "account_link_button"
                 ),
-                bufferFilterPathRule
+                bufferFilterPathRule,
+                likeSubscribeGlow
         );
 
         bufferButtonsGroupList.addAll(
@@ -77,27 +75,22 @@ public final class ActionButtonsFilter extends Filter {
         );
     }
 
-    private boolean isEveryFilterGroupEnabled() {
-        for (StringFilterGroup group : pathCallbacks)
-            if (!group.isEnabled()) return false;
-
-        for (ByteArrayFilterGroup group : bufferButtonsGroupList)
-            if (!group.isEnabled()) return false;
-
-        return true;
-    }
-
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (!path.startsWith(VIDEO_ACTION_BAR_PATH)) {
+        if (!path.startsWith(VIDEO_ACTION_BAR_PATH_PREFIX)) {
             return false;
         }
-        if (matchedGroup == actionBarRule && !isEveryFilterGroupEnabled()) {
-            return false;
+        if (matchedGroup == likeSubscribeGlow) {
+            if (!path.contains(ANIMATED_VECTOR_TYPE_PATH)) {
+                return false;
+            }
         }
         if (matchedGroup == bufferFilterPathRule) {
-            return bufferButtonsGroupList.check(protobufBufferArray).isFiltered();
+            // In case the group list has no match, return false.
+            if (!bufferButtonsGroupList.check(protobufBufferArray).isFiltered()) {
+                return false;
+            }
         }
 
         return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
