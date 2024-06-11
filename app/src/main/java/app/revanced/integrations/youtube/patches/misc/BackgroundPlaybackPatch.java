@@ -3,9 +3,9 @@ package app.revanced.integrations.youtube.patches.misc;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
-public class MinimizedPlaybackPatch {
+public class BackgroundPlaybackPatch {
 
-    public static boolean isPlaybackNotShort() {
+    public static boolean playbackIsNotShort() {
         return !PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized();
     }
 
