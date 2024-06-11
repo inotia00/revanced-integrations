@@ -10,15 +10,8 @@ import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
 
-import java.util.regex.Pattern;
-
 @SuppressWarnings("unused")
 public final class ShortsButtonFilter extends Filter {
-    // Pattern: reel_comment_button … number of comments … 4 (random number),
-    // previous pattern: reel_comment_button … number of comments,
-    // probably unstable.
-    // If comment button does not have number of comments, then there is "disabled" or "0" label.
-    private static final Pattern REEL_COMMENTS_DISABLED_PATTERN = Pattern.compile("reel_comment_button.+\\d+.+4");
     private final static String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
     private final static String REEL_LIVE_HEADER_PATH = "immersive_live_header.eml";
     /**
@@ -32,8 +25,6 @@ public final class ShortsButtonFilter extends Filter {
     private final StringFilterGroup joinButton;
     private final StringFilterGroup paidPromotionButton;
     private final StringFilterGroup pausedOverlayButtons;
-
-    private final ByteArrayFilterGroup shortsCommentDisabled;
 
     private final StringFilterGroup suggestedAction;
     private final ByteArrayFilterGroupList suggestedActionsGroupList =  new ByteArrayFilterGroupList();
@@ -116,15 +107,6 @@ public final class ShortsButtonFilter extends Filter {
         //
         // Action buttons
         //
-        //
-        // Action buttons
-        //
-        shortsCommentDisabled =
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_COMMENTS_DISABLED_BUTTON,
-                        "reel_comment_button"
-                );
-
         videoActionButtonGroupList.addAll(
                 // This also appears as the path item 'shorts_like_button.eml'
                 new ByteArrayFilterGroup(
@@ -195,15 +177,8 @@ public final class ShortsButtonFilter extends Filter {
 
         // Video action buttons (like, dislike, comment, share, remix) have the same path.
         if (matchedGroup == actionBar) {
-            // If the Comment button is hidden, there is no need to check {@code REEL_COMMENTS_DISABLED_PATTERN}.
-            // Check {@code videoActionButtonGroupList} first.
             if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
-            }
-            if (shortsCommentDisabled.check(protobufBufferArray).isFiltered()) {
-                if (REEL_COMMENTS_DISABLED_PATTERN.matcher(new String(protobufBufferArray)).find()) {
-                    return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
-                }
             }
             return false;
         }
