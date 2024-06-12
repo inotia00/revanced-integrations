@@ -21,6 +21,8 @@ public class FullscreenAdsPatch {
     private static final boolean closeDialog = hideFullscreenAdsEnabled && closeFullscreenAdsEnabled;
     private static final boolean disableDialog = hideFullscreenAdsEnabled && !closeFullscreenAdsEnabled;
 
+    private static volatile long lastTimeClosedFullscreenAd;
+
     private static WeakReference<Button> buttonRef = new WeakReference<>(null);
 
     public static boolean disableFullscreenAds(int code) {
@@ -50,8 +52,13 @@ public class FullscreenAdsPatch {
             final Button button = buttonRef.get();
             if (button == null) return;
             button.callOnClick();
+
+            final long currentTime = System.currentTimeMillis();
+            if (currentTime - lastTimeClosedFullscreenAd < 10000) return;
+            lastTimeClosedFullscreenAd = currentTime;
+
             showToastShort(str("revanced_hide_fullscreen_ads_closed_success"));
-        }, 100);
+        }, 500);
     }
 
     public static void hideFullscreenAds(View view) {
