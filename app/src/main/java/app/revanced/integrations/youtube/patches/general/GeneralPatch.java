@@ -193,54 +193,6 @@ public class GeneralPatch {
 
     // endregion
 
-    // region [Enable tablet mini player] patch
-
-    private static boolean tabletMiniPlayerEnabled = Settings.ENABLE_TABLET_MINI_PLAYER.get();
-    private static boolean modernMiniPlayerEnabled = tabletMiniPlayerEnabled && Settings.ENABLE_MODERN_MINI_PLAYER.get();
-
-    public static boolean enableTabletMiniPlayer(boolean original) {
-        return tabletMiniPlayerEnabled || original;
-    }
-
-    /**
-     * In ModernMiniPlayer, the drawables of the close button and expand button are reversed.
-     * OnClickListener appears to be applied normally, so this appears to be a bug in YouTube.
-     * To solve this, swap the drawables of the close and expand buttons.
-     */
-    private static final int closeButtonDrawableId =
-            ResourceUtils.getDrawableIdentifier("yt_outline_x_white_24");
-    private static final int expandButtonDrawableId =
-            ResourceUtils.getDrawableIdentifier("yt_outline_picture_in_picture_white_24");
-
-    public static boolean enableModernMiniPlayer(boolean original) {
-        return modernMiniPlayerEnabled || original;
-    }
-
-    public static int enableModernMiniPlayer(int original) {
-        return modernMiniPlayerEnabled ? 1 : original;
-    }
-
-    public static int replaceCloseButtonDrawableId(int original) {
-        return modernMiniPlayerEnabled ? expandButtonDrawableId : original;
-    }
-
-    public static int replaceExpandButtonDrawableId(int original) {
-        return modernMiniPlayerEnabled ? closeButtonDrawableId : original;
-    }
-
-    public static void hideRewindAndForwardButton(View view) {
-        if (!Settings.HIDE_MINI_PLAYER_REWIND_FORWARD_BUTTON.get())
-            return;
-
-        view.setVisibility(View.GONE);
-
-        if (view.getParent() instanceof ViewGroup viewGroup) {
-            viewGroup.removeView(view);
-        }
-    }
-
-    // endregion
-
     // region [Hide layout components] patch
 
     /**

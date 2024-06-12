@@ -6,6 +6,9 @@ import static app.revanced.integrations.shared.settings.Setting.migrateFromOldPr
 import static app.revanced.integrations.shared.settings.Setting.parent;
 import static app.revanced.integrations.shared.settings.Setting.parentsAny;
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType;
+import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_1;
+import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE;
@@ -125,9 +128,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting DISABLE_AUTO_CAPTIONS = new BooleanSetting("revanced_disable_auto_captions", FALSE, true);
     public static final BooleanSetting DISABLE_SPLASH_ANIMATION = new BooleanSetting("revanced_disable_splash_animation", FALSE, true);
     public static final BooleanSetting ENABLE_GRADIENT_LOADING_SCREEN = new BooleanSetting("revanced_enable_gradient_loading_screen", FALSE, true);
-    public static final BooleanSetting ENABLE_TABLET_MINI_PLAYER = new BooleanSetting("revanced_enable_tablet_mini_player", FALSE, true);
-    public static final BooleanSetting ENABLE_MODERN_MINI_PLAYER = new BooleanSetting("revanced_enable_modern_mini_player", FALSE, true, parent(ENABLE_TABLET_MINI_PLAYER));
-    public static final BooleanSetting HIDE_MINI_PLAYER_REWIND_FORWARD_BUTTON = new BooleanSetting("revanced_hide_mini_player_rewind_forward_button", FALSE, true, parent(ENABLE_MODERN_MINI_PLAYER));
     public static final BooleanSetting HIDE_FLOATING_MICROPHONE = new BooleanSetting("revanced_hide_floating_microphone", TRUE, true);
     public static final BooleanSetting HIDE_GRAY_SEPARATOR = new BooleanSetting("revanced_hide_gray_separator", TRUE);
     public static final BooleanSetting HIDE_SNACK_BAR = new BooleanSetting("revanced_hide_snack_bar", FALSE);
@@ -147,6 +147,24 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting CUSTOM_FILTER = new BooleanSetting("revanced_custom_filter", FALSE);
     public static final StringSetting CUSTOM_FILTER_STRINGS = new StringSetting("revanced_custom_filter_strings", "", true, parent(CUSTOM_FILTER));
 
+    // PreferenceScreen: General - Miniplayer
+    public static final EnumSetting<MiniplayerType> MINIPLAYER_TYPE = new EnumSetting<>("revanced_miniplayer_type", MiniplayerType.ORIGINAL, true);
+    public static final BooleanSetting MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting MINIPLAYER_HIDE_SUBTEXT = new BooleanSetting("revanced_miniplayer_hide_subtext", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1));
+    public static final IntegerSetting MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, MINIPLAYER_TYPE.availability(MODERN_1));
+
+    // PreferenceScreen: General - Navigation buttons
+    public static final BooleanSetting ENABLE_NARROW_NAVIGATION_BUTTONS = new BooleanSetting("revanced_enable_narrow_navigation_buttons", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_CREATE_BUTTON = new BooleanSetting("revanced_hide_navigation_create_button", TRUE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_HOME_BUTTON = new BooleanSetting("revanced_hide_navigation_home_button", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_LIBRARY_BUTTON = new BooleanSetting("revanced_hide_navigation_library_button", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_hide_navigation_notifications_button", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_SHORTS_BUTTON = new BooleanSetting("revanced_hide_navigation_shorts_button", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_SUBSCRIPTIONS_BUTTON = new BooleanSetting("revanced_hide_navigation_subscriptions_button", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_LABEL = new BooleanSetting("revanced_hide_navigation_label", FALSE, true);
+    public static final BooleanSetting SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_switch_create_with_notifications_button", TRUE, true);
+
     // PreferenceScreen: General - Settings menu
     public static final BooleanSetting HIDE_SETTINGS_MENU = new BooleanSetting("revanced_hide_settings_menu", FALSE);
     public static final StringSetting HIDE_SETTINGS_MENU_FILTER_STRINGS = new StringSetting("revanced_hide_settings_menu_filter_strings", "", true, parent(HIDE_SETTINGS_MENU));
@@ -164,17 +182,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting REPLACE_TOOLBAR_CREATE_BUTTON = new BooleanSetting("revanced_replace_toolbar_create_button", FALSE, true);
     public static final BooleanSetting REPLACE_TOOLBAR_CREATE_BUTTON_TYPE = new BooleanSetting("revanced_replace_toolbar_create_button_type", FALSE, true);
 
-
-    // PreferenceScreen: General - Navigation buttons
-    public static final BooleanSetting ENABLE_NARROW_NAVIGATION_BUTTONS = new BooleanSetting("revanced_enable_narrow_navigation_buttons", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_CREATE_BUTTON = new BooleanSetting("revanced_hide_navigation_create_button", TRUE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_HOME_BUTTON = new BooleanSetting("revanced_hide_navigation_home_button", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_LIBRARY_BUTTON = new BooleanSetting("revanced_hide_navigation_library_button", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_hide_navigation_notifications_button", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_SHORTS_BUTTON = new BooleanSetting("revanced_hide_navigation_shorts_button", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_SUBSCRIPTIONS_BUTTON = new BooleanSetting("revanced_hide_navigation_subscriptions_button", FALSE, true);
-    public static final BooleanSetting HIDE_NAVIGATION_LABEL = new BooleanSetting("revanced_hide_navigation_label", FALSE, true);
-    public static final BooleanSetting SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_switch_create_with_notifications_button", TRUE, true);
 
     // PreferenceScreen: Player
     public static final IntegerSetting CUSTOM_PLAYER_OVERLAY_OPACITY = new IntegerSetting("revanced_custom_player_overlay_opacity", 100, true);

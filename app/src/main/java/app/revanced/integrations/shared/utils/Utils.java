@@ -20,6 +20,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -88,10 +89,29 @@ public class Utils {
         hideViewUnderCondition(condition.get(), view);
     }
 
-    public static void hideViewUnderCondition(boolean enabled, View view) {
-        if (!enabled) return;
+    /**
+     * Hide a view by setting its visibility to GONE.
+     *
+     * @param condition The setting to check for hiding the view.
+     * @param view      The view to hide.
+     */
+    public static void hideViewUnderCondition(boolean condition, View view) {
+        if (!condition) return;
 
         view.setVisibility(View.GONE);
+    }
+
+    @SuppressWarnings("unused")
+    public static void hideViewByRemovingFromParentUnderCondition(BooleanSetting condition, View view) {
+        hideViewByRemovingFromParentUnderCondition(condition.get(), view);
+    }
+
+    public static void hideViewByRemovingFromParentUnderCondition(boolean condition, View view) {
+        if (!condition) return;
+        if (!(view.getParent() instanceof ViewGroup viewGroup))
+            return;
+
+        viewGroup.removeView(view);
     }
 
     /**
@@ -190,6 +210,25 @@ public class Utils {
                 return (T) childAt;
             }
         }
+        return null;
+    }
+
+    @Nullable
+    public static ViewParent getParentView(@NonNull View view, int nthParent) {
+        ViewParent parent = view.getParent();
+
+        int currentDepth = 0;
+        while (++currentDepth < nthParent && parent != null) {
+            parent = parent.getParent();
+        }
+
+        if (currentDepth == nthParent) {
+            return parent;
+        }
+
+        final int currentDepthLog = currentDepth;
+        Logger.printDebug(() -> "Could not find parent view of depth: " + nthParent
+                + " and instead found at: " + currentDepthLog + " view: " + view);
         return null;
     }
 
