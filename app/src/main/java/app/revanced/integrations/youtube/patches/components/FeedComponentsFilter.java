@@ -84,11 +84,12 @@ public final class FeedComponentsFilter extends Filter {
 
         channelProfile = new StringFilterGroup(
                 Settings.HIDE_BROWSE_STORE_BUTTON,
-                "channel_profile.eml"
+                "channel_profile.eml",
+                "page_header.eml" // new layout
         );
 
         visitStoreButton = new ByteArrayFilterGroup(
-                Settings.HIDE_BROWSE_STORE_BUTTON,
+                null,
                 "header_store_button"
         );
 
@@ -99,7 +100,8 @@ public final class FeedComponentsFilter extends Filter {
 
         final StringFilterGroup channelProfileLinks = new StringFilterGroup(
                 Settings.HIDE_CHANNEL_PROFILE_LINKS,
-                "channel_header_links"
+                "channel_header_links",
+                "attribution.eml" // new layout
         );
 
         communityPosts = new StringFilterGroup(
@@ -234,7 +236,7 @@ public final class FeedComponentsFilter extends Filter {
             }
             return false;
         } else if (matchedGroup == channelProfile) {
-            if (visitStoreButton.check(protobufBufferArray).isFiltered()) {
+            if (contentIndex == 0 && visitStoreButton.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
