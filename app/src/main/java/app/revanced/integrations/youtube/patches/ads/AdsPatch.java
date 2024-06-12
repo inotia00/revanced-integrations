@@ -8,9 +8,9 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class AdsPatch {
-    private static final Boolean hideGeneralAdsEnabled = Settings.HIDE_GENERAL_ADS.get();
-    private static final Boolean hideGetPremiumAdsEnabled = Settings.HIDE_GET_PREMIUM.get();
-    private static final Boolean hideVideoAdsEnabled = Settings.HIDE_VIDEO_ADS.get();
+    private static final boolean hideGeneralAdsEnabled = Settings.HIDE_GENERAL_ADS.get();
+    private static final boolean hideGetPremiumAdsEnabled = Settings.HIDE_GET_PREMIUM.get();
+    private static final boolean hideVideoAdsEnabled = Settings.HIDE_VIDEO_ADS.get();
 
     /**
      * Injection point.

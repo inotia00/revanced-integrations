@@ -5,11 +5,10 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import app.revanced.integrations.shared.utils.ResourceUtils.ResourceType
 import app.revanced.integrations.shared.utils.ResourceUtils.getIdentifier
-import app.revanced.integrations.shared.utils.StringRef.str
-import app.revanced.integrations.shared.utils.Utils
 import app.revanced.integrations.youtube.settings.Settings
 import app.revanced.integrations.youtube.swipecontrols.misc.Rectangle
 import app.revanced.integrations.youtube.swipecontrols.misc.applyDimension
+import app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue
 import kotlin.math.min
 
 /**
@@ -42,20 +41,14 @@ class SwipeZonesController(
     private val host: Activity,
     private val fallbackScreenRect: () -> Rectangle
 ) {
-    /**
-     * rect size for the overlay
-     */
-    private val MAXIMUM_OVERLAY_RECT_SIZE = 50
 
-    private var overlayRectSize = Settings.SWIPE_OVERLAY_RECT_SIZE.get()
-        set (value) {
-            field = value
-            validateOverlayRectSize()
-        }
+    private val overlayRectSize = validateValue(
+        Settings.SWIPE_OVERLAY_RECT_SIZE,
+        0,
+        50,
+        "revanced_swipe_overlay_rect_size_invalid_toast"
+    )
 
-    init {
-        validateOverlayRectSize()
-    }
     /**
      * 20dp, in pixels
      */
@@ -80,17 +73,6 @@ class SwipeZonesController(
      * current bounding rectangle of the player
      */
     private var playerRect: Rectangle? = null
-
-    /**
-     * validate if provided rect size is not bigger than MAX available size
-     */
-    private fun validateOverlayRectSize() {
-        if (overlayRectSize <= 0 || overlayRectSize > MAXIMUM_OVERLAY_RECT_SIZE) {
-            Utils.showToastLong(str("revanced_swipe_overlay_rect_size_warning", MAXIMUM_OVERLAY_RECT_SIZE.toString()))
-            Settings.SWIPE_OVERLAY_RECT_SIZE.resetToDefault()
-            overlayRectSize = Settings.SWIPE_OVERLAY_RECT_SIZE.get()
-        }
-    }
 
     /**
      * rectangle of the area that is effectively usable for swipe controls

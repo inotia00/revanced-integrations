@@ -78,7 +78,7 @@ public class GeneralPatch {
         } else if (startPage.startsWith("www.youtube.com")) {
             intent.setData(Uri.parse(startPage));
         } else {
-            Utils.showToastShort(str("revanced_change_start_page_warning"));
+            Utils.showToastShort(str("revanced_change_start_page_invalid_toast"));
             Settings.CHANGE_START_PAGE.resetToDefault();
             return;
         }
@@ -552,7 +552,7 @@ public class GeneralPatch {
             // The search icon in the deprecated search bar is clickable, but onClickListener is not assigned.
             // Assign onClickListener and disable the effect when clicked.
             if (searchIconView != null && searchBoxView != null) {
-                searchIconView.setOnClickListener(view1 -> searchBoxView.performClick());
+                searchIconView.setOnClickListener(view1 -> searchBoxView.callOnClick());
                 searchIconView.getBackground().setAlpha(0);
             }
         } else {

@@ -13,15 +13,6 @@ import app.revanced.integrations.shared.utils.Utils;
 @SuppressWarnings("unused")
 public class RemoveSubRedditDialogPatch {
 
-    private static void clickButton(View button) {
-        if (button != null) {
-            Utils.runOnMainThreadDelayed(() -> {
-                button.setSoundEffectsEnabled(false);
-                button.performClick();
-            }, 0);
-        }
-    }
-
     public static void confirmDialog(@NonNull TextView textView) {
         if (!Settings.REMOVE_NSFW_DIALOG.get())
             return;
@@ -29,13 +20,13 @@ public class RemoveSubRedditDialogPatch {
         if (!textView.getText().toString().equals(str("nsfw_continue_non_anonymously")))
             return;
 
-        clickButton(textView);
+        Utils.clickView(textView);
     }
 
     public static void dismissDialog(View cancelButtonView) {
         if (!Settings.REMOVE_NOTIFICATION_DIALOG.get())
             return;
 
-        clickButton(cancelButtonView);
+        Utils.clickView(cancelButtonView);
     }
 }

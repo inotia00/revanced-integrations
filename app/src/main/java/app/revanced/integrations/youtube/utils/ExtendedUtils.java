@@ -1,13 +1,41 @@
 package app.revanced.integrations.youtube.utils;
 
+import static app.revanced.integrations.shared.utils.StringRef.str;
+
 import androidx.annotation.NonNull;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.FloatSetting;
+import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.PackageUtils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 public class ExtendedUtils extends PackageUtils {
+
+    public static int validateValue(IntegerSetting settings, int min, int max, String message) {
+        int value = settings.get();
+
+        if (value < min || value > max) {
+            showToastShort(str(message));
+            settings.resetToDefault();
+            value = settings.defaultValue;
+        }
+
+        return value;
+    }
+
+    public static float validateValue(FloatSetting settings, float min, float max, String message) {
+        float value = settings.get();
+
+        if (value < min || value > max) {
+            showToastShort(str(message));
+            settings.resetToDefault();
+            value = settings.defaultValue;
+        }
+
+        return value;
+    }
 
     public static boolean isFullscreenHidden() {
         boolean isFullscreenHidden = isTablet() &&

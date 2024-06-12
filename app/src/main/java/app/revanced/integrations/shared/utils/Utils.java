@@ -59,8 +59,7 @@ public class Utils {
 
     public static void clickView(View view) {
         if (view == null) return;
-        view.setSoundEffectsEnabled(false);
-        view.performClick();
+        view.callOnClick();
     }
 
     /**
