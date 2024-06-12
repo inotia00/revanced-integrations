@@ -2,6 +2,16 @@ package app.revanced.integrations.youtube.settings.preference;
 
 import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
 import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
+import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.showRestartDialog;
+import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.updateListPreferenceSummary;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getXmlIdentifier;
+import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.getChildView;
+import static app.revanced.integrations.shared.utils.Utils.showToastShort;
+import static app.revanced.integrations.youtube.settings.Settings.DEFAULT_PLAYBACK_SPEED;
+import static app.revanced.integrations.youtube.settings.Settings.HIDE_PREVIEW_COMMENT;
+import static app.revanced.integrations.youtube.settings.Settings.HIDE_PREVIEW_COMMENT_TYPE;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -14,29 +24,41 @@ import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toolbar;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
-
-import java.io.*;
-import java.util.*;
-
-import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.showRestartDialog;
-import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.updateListPreferenceSummary;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getXmlIdentifier;
-import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.shared.utils.Utils.getChildView;
-import static app.revanced.integrations.shared.utils.Utils.showToastShort;
-import static app.revanced.integrations.youtube.settings.Settings.*;
 
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
