@@ -38,20 +38,33 @@ public class RestoreOldVideoQualityMenuPatch {
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             try {
                 // Check if the current view is the quality menu.
-                if (!VideoQualityMenuFilter.isVideoQualityMenuVisible || recyclerView.getChildCount() == 0)
+                if (!VideoQualityMenuFilter.isVideoQualityMenuVisible || recyclerView.getChildCount() == 0) {
                     return;
-
-                final ViewGroup AdvancedQualityParentView = (ViewGroup) recyclerView.getChildAt(0);
-                if (AdvancedQualityParentView.getChildCount() < 4)
-                    return;
-
-                final View AdvancedQualityView = AdvancedQualityParentView.getChildAt(3);
-                final View QuickQualityView = (View) recyclerView.getParent().getParent().getParent();
-                if (AdvancedQualityView != null && QuickQualityView != null) {
-                    QuickQualityView.setVisibility(View.GONE);
-                    Utils.clickView(AdvancedQualityView);
-                    VideoQualityMenuFilter.isVideoQualityMenuVisible = false;
                 }
+
+                if (!(Utils.getParentView(recyclerView, 3) instanceof ViewGroup quickQualityViewParent)) {
+                    return;
+                }
+
+                if (!(recyclerView.getChildAt(0) instanceof ViewGroup advancedQualityParentView)) {
+                    return;
+                }
+
+                if (advancedQualityParentView.getChildCount() < 4) {
+                    return;
+                }
+
+                View advancedQualityView = advancedQualityParentView.getChildAt(3);
+                if (advancedQualityView == null) {
+                    return;
+                }
+
+                quickQualityViewParent.setVisibility(View.GONE);
+
+                // Click the "Advanced" quality menu to show the "old" quality menu.
+                advancedQualityView.callOnClick();
+
+                VideoQualityMenuFilter.isVideoQualityMenuVisible = false;
             } catch (Exception ex) {
                 Logger.printException(() -> "onFlyoutMenuCreate failure", ex);
             }
