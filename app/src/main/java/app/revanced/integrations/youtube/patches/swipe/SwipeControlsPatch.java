@@ -6,15 +6,27 @@ import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.youtube.settings.Settings;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 public class SwipeControlsPatch {
     private static WeakReference<View> fullscreenEngagementOverlayViewRef = new WeakReference<>(null);
 
-    /** @noinspection deprecation*/
+    /**
+     * Injection point.
+     */
     public static boolean disableHDRAutoBrightness() {
         return Settings.DISABLE_HDR_AUTO_BRIGHTNESS.get();
     }
 
+    /**
+     * Injection point.
+     */
+    public static boolean enableSwipeToSwitchVideo() {
+        return Settings.ENABLE_SWIPE_TO_SWITCH_VIDEO.get();
+    }
+
+    /**
+     * Injection point.
+     */
     public static boolean enableWatchPanelGestures() {
         return Settings.ENABLE_WATCH_PANEL_GESTURES.get();
     }
