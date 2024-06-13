@@ -93,6 +93,7 @@ public final class KeywordContentFilter extends Filter {
 
     /**
      * Substrings that are never at the start of the path.
+     * @noinspection FieldCanBeLocal
      */
     private final StringFilterGroup containsFilter = new StringFilterGroup(
             null,

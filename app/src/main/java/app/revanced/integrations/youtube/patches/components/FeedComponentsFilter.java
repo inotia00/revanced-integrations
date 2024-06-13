@@ -64,6 +64,13 @@ public final class FeedComponentsFilter extends Filter {
                 "chips_shelf"
         );
 
+        communityPosts = new StringFilterGroup(
+                null,
+                "post_base_wrapper",
+                "image_post_root",
+                "text_post_root"
+        );
+
         final StringFilterGroup feedSearchBar = new StringFilterGroup(
                 Settings.HIDE_FEED_SEARCH_BAR,
                 "search_bar_entry_point"
@@ -72,6 +79,7 @@ public final class FeedComponentsFilter extends Filter {
         addIdentifierCallbacks(
                 carouselShelf,
                 chipsShelf,
+                communityPosts,
                 feedSearchBar
         );
 
@@ -102,12 +110,6 @@ public final class FeedComponentsFilter extends Filter {
                 Settings.HIDE_CHANNEL_PROFILE_LINKS,
                 "channel_header_links",
                 "attribution.eml" // new layout
-        );
-
-        communityPosts = new StringFilterGroup(
-                null,
-                "post_base_wrapper",
-                "image_post_root"
         );
 
         final StringFilterGroup expandableChip = new StringFilterGroup(
@@ -171,7 +173,6 @@ public final class FeedComponentsFilter extends Filter {
                 channelProfile,
                 channelMemberShelf,
                 channelProfileLinks,
-                communityPosts,
                 expandableChip,
                 feedSurvey,
                 forYouShelf,
