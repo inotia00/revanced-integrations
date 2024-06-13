@@ -84,7 +84,7 @@ public class FullscreenAdsPatch {
             return Arrays.stream(values())
                     .filter(val -> code == val.code)
                     .findFirst()
-                    .orElse(null);
+                    .orElse(DialogType.NULL);
         }
     }
 
