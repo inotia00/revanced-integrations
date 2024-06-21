@@ -68,7 +68,7 @@ public class ReturnYouTubeChannelNamePatch {
     public static CharSequence onCharSequenceLoaded(@NonNull Object conversionContext,
                                                     @NonNull CharSequence charSequence) {
         try {
-            if (!Settings.RETURN_SHORTS_CHANNEL_NAME.get())
+            if (!Settings.REPLACE_CHANNEL_HANDLE.get())
                 return charSequence;
 
             final String conversionContextString = conversionContext.toString();
