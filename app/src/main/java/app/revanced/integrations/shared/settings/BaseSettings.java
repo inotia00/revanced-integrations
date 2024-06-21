@@ -24,5 +24,5 @@ public class BaseSettings {
     public static final BooleanSetting HIDE_FULLSCREEN_ADS = new BooleanSetting("revanced_hide_fullscreen_ads", TRUE, true);
     public static final BooleanSetting HIDE_FULLSCREEN_ADS_TYPE = new BooleanSetting("revanced_hide_fullscreen_ads_type", TRUE, true);
 
-    public static final BooleanSetting SPOOF_SIGNATURE = new BooleanSetting("revanced_spoof_signature", FALSE, true);
+    public static final BooleanSetting SPOOF_SIGNATURE = new BooleanSetting("revanced_spoof_signature", FALSE, true, "revanced_spoof_signature_user_dialog_message");
 }

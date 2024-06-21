@@ -29,14 +29,23 @@ public class EnumSetting<T extends Enum<?>> extends Setting<T> {
     public EnumSetting(String key, T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
+    public EnumSetting(String key, T defaultValue, String userDialogMessage) {
+        super(key, defaultValue, userDialogMessage);
+    }
     public EnumSetting(String key, T defaultValue, Availability availability) {
         super(key, defaultValue, availability);
+    }
+    public EnumSetting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
+        super(key, defaultValue, rebootApp, userDialogMessage);
     }
     public EnumSetting(String key, T defaultValue, boolean rebootApp, Availability availability) {
         super(key, defaultValue, rebootApp, availability);
     }
-    public EnumSetting(@NonNull String key, @NonNull T defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable Availability availability) {
-        super(key, defaultValue, rebootApp, includeWithImportExport, availability);
+    public EnumSetting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
+    }
+    public EnumSetting(@NonNull String key, @NonNull T defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override
