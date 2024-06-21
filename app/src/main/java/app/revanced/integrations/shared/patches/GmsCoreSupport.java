@@ -76,7 +76,7 @@ public class GmsCoreSupport {
                 PackageManager manager = mActivity.getPackageManager();
                 manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             } catch (PackageManager.NameNotFoundException exception) {
-                Logger.printDebug(() -> "GmsCore was not found");
+                Logger.printInfo(() -> "GmsCore was not found");
                 // Cannot show a dialog and must show a toast,
                 // because on some installations the app crashes before a dialog can be displayed.
                 Utils.showToastLong(str("gms_core_toast_not_installed_message"));
@@ -84,18 +84,14 @@ public class GmsCoreSupport {
                 return;
             }
 
-            // Check if GmsCore is running in the background.
-            // Do this check before the battery optimization check.
-            try (ContentProviderClient client = mActivity.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
-                if (client == null) {
-                    Logger.printInfo(() -> "GmsCore is not running in the background");
+            if (contentProviderClientUnAvailable(mActivity)) {
+                Logger.printInfo(() -> "GmsCore is not running in the background");
 
-                    showBatteryOptimizationDialog(mActivity,
-                            "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
-                            "gms_core_dialog_open_website_text",
-                            (dialog, id) -> open(mActivity, DONT_KILL_MY_APP_LINK));
-                    return;
-                }
+                showBatteryOptimizationDialog(mActivity,
+                        "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
+                        "gms_core_dialog_open_website_text",
+                        (dialog, id) -> open(mActivity, DONT_KILL_MY_APP_LINK));
+                return;
             }
 
             // Check if GmsCore is whitelisted from battery optimizations.
@@ -111,6 +107,17 @@ public class GmsCoreSupport {
         }
     }
 
+    /**
+     * @return If GmsCore is not running in the background.
+     */
+    public static boolean contentProviderClientUnAvailable(Context context) {
+        // Check if GmsCore is running in the background.
+        // Do this check before the battery optimization check.
+        try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+            return client == null;
+        }
+    }
+
     @SuppressLint("BatteryLife") // Permission is part of GmsCore
     private static void openGmsCoreDisableBatteryOptimizationsIntent(Activity mActivity) {
         Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
@@ -121,8 +128,8 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not whitelisted from battery optimizations.
      */
-    private static boolean batteryOptimizationsEnabled(Activity mActivity) {
-        if (mActivity.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
+    public static boolean batteryOptimizationsEnabled(Context context) {
+        if (context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
             return !powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME);
         }
         return false;

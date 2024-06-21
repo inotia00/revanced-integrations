@@ -18,7 +18,11 @@ public class BaseSettings {
     public static final BooleanSetting ENABLE_DEBUG_BUFFER_LOGGING = new BooleanSetting("revanced_enable_debug_buffer_logging", FALSE);
     public static final BooleanSetting SETTINGS_INITIALIZED = new BooleanSetting("revanced_settings_initialized", FALSE, false, false);
 
+    /**
+     * These settings are used by YouTube and YouTube Music.
+     */
     public static final BooleanSetting HIDE_FULLSCREEN_ADS = new BooleanSetting("revanced_hide_fullscreen_ads", TRUE, true);
     public static final BooleanSetting HIDE_FULLSCREEN_ADS_TYPE = new BooleanSetting("revanced_hide_fullscreen_ads_type", TRUE, true);
 
+    public static final BooleanSetting SPOOF_SIGNATURE = new BooleanSetting("revanced_spoof_signature", FALSE, true);
 }
