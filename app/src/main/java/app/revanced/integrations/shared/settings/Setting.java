@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.StringRef;
 import app.revanced.integrations.shared.utils.Utils;
 
 /**
@@ -139,6 +140,13 @@ public abstract class Setting<T> {
     @Nullable
     private final Availability availability;
 
+    /**
+     * Confirmation message to display, if the user tries to change the setting from the default value.
+     * Currently this works only for Boolean setting types.
+     */
+    @Nullable
+    public final StringRef userDialogMessage;
+
     // Must be volatile, as some settings are read/write from different threads.
     // Of note, the object value is persistently stored using SharedPreferences (which is thread safe).
     /**
@@ -148,19 +156,28 @@ public abstract class Setting<T> {
     protected volatile T value;
 
     public Setting(String key, T defaultValue) {
-        this(key, defaultValue, false, true, null);
+        this(key, defaultValue, false, true, null, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp) {
-        this(key, defaultValue, rebootApp, true, null);
+        this(key, defaultValue, rebootApp, true, null, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
-        this(key, defaultValue, rebootApp, includeWithImportExport, null);
+        this(key, defaultValue, rebootApp, includeWithImportExport, null, null);
+    }
+    public Setting(String key, T defaultValue, String userDialogMessage) {
+        this(key, defaultValue, false, true, userDialogMessage, null);
     }
     public Setting(String key, T defaultValue, Availability availability) {
-        this(key, defaultValue, false, true, availability);
+        this(key, defaultValue, false, true, null, availability);
+    }
+    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
+        this(key, defaultValue, rebootApp, true, userDialogMessage, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, Availability availability) {
-        this(key, defaultValue, rebootApp, true, availability);
+        this(key, defaultValue, rebootApp, true, null, availability);
+    }
+    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        this(key, defaultValue, rebootApp, true, userDialogMessage, availability);
     }
 
     /**
@@ -170,18 +187,21 @@ public abstract class Setting<T> {
      * @param defaultValue            The default value of the setting.
      * @param rebootApp               If the app should be rebooted, if this setting is changed.
      * @param includeWithImportExport If this setting should be shown in the import/export dialog.
+     * @param userDialogMessage       Confirmation message to display, if the user tries to change the setting from the default value.
      * @param availability            Condition that must be true, for this setting to be available to configure.
      */
     public Setting(@NonNull String key,
                    @NonNull T defaultValue,
                    boolean rebootApp,
                    boolean includeWithImportExport,
+                   @Nullable String userDialogMessage,
                    @Nullable Availability availability
     ) {
         this.key = Objects.requireNonNull(key);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
         this.rebootApp = rebootApp;
         this.includeWithImportExport = includeWithImportExport;
+        this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
         this.availability = availability;
 
         SETTINGS.add(this);
@@ -291,6 +311,7 @@ public abstract class Setting<T> {
 
     /**
      * @return if the currently set value is the same as {@link #defaultValue}
+     * @noinspection BooleanMethodIsAlwaysInverted
      */
     public boolean isSetToDefault() {
         return value.equals(defaultValue);

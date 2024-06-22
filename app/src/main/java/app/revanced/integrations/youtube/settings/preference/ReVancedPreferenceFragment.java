@@ -16,6 +16,7 @@ import static app.revanced.integrations.youtube.settings.Settings.HIDE_PREVIEW_C
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,7 @@ import java.util.TreeMap;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
@@ -65,6 +67,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     private static final int READ_REQUEST_CODE = 42;
     private static final int WRITE_REQUEST_CODE = 43;
     static boolean settingImportInProgress = false;
+    static boolean showingUserDialogMessage;
 
     @SuppressLint("SuspiciousIndentation")
     private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
@@ -120,12 +123,43 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 return;
             }
 
-            if (setting.rebootApp)
-                showRestartDialog(mActivity);
+            if (!showingUserDialogMessage) {
+                final Context context = getContext();
+
+                if (setting.userDialogMessage != null
+                        && mPreference instanceof SwitchPreference switchPreference
+                        && setting.defaultValue instanceof Boolean defaultValue
+                        && switchPreference.isChecked() != defaultValue) {
+                    showSettingUserDialogConfirmation(context, switchPreference, (BooleanSetting) setting);
+                } else if (setting.rebootApp) {
+                    showRestartDialog(context);
+                }
+            }
         } catch (Exception ex) {
             Logger.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
+
+    private void showSettingUserDialogConfirmation(Context context, SwitchPreference switchPreference, BooleanSetting setting) {
+        Utils.verifyOnMainThread();
+
+        showingUserDialogMessage = true;
+        assert setting.userDialogMessage != null;
+        new AlertDialog.Builder(context)
+                .setTitle(str("revanced_extended_confirm_user_dialog_title"))
+                .setMessage(setting.userDialogMessage.toString())
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (setting.rebootApp) {
+                        showRestartDialog(context);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    switchPreference.setChecked(setting.defaultValue); // Recursive call that resets the Setting value.
+                })
+                .setOnDismissListener(dialog -> showingUserDialogMessage = false)
+                .setCancelable(false)
+                .show();
+    }
 
     static PreferenceManager mPreferenceManager;
     private SharedPreferences mSharedPreferences;

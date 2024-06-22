@@ -41,6 +41,11 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     @Nullable
     protected static String restartDialogMessage;
 
+    /**
+     * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
+     */
+    private boolean showingUserDialogMessage;
+
     private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             Setting<?> setting = Setting.getSettingFromPath(str);
@@ -61,8 +66,12 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 return;
             }
 
-            if (setting.rebootApp) {
-                showRestartDialog(getContext());
+            if (!showingUserDialogMessage) {
+                if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
+                    showSettingUserDialogConfirmation((SwitchPreference) pref, (BooleanSetting) setting);
+                } else if (setting.rebootApp) {
+                    showRestartDialog(getContext());
+                }
             }
 
         } catch (Exception ex) {
@@ -83,6 +92,28 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         if (id == 0) return;
         addPreferencesFromResource(id);
         Utils.sortPreferenceGroups(getPreferenceScreen());
+    }
+
+    private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
+        Utils.verifyOnMainThread();
+
+        final var context = getContext();
+        showingUserDialogMessage = true;
+        assert setting.userDialogMessage != null;
+        new AlertDialog.Builder(context)
+                .setTitle(android.R.string.dialog_alert_title)
+                .setMessage(setting.userDialogMessage.toString())
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (setting.rebootApp) {
+                        showRestartDialog(context);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    switchPref.setChecked(setting.defaultValue); // Recursive call that resets the Setting value.
+                })
+                .setOnDismissListener(dialog -> showingUserDialogMessage = false)
+                .setCancelable(false)
+                .show();
     }
 
     /**

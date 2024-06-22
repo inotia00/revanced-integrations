@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.settings;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +20,23 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
+    public IntegerSetting(String key, Integer defaultValue, String userDialogMessage) {
+        super(key, defaultValue, userDialogMessage);
+    }
     public IntegerSetting(String key, Integer defaultValue, Availability availability) {
         super(key, defaultValue, availability);
     }
+    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage) {
+        super(key, defaultValue, rebootApp, userDialogMessage);
+    }
     public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, Availability availability) {
         super(key, defaultValue, rebootApp, availability);
+    }
+    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
+    }
+    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override
