@@ -27,4 +27,9 @@ public class PatchStatus {
         return false;
     }
 
+    public static boolean MiniplayerType1920() {
+        // Replace this with true if the Miniplayer patch succeeds in YouTube 19.20.35+
+        return false;
+    }
+
 }

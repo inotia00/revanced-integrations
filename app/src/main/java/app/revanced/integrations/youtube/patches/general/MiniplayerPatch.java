@@ -4,6 +4,7 @@ import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_2;
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.ORIGINAL;
+import static app.revanced.integrations.youtube.patches.utils.PatchStatus.MiniplayerType1920;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue;
 
 import android.view.View;
@@ -66,7 +67,7 @@ public final class MiniplayerPatch {
     private static final MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
 
     private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+            ((!MiniplayerType1920() && CURRENT_TYPE == MODERN_1) || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 
     private static final boolean HIDE_SUBTEXT_ENABLED =
             (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_SUBTEXT.get();
