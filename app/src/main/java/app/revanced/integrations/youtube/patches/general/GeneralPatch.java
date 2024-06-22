@@ -651,7 +651,8 @@ public class GeneralPatch {
     private static boolean isNotificationButton(String enumString) {
         return StringUtils.equalsAny(
                 enumString,
-                "TAB_ACTIVITY" // Notification button
+                "TAB_ACTIVITY", // Notification button
+                "TAB_ACTIVITY_CAIRO" // Notification button (new layout)
         );
     }
 
