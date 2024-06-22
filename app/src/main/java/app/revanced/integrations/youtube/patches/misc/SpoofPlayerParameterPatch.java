@@ -188,7 +188,7 @@ public class SpoofPlayerParameterPatch {
     /**
      * Injection point.
      */
-    public static int getRecommendedLevel(int originalLevel) {
+    public static int getStoryboardRecommendedLevel(int originalLevel) {
         if (spoofParameter && !useOriginalStoryboardRenderer) {
             final StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {

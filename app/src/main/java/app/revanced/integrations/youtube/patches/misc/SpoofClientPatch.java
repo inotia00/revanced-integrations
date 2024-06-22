@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches.misc;
 
 import static app.revanced.integrations.shared.utils.Utils.submitOnBackgroundThread;
-import static app.revanced.integrations.youtube.patches.misc.requests.LiveStreamRendererRequester.getLiveStreamRenderer;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -17,7 +16,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.youtube.patches.misc.requests.LiveStreamRendererRequester;
 import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
+import app.revanced.integrations.youtube.patches.misc.requests.StoryboardRendererRequester;
 import app.revanced.integrations.youtube.settings.Settings;
 
 /**
@@ -57,7 +58,10 @@ public class SpoofClientPatch {
     private static volatile String lastPlayerResponseVideoId = "";
 
     @Nullable
-    private static volatile Future<LiveStreamRenderer> rendererFuture;
+    private static volatile Future<LiveStreamRenderer> liveStreamRendererFuture;
+
+    @Nullable
+    private static volatile Future<StoryboardRenderer> storyboardRendererFuture;
 
     /**
      * Injection point.
@@ -121,7 +125,7 @@ public class SpoofClientPatch {
             lastSpoofedClientType = Settings.SPOOF_CLIENT_SHORTS.get();
             return lastSpoofedClientType;
         }
-        LiveStreamRenderer renderer = getRenderer(false);
+        LiveStreamRenderer renderer = getLiveStreamRenderer(false);
         if (renderer != null) {
             if (renderer.isLive) {
                 lastSpoofedClientType = Settings.SPOOF_CLIENT_LIVESTREAM.get();
@@ -234,7 +238,7 @@ public class SpoofClientPatch {
             isShortsOrClips = playerParameterIsClipsOrShorts(parameters, isShortAndOpeningOrPlaying);
 
             if (!isShortsOrClips) {
-                fetchLiveStreamRenderer(videoId, Settings.SPOOF_CLIENT_GENERAL.get());
+                fetchPlayerResponseRenderer(videoId, Settings.SPOOF_CLIENT_GENERAL.get());
             }
         }
 
@@ -252,20 +256,22 @@ public class SpoofClientPatch {
         return playerParameter != null && StringUtils.startsWithAny(playerParameter, CLIPS_OR_SHORTS_PARAMETERS);
     }
 
-    private static void fetchLiveStreamRenderer(@NonNull String videoId, @NonNull ClientType clientType) {
+    private static void fetchPlayerResponseRenderer(@NonNull String videoId, @NonNull ClientType clientType) {
         if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = submitOnBackgroundThread(() -> getLiveStreamRenderer(videoId, clientType));
             lastPlayerResponseVideoId = videoId;
+            liveStreamRendererFuture = submitOnBackgroundThread(() -> LiveStreamRendererRequester.getLiveStreamRenderer(videoId, clientType));
+            storyboardRendererFuture = submitOnBackgroundThread(() -> StoryboardRendererRequester.getStoryboardRenderer(videoId));
         }
         // Block until the renderer fetch completes.
         // This is desired because if this returns without finishing the fetch
         // then video will start playback but the storyboard is not ready yet.
-        getRenderer(true);
+        getLiveStreamRenderer(true);
+        getStoryboardRenderer(true);
     }
 
     @Nullable
-    private static LiveStreamRenderer getRenderer(boolean waitForCompletion) {
-        Future<LiveStreamRenderer> future = rendererFuture;
+    private static LiveStreamRenderer getLiveStreamRenderer(boolean waitForCompletion) {
+        Future<LiveStreamRenderer> future = liveStreamRendererFuture;
         if (future != null) {
             try {
                 if (waitForCompletion || future.isDone()) {
@@ -279,5 +285,103 @@ public class SpoofClientPatch {
             }
         }
         return null;
+    }
+
+    @Nullable
+    private static StoryboardRenderer getStoryboardRenderer(boolean waitForCompletion) {
+        Future<StoryboardRenderer> future = storyboardRendererFuture;
+        if (future != null) {
+            try {
+                if (waitForCompletion || future.isDone()) {
+                    return future.get(20000, TimeUnit.MILLISECONDS); // Any arbitrarily large timeout.
+                } // else, return null.
+            } catch (TimeoutException ex) {
+                Logger.printDebug(() -> "Could not get renderer (get timed out)");
+            } catch (ExecutionException | InterruptedException ex) {
+                // Should never happen.
+                Logger.printException(() -> "Could not get renderer", ex);
+            }
+        }
+        return null;
+    }
+
+    private static boolean useFetchedStoryboardRenderer() {
+        if (!SPOOF_CLIENT_ENABLED || isShortsOrClips) {
+            return false;
+        }
+
+        // No seekbar thumbnail or low quality seekbar thumbnail.
+        final ClientType clientType = getSpoofClientType();
+        return clientType == ClientType.ANDROID_TESTSUITE || clientType == ClientType.ANDROID_UNPLUGGED;
+    }
+
+    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
+                                                    boolean returnNullIfLiveStream) {
+        if (useFetchedStoryboardRenderer()) {
+            final StoryboardRenderer renderer = getStoryboardRenderer(false);
+            if (renderer != null) {
+                if (returnNullIfLiveStream && renderer.isLiveStream) {
+                    return null;
+                }
+                String spec = renderer.spec;
+                if (spec != null) {
+                    return spec;
+                }
+            }
+        }
+
+        return originalStoryboardRendererSpec;
+    }
+
+    /**
+     * Injection point.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, false);
+    }
+
+    /**
+     * Injection point.
+     * Uses additional check to handle live streams.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardDecoderRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, true);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static int getStoryboardRecommendedLevel(int originalLevel) {
+        if (useFetchedStoryboardRenderer()) {
+            final StoryboardRenderer renderer = getStoryboardRenderer(false);
+            if (renderer != null) {
+                Integer recommendedLevel = renderer.recommendedLevel;
+                if (recommendedLevel != null) return recommendedLevel;
+            }
+        }
+
+        return originalLevel;
+    }
+
+    /**
+     * Injection point.  Forces seekbar to be shown for paid videos or
+     * if {@link Settings#SPOOF_PLAYER_PARAMETER} is not enabled.
+     */
+    public static boolean getSeekbarThumbnailOverrideValue() {
+        if (!useFetchedStoryboardRenderer()) {
+            return false;
+        }
+        final StoryboardRenderer renderer = getStoryboardRenderer(false);
+        if (renderer == null) {
+            // Spoof storyboard renderer is turned off,
+            // video is paid, or the storyboard fetch timed out.
+            // Show empty thumbnails so the seek time and chapters still show up.
+            return true;
+        }
+        return renderer.spec != null;
     }
 }
