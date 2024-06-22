@@ -97,6 +97,7 @@ public class Utils {
      */
     public static void hideViewUnderCondition(boolean condition, View view) {
         if (!condition) return;
+        if (view == null) return;
 
         view.setVisibility(View.GONE);
     }
@@ -539,6 +540,8 @@ public class Utils {
      * @param view The view to hide.
      */
     public static void hideViewByLayoutParams(View view) {
+        if (view == null) return;
+
         if (view instanceof LinearLayout) {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, 0);
             view.setLayoutParams(layoutParams);
