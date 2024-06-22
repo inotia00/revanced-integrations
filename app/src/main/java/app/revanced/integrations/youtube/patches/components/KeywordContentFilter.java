@@ -15,6 +15,7 @@ import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.shared.utils.ByteTrieSearch;
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.StringTrieSearch;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.RootView;
@@ -103,6 +104,8 @@ public final class KeywordContentFilter extends Filter {
     );
 
     private final StringFilterGroup commentsFilter;
+
+    private final StringTrieSearch commentsFilterExceptions = new StringTrieSearch();
 
     /**
      * The last value of {@link Settings#HIDE_KEYWORD_CONTENT_PHRASES}
@@ -265,6 +268,8 @@ public final class KeywordContentFilter extends Filter {
     }
 
     public KeywordContentFilter() {
+        commentsFilterExceptions.addPatterns("engagement_toolbar");
+
         commentsFilter = new StringFilterGroup(
                 Settings.HIDE_KEYWORD_CONTENT_COMMENTS,
                 "comment_thread.eml"
@@ -282,6 +287,9 @@ public final class KeywordContentFilter extends Filter {
         }
 
         if (matchedGroup != commentsFilter && !hideKeywordSettingIsActive()) return false;
+
+        // Do not filter if comments path includes an engagement toolbar (like, dislike...)
+        if (matchedGroup == commentsFilter && commentsFilterExceptions.matches(path)) return false;
 
         // Field is intentionally compared using reference equality.
         //noinspection StringEquality
