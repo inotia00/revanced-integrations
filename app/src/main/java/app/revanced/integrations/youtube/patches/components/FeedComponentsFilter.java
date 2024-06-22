@@ -158,7 +158,7 @@ public final class FeedComponentsFilter extends Filter {
         );
 
         final StringFilterGroup subscriptionsChannelBar = new StringFilterGroup(
-                Settings.HIDE_SUBSCRIPTIONS_CHANNEL_SECTION,
+                Settings.HIDE_SUBSCRIPTIONS_CAROUSEL,
                 "subscriptions_channel_bar"
         );
 
