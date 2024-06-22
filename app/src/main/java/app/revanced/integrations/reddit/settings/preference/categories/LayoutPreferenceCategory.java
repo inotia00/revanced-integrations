@@ -57,6 +57,14 @@ public class LayoutPreferenceCategory extends ConditionalPreferenceCategory {
                     Settings.HIDE_RECENTLY_VISITED_SHELF
             ));
         }
+        if (SettingsStatus.recommendedCommunitiesShelfEnabled) {
+            addPreference(new TogglePreference(
+                    context,
+                    "Hide recommended communities",
+                    "Hides the recommended communities shelves in subreddits.",
+                    Settings.HIDE_RECOMMENDED_COMMUNITIES_SHELF
+            ));
+        }
         if (SettingsStatus.toolBarButtonEnabled) {
             addPreference(new TogglePreference(
                     context,

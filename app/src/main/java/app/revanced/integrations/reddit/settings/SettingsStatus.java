@@ -7,6 +7,7 @@ public class SettingsStatus {
     public static boolean openLinksDirectlyEnabled = false;
     public static boolean openLinksExternallyEnabled = false;
     public static boolean recentlyVisitedShelfEnabled = false;
+    public static boolean recommendedCommunitiesShelfEnabled = false;
     public static boolean sanitizeUrlQueryEnabled = false;
     public static boolean screenshotPopupEnabled = false;
     public static boolean subRedditDialogEnabled = false;
@@ -31,6 +32,10 @@ public class SettingsStatus {
 
     public static void enableRecentlyVisitedShelf() {
         recentlyVisitedShelfEnabled = true;
+    }
+
+    public static void enableRecommendedCommunitiesShelf() {
+        recommendedCommunitiesShelfEnabled = true;
     }
 
     public static void enableSubRedditDialog() {
