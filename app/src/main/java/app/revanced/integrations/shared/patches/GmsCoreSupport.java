@@ -32,6 +32,9 @@ public class GmsCoreSupport {
     private static final String DONT_KILL_MY_APP_LINK
             = "https://dontkillmyapp.com";
 
+    public static final String META_SPOOF_PACKAGE_NAME =
+            GMS_CORE_PACKAGE_NAME + ".SPOOFED_PACKAGE_NAME";
+
     private static void open(Activity mActivity, String queryOrLink) {
         Intent intent;
         try {

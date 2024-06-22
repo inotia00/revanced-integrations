@@ -3,6 +3,8 @@ package app.revanced.integrations.shared.patches;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.utils.Logger;
 
@@ -21,12 +23,29 @@ public class SpoofSignaturePatch extends GmsCoreSupport {
             return packageName;
         }
 
+        final PackageManager packageManager = context.getPackageManager();
+
         // Package name of YouTube or YouTube Music.
-        final String originalPackageName = getOriginalPackageName();
+        String originalPackageName;
 
         try {
-            PackageManager manager = context.getPackageManager();
-            manager.getPackageInfo(originalPackageName, PackageManager.GET_ACTIVITIES);
+            originalPackageName = packageManager
+                    .getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                    .applicationInfo
+                    .metaData
+                    .getString(META_SPOOF_PACKAGE_NAME);
+        } catch (PackageManager.NameNotFoundException exception) {
+            Logger.printDebug(() -> "Failed to parsing metadata");
+            return packageName;
+        }
+
+        if (StringUtils.isBlank(originalPackageName)) {
+            Logger.printDebug(() -> "Failed to parsing spoofed package name");
+            return packageName;
+        }
+
+        try {
+            packageManager.getPackageInfo(originalPackageName, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException exception) {
             Logger.printDebug(() -> "Original app was not found");
             return packageName;
@@ -46,11 +65,5 @@ public class SpoofSignaturePatch extends GmsCoreSupport {
         Logger.printDebug(() -> logMessage);
 
         return originalPackageName;
-    }
-
-
-    // Modified by a patch. Do not touch.
-    private static String getOriginalPackageName() {
-        return "com.google.android.youtube";
     }
 }
