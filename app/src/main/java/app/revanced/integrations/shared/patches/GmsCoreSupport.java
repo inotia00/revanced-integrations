@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.provider.Settings;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -32,7 +34,7 @@ public class GmsCoreSupport {
     private static final String DONT_KILL_MY_APP_LINK
             = "https://dontkillmyapp.com";
 
-    public static final String META_SPOOF_PACKAGE_NAME =
+    private static final String META_SPOOF_PACKAGE_NAME =
             GMS_CORE_PACKAGE_NAME + ".SPOOFED_PACKAGE_NAME";
 
     private static void open(Activity mActivity, String queryOrLink) {
@@ -113,7 +115,7 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not running in the background.
      */
-    public static boolean contentProviderClientUnAvailable(Context context) {
+    private static boolean contentProviderClientUnAvailable(Context context) {
         // Check if GmsCore is running in the background.
         // Do this check before the battery optimization check.
         try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
@@ -131,11 +133,58 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not whitelisted from battery optimizations.
      */
-    public static boolean batteryOptimizationsEnabled(Context context) {
+    private static boolean batteryOptimizationsEnabled(Context context) {
         if (context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
             return !powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME);
         }
         return false;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static String spoofPackageName(Context context) {
+        // Package name of ReVanced.
+        final String packageName = context.getPackageName();
+
+        try {
+            final PackageManager packageManager = context.getPackageManager();
+
+            // Package name of YouTube or YouTube Music.
+            String originalPackageName;
+
+            try {
+                originalPackageName = packageManager
+                        .getPackageInfo(packageName, PackageManager.GET_META_DATA)
+                        .applicationInfo
+                        .metaData
+                        .getString(META_SPOOF_PACKAGE_NAME);
+            } catch (PackageManager.NameNotFoundException exception) {
+                Logger.printDebug(() -> "Failed to parsing metadata");
+                return packageName;
+            }
+
+            if (StringUtils.isBlank(originalPackageName)) {
+                Logger.printDebug(() -> "Failed to parsing spoofed package name");
+                return packageName;
+            }
+
+            try {
+                packageManager.getPackageInfo(originalPackageName, PackageManager.GET_ACTIVITIES);
+            } catch (PackageManager.NameNotFoundException exception) {
+                Logger.printDebug(() -> "Original app '" + originalPackageName + "' was not found");
+                return packageName;
+            }
+
+            final String logMessage = "Package name of '" + packageName + "' spoofed to '" + originalPackageName + "'";
+            Logger.printDebug(() -> logMessage);
+
+            return originalPackageName;
+        } catch (Exception ex) {
+            Logger.printException(() -> "spoofPackageName failure", ex);
+        }
+
+        return packageName;
     }
 
     private static String getGmsCoreDownload() {
