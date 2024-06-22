@@ -23,13 +23,16 @@ public final class QuickActionFilter extends Filter {
         addIdentifierCallbacks(quickActionRule);
         bufferFilterPathRule = new StringFilterGroup(
                 null,
-                "|ContainerType|button.eml|"
+                "|ContainerType|button.eml|",
+                "|fullscreen_video_action_button.eml|"
         );
 
         liveChatReplay = new StringFilterGroup(
                 Settings.HIDE_LIVE_CHAT_REPLAY_BUTTON,
-                "live_chat_ep_entrypoint"
+                "live_chat_ep_entrypoint.eml"
         );
+
+        addIdentifierCallbacks(liveChatReplay);
 
         addPathCallbacks(
                 new StringFilterGroup(
@@ -56,8 +59,7 @@ public final class QuickActionFilter extends Filter {
                         Settings.HIDE_RELATED_VIDEO_OVERLAY,
                         "fullscreen_related_videos"
                 ),
-                bufferFilterPathRule,
-                liveChatReplay
+                bufferFilterPathRule
         );
 
         bufferButtonsGroupList.addAll(
