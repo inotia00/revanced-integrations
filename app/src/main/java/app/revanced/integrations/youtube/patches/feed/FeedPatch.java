@@ -83,11 +83,11 @@ public class FeedPatch {
     }
 
     public static boolean hideSubscriptionsChannelSection() {
-        return Settings.HIDE_SUBSCRIPTIONS_CHANNEL_SECTION.get();
+        return Settings.HIDE_SUBSCRIPTIONS_CAROUSEL.get();
     }
 
     public static void hideSubscriptionsChannelSection(View view) {
-        hideViewUnderCondition(Settings.HIDE_SUBSCRIPTIONS_CHANNEL_SECTION, view);
+        hideViewUnderCondition(Settings.HIDE_SUBSCRIPTIONS_CAROUSEL, view);
     }
 
     private static FrameLayout.LayoutParams layoutParams;
