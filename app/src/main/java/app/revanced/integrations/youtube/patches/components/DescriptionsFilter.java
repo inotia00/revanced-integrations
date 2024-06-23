@@ -2,13 +2,17 @@ package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroupList;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class DescriptionsFilter extends Filter {
-    private final StringFilterGroup chapterSection;
+    private final ByteArrayFilterGroupList macroMarkerShelfGroupList = new ByteArrayFilterGroupList();
+
+    private final StringFilterGroup macroMarkerShelf;
     private final StringFilterGroup shoppingLinks;
 
     public DescriptionsFilter() {
@@ -43,9 +47,9 @@ public final class DescriptionsFilter extends Filter {
                 transcriptSection
         );
 
-        chapterSection = new StringFilterGroup(
-                Settings.HIDE_CHAPTERS_SECTION,
-                "macro_markers_carousel."
+        macroMarkerShelf = new StringFilterGroup(
+                null,
+                "macro_markers_carousel.eml"
         );
 
         shoppingLinks = new StringFilterGroup(
@@ -54,10 +58,20 @@ public final class DescriptionsFilter extends Filter {
                 "shopping_description_shelf"
         );
 
-
         addPathCallbacks(
-                chapterSection,
+                macroMarkerShelf,
                 shoppingLinks
+        );
+
+        macroMarkerShelfGroupList.addAll(
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_CHAPTERS_SECTION,
+                        "chapters_horizontal_shelf"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_KEY_CONCEPTS_SECTION,
+                        "learning_concept_macro_markers_carousel_shelf"
+                )
         );
     }
 
@@ -65,8 +79,15 @@ public final class DescriptionsFilter extends Filter {
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         // Check for the index because of likelihood of false positives.
-        if (matchedGroup == chapterSection || matchedGroup == shoppingLinks) {
+        if (matchedGroup == shoppingLinks) {
             if (contentIndex != 0) {
+                return false;
+            }
+        } else if (matchedGroup == macroMarkerShelf) {
+            if (contentIndex != 0) {
+                return false;
+            }
+            if (!macroMarkerShelfGroupList.check(protobufBufferArray).isFiltered()) {
                 return false;
             }
         }
