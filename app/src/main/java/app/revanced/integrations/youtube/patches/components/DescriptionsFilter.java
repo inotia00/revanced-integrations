@@ -23,8 +23,8 @@ public final class DescriptionsFilter extends Filter {
         );
 
         // game section, music section and places section now use the same identifier in the latest version.
-        final StringFilterGroup suggestionSection = new StringFilterGroup(
-                Settings.HIDE_SUGGESTIONS_SECTION,
+        final StringFilterGroup attributesSection = new StringFilterGroup(
+                Settings.HIDE_ATTRIBUTES_SECTION,
                 "gaming_section.eml",
                 "music_section.eml",
                 "place_section.eml",
@@ -37,9 +37,9 @@ public final class DescriptionsFilter extends Filter {
         );
 
         addIdentifierCallbacks(
+                attributesSection,
                 infoCardsSection,
                 podcastSection,
-                suggestionSection,
                 transcriptSection
         );
 
