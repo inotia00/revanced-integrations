@@ -13,11 +13,18 @@ public final class ActionButtonsFilter extends Filter {
     private static final String VIDEO_ACTION_BAR_PATH_PREFIX = "video_action_bar.eml";
     private static final String ANIMATED_VECTOR_TYPE_PATH = "AnimatedVectorType";
 
+    private final StringFilterGroup actionBarRule;
     private final StringFilterGroup bufferFilterPathRule;
     private final StringFilterGroup likeSubscribeGlow;
     private final ByteArrayFilterGroupList bufferButtonsGroupList = new ByteArrayFilterGroupList();
 
     public ActionButtonsFilter() {
+        actionBarRule = new StringFilterGroup(
+                null,
+                VIDEO_ACTION_BAR_PATH_PREFIX
+        );
+        addIdentifierCallbacks(actionBarRule);
+
         bufferFilterPathRule = new StringFilterGroup(
                 null,
                 "|ContainerType|button.eml|"
@@ -75,10 +82,23 @@ public final class ActionButtonsFilter extends Filter {
         );
     }
 
+    private boolean isEveryFilterGroupEnabled() {
+        for (StringFilterGroup group : pathCallbacks)
+            if (!group.isEnabled()) return false;
+
+        for (ByteArrayFilterGroup group : bufferButtonsGroupList)
+            if (!group.isEnabled()) return false;
+
+        return true;
+    }
+
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (!path.startsWith(VIDEO_ACTION_BAR_PATH_PREFIX)) {
+            return false;
+        }
+        if (matchedGroup == actionBarRule && !isEveryFilterGroupEnabled()) {
             return false;
         }
         if (matchedGroup == likeSubscribeGlow) {
