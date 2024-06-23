@@ -90,7 +90,7 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {

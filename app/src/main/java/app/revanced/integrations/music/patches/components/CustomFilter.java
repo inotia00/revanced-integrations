@@ -142,7 +142,7 @@ public final class CustomFilter extends Filter {
 
         if (!groups.isEmpty()) {
             CustomFilterGroup[] groupsArray = groups.toArray(new CustomFilterGroup[0]);
-            Logger.printDebug(()-> "Using Custom filters: " + Arrays.toString(groupsArray));
+            Logger.printDebug(() -> "Using Custom filters: " + Arrays.toString(groupsArray));
             addPathCallbacks(groupsArray);
         }
     }

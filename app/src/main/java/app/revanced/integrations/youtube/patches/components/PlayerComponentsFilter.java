@@ -15,6 +15,7 @@ public final class PlayerComponentsFilter extends Filter {
     private final StringFilterGroup channelBar;
     private final StringTrieSearch suggestedActionsException = new StringTrieSearch();
     private final StringFilterGroup suggestedActions;
+
     public PlayerComponentsFilter() {
         suggestedActionsException.addPatterns(
                 "channel_bar",
@@ -110,7 +111,7 @@ public final class PlayerComponentsFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == suggestedActions) {
             // suggested actions button on shorts and the suggested actions button on video players use the same path builder.
             // Check PlayerType to make each setting work independently.

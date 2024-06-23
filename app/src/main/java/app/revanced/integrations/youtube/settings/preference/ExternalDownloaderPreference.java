@@ -24,7 +24,9 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
-/** @noinspection all */
+/**
+ * @noinspection all
+ */
 public class ExternalDownloaderPreference extends Preference implements Preference.OnPreferenceClickListener {
 
     private static final StringSetting settings = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
@@ -38,8 +40,10 @@ public class ExternalDownloaderPreference extends Preference implements Preferen
     private final TextWatcher textWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
+
         public void afterTextChanged(Editable s) {
             packageName = s.toString();
             mClickedDialogEntryIndex = Arrays.asList(mEntryValues).indexOf(packageName);
@@ -55,14 +59,17 @@ public class ExternalDownloaderPreference extends Preference implements Preferen
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
     public ExternalDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
+
     public ExternalDownloaderPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
+
     public ExternalDownloaderPreference(Context context) {
         super(context);
         init();

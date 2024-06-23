@@ -25,7 +25,7 @@ public class CreateSegmentButtonController {
      */
     public static void initialize(View youtubeControlsLayout) {
         try {
-            ImageView imageView = Objects.requireNonNull(getChildView(youtubeControlsLayout,"revanced_sb_create_segment_button"));
+            ImageView imageView = Objects.requireNonNull(getChildView(youtubeControlsLayout, "revanced_sb_create_segment_button"));
             imageView.setVisibility(View.GONE);
             imageView.setOnClickListener(v -> SponsorBlockViewController.toggleNewSegmentLayoutVisibility());
             buttonReference = new WeakReference<>(imageView);

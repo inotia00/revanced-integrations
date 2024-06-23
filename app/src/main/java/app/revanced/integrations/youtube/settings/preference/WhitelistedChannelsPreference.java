@@ -63,14 +63,17 @@ public class WhitelistedChannelsPreference extends Preference implements Prefere
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
     public WhitelistedChannelsPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
+
     public WhitelistedChannelsPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
+
     public WhitelistedChannelsPreference(Context context) {
         super(context);
         init();
@@ -86,7 +89,7 @@ public class WhitelistedChannelsPreference extends Preference implements Prefere
     public static void showWhitelistedChannelDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(str("revanced_whitelist_settings_title"));
-        builder.setItems(mEntries, (dialog, which) -> showWhitelistedChannelDialog(context,  mEntryValues[which]));
+        builder.setItems(mEntries, (dialog, which) -> showWhitelistedChannelDialog(context, mEntryValues[which]));
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
     }

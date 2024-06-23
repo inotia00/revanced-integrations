@@ -208,7 +208,7 @@ public final class AlternativeThumbnailsPatch {
     /**
      * Build the alternative thumbnail url using DeArrow thumbnail cache.
      *
-     * @param videoId ID of the video to get a thumbnail of.  Can be any video (regular or Short).
+     * @param videoId     ID of the video to get a thumbnail of.  Can be any video (regular or Short).
      * @param fallbackUrl URL to fall back to in case.
      * @return The alternative thumbnail url, without tracking parameters.
      */
@@ -655,16 +655,26 @@ public final class AlternativeThumbnailsPatch {
         }
 
         final String originalFullUrl;
-        /** Full usable url, but stripped of any tracking information. */
+        /**
+         * Full usable url, but stripped of any tracking information.
+         */
         final String sanitizedUrl;
-        /** Url up to the video ID. */
+        /**
+         * Url up to the video ID.
+         */
         final String urlPrefix;
         final String videoId;
-        /** Quality, such as hq720 or sddefault. */
+        /**
+         * Quality, such as hq720 or sddefault.
+         */
         final String imageQuality;
-        /** JPG or WEBP */
+        /**
+         * JPG or WEBP
+         */
         final String imageExtension;
-        /** User view tracking parameters, only present on some images. */
+        /**
+         * User view tracking parameters, only present on some images.
+         */
         final String viewTrackingParameters;
 
         DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
@@ -679,7 +689,9 @@ public final class AlternativeThumbnailsPatch {
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
 
-        /** @noinspection SameParameterValue */
+        /**
+         * @noinspection SameParameterValue
+         */
         String createStillsUrl(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.

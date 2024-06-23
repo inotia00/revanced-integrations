@@ -17,7 +17,9 @@ import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFr
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 
-/** @noinspection deprecation, unused */
+/**
+ * @noinspection deprecation, unused
+ */
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
     private String existingSettings;
@@ -39,14 +41,17 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
     public ImportExportPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
+
     public ImportExportPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
+
     public ImportExportPreference(Context context) {
         super(context);
         init();

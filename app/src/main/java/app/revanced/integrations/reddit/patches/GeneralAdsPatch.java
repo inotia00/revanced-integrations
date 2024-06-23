@@ -14,7 +14,7 @@ public final class GeneralAdsPatch {
         final List<Object> filteredList = new ArrayList<>();
 
         for (Object item : links) {
-            if (item instanceof ILink  iLink && iLink.getPromoted()) continue;
+            if (item instanceof ILink iLink && iLink.getPromoted()) continue;
 
             filteredList.add(item);
         }

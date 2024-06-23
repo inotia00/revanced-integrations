@@ -37,9 +37,9 @@ public class FeedPatch {
      * Rather than simply hiding the channel tab view, completely removes channel tab from list.
      * If a channel tab is removed from the list, users will not be able to open it by swiping.
      *
-     * @param channelTabText    Text to be assigned to channel tab, such as 'Shorts', 'Playlists', 'Community', 'Store'.
-     *                          This text is hardcoded, so it follows the user's language.
-     * @return  Whether to remove the channel tab from the list.
+     * @param channelTabText Text to be assigned to channel tab, such as 'Shorts', 'Playlists', 'Community', 'Store'.
+     *                       This text is hardcoded, so it follows the user's language.
+     * @return Whether to remove the channel tab from the list.
      */
     public static boolean hideChannelTab(String channelTabText) {
         if (!Settings.HIDE_CHANNEL_TAB.get()) {
@@ -162,7 +162,7 @@ public class FeedPatch {
                         parentView.setPadding(0, 0, 0, 0);
                         expandButtonContainer.setLayoutParams(new FrameLayout.LayoutParams(0, 0));
                     }
-                },0
+                }, 0
         );
     }
 
@@ -193,7 +193,7 @@ public class FeedPatch {
     /**
      * hide feed flyout panel for tablet
      *
-     * @param menuTextView     flyout text view
+     * @param menuTextView          flyout text view
      * @param menuTitleCharSequence raw text
      */
     public static void hideFlyoutMenu(TextView menuTextView, CharSequence menuTitleCharSequence) {

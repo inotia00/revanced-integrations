@@ -45,7 +45,9 @@ import java.util.concurrent.TimeUnit;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import kotlin.text.Regex;
 
-/** @noinspection deprecation*/
+/**
+ * @noinspection deprecation
+ */
 public class Utils {
 
     private static WeakReference<Activity> activityRef = new WeakReference<>(null);
@@ -172,7 +174,7 @@ public class Utils {
         if (view != null) {
             return (R) view;
         } else {
-            throw new IllegalArgumentException("View with name" + str +" not found");
+            throw new IllegalArgumentException("View with name" + str + " not found");
         }
     }
 
@@ -255,7 +257,7 @@ public class Utils {
 
     public static Context getContext() {
         if (context == null) {
-            Logger.initializationException(Utils.class, "Context is null, returning null!",  null);
+            Logger.initializationException(Utils.class, "Context is null, returning null!", null);
         }
         return context;
     }
@@ -275,8 +277,8 @@ public class Utils {
      * If Locale changes, resources should also change and be saved locally.
      * Otherwise, {@link ResourceUtils#getString(String)} will be updated to the incorrect language.
      *
-     * @param mContext  Context to check locale.
-     * @return          Context with locale applied.
+     * @param mContext Context to check locale.
+     * @return Context with locale applied.
      */
     public static Context getLocalizedContextAndSetResources(Context mContext) {
         Activity mActivity = activityRef.get();
@@ -537,6 +539,7 @@ public class Utils {
 
     /**
      * Hide a view by setting its layout params to 0x0
+     *
      * @param view The view to hide.
      */
     public static void hideViewByLayoutParams(View view) {

@@ -44,7 +44,7 @@ public enum CategoryBehaviour {
 
     @Nullable
     public static CategoryBehaviour byReVancedKeyValue(@NonNull String keyValue) {
-        for (CategoryBehaviour behaviour : values()){
+        for (CategoryBehaviour behaviour : values()) {
             if (behaviour.reVancedKeyValue.equals(keyValue)) {
                 return behaviour;
             }
@@ -100,6 +100,7 @@ public enum CategoryBehaviour {
         }
         return behaviorKeyValues;
     }
+
     static String[] getBehaviorKeyValuesWithoutSkipOnce() {
         if (behaviorKeyValuesWithoutSkipOnce == null) {
             createNameAndKeyArrays();
@@ -113,6 +114,7 @@ public enum CategoryBehaviour {
         }
         return behaviorDescriptions;
     }
+
     static String[] getBehaviorDescriptionsWithoutSkipOnce() {
         if (behaviorDescriptionsWithoutSkipOnce == null) {
             createNameAndKeyArrays();

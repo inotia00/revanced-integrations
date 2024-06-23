@@ -23,7 +23,9 @@ import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 
-/** @noinspection all */
+/**
+ * @noinspection all
+ */
 public class ExternalDownloaderPreference {
 
     private static final StringSetting settings = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
@@ -37,8 +39,10 @@ public class ExternalDownloaderPreference {
     private static final TextWatcher textWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
+
         public void afterTextChanged(Editable s) {
             packageName = s.toString();
             mClickedDialogEntryIndex = Arrays.asList(mEntryValues).indexOf(packageName);

@@ -247,7 +247,7 @@ public class ReturnYouTubeDislike {
                     : "\u200E"; // u200E = left to right character
             final Spannable leftSeparatorSpan;
             if (isRollingNumber) {
-                 leftSeparatorSpan = new SpannableString(leftSeparatorString);
+                leftSeparatorSpan = new SpannableString(leftSeparatorString);
             } else {
                 leftSeparatorString += "  ";
                 leftSeparatorSpan = new SpannableString(leftSeparatorString);
@@ -645,6 +645,7 @@ public class ReturnYouTubeDislike {
  */
 class FixedWidthEmptySpan extends ReplacementSpan {
     final int fixedWidth;
+
     /**
      * @param fixedWith Fixed width in screen pixels.
      */
@@ -652,11 +653,13 @@ class FixedWidthEmptySpan extends ReplacementSpan {
         this.fixedWidth = fixedWith;
         if (fixedWith < 0) throw new IllegalArgumentException();
     }
+
     @Override
     public int getSize(@NonNull Paint paint, @NonNull CharSequence text,
                        int start, int end, @Nullable Paint.FontMetricsInt fontMetrics) {
         return fixedWidth;
     }
+
     @Override
     public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end,
                      float x, int top, int y, int bottom, @NonNull Paint paint) {

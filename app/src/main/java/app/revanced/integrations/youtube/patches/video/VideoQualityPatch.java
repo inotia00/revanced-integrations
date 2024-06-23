@@ -23,8 +23,8 @@ public class VideoQualityPatch {
      * Injection point.
      */
     public static void newVideoStarted(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
-                                           @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
-                                           final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
+                                       @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
+                                       final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
         if (PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL)
             return;
         if (videoId.equals(newlyLoadedVideoId))

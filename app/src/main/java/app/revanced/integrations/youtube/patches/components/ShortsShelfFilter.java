@@ -24,7 +24,7 @@ public final class ShortsShelfFilter extends Filter {
     private static final StringTrieSearch feedGroup = new StringTrieSearch();
     private static final BooleanSetting hideShortsShelf = Settings.HIDE_SHORTS_SHELF;
     private static final boolean hideHomeAndRelatedVideos = Settings.HIDE_SHORTS_SHELF_HOME_RELATED_VIDEOS.get();
-    private static final boolean  hideSubscriptions = Settings.HIDE_SHORTS_SHELF_SUBSCRIPTIONS.get();
+    private static final boolean hideSubscriptions = Settings.HIDE_SHORTS_SHELF_SUBSCRIPTIONS.get();
     private static final boolean hideSearch = Settings.HIDE_SHORTS_SHELF_SEARCH.get();
     private static final boolean hideHistory = Settings.HIDE_SHORTS_SHELF_HISTORY.get();
     private final StringTrieSearch exceptions = new StringTrieSearch();
@@ -78,7 +78,7 @@ public final class ShortsShelfFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (exceptions.matches(path))
             return false;
         if (!shouldHideShortsFeedItems())
@@ -134,7 +134,7 @@ public final class ShortsShelfFilter extends Filter {
             case BROWSE_ID_HISTORY -> {
                 return hideHistory;
             }
-            case  BROWSE_ID_SUBSCRIPTIONS -> {
+            case BROWSE_ID_SUBSCRIPTIONS -> {
                 return hideSubscriptions;
             }
             default -> {

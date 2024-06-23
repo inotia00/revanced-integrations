@@ -14,27 +14,35 @@ public class LongSetting extends Setting<Long> {
     public LongSetting(String key, Long defaultValue) {
         super(key, defaultValue);
     }
+
     public LongSetting(String key, Long defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
+
     public LongSetting(String key, Long defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
+
     public LongSetting(String key, Long defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
+
     public LongSetting(String key, Long defaultValue, Availability availability) {
         super(key, defaultValue, availability);
     }
+
     public LongSetting(String key, Long defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
+
     public LongSetting(String key, Long defaultValue, boolean rebootApp, Availability availability) {
         super(key, defaultValue, rebootApp, availability);
     }
+
     public LongSetting(String key, Long defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
+
     public LongSetting(@NonNull String key, @NonNull Long defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
         super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }

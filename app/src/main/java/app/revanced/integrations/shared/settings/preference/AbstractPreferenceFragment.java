@@ -120,7 +120,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      * Updates all Preferences values and their availability using the current values in {@link Setting}.
      */
     protected void updateUIToSettingValues() {
-        updatePreferenceScreen(getPreferenceScreen(), true,true);
+        updatePreferenceScreen(getPreferenceScreen(), true, true);
     }
 
     /**
@@ -191,7 +191,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     /**
      * Updates a UI Preference with the {@link Setting} that backs it.
      *
-     * @param syncSetting If the UI should be synced {@link Setting} <-> Preference
+     * @param syncSetting              If the UI should be synced {@link Setting} <-> Preference
      * @param applySettingToPreference If true, then apply {@link Setting} -> Preference.
      *                                 If false, then apply {@link Setting} <- Preference.
      */

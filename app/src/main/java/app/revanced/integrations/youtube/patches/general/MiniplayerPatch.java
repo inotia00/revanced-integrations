@@ -27,7 +27,9 @@ public final class MiniplayerPatch {
      * Mini player type. Null fields indicates to use the original un-patched value.
      */
     public enum MiniplayerType {
-        /** Unmodified type, and same as un-patched. */
+        /**
+         * Unmodified type, and same as un-patched.
+         */
         ORIGINAL(null, null),
         PHONE(false, null),
         TABLET(true, null),

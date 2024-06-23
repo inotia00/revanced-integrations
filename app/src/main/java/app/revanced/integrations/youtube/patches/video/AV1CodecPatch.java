@@ -17,7 +17,7 @@ public class AV1CodecPatch {
      * Replace the SW AV01 codec to VP9 codec.
      * May not be valid on some clients.
      *
-     * @param original  hardcoded value - "video/av01"
+     * @param original hardcoded value - "video/av01"
      */
     public static String replaceCodec(String original) {
         return Settings.REPLACE_AV1_CODEC.get() ? VP9_CODEC : original;
@@ -29,13 +29,13 @@ public class AV1CodecPatch {
      * <p>
      * Limitation: Fallback process causes about 15-20 seconds of buffering.
      *
-     * @param literalValue  literal value of the codec
+     * @param literalValue literal value of the codec
      */
     public static int rejectResponse(int literalValue) {
         if (!Settings.REJECT_AV1_CODEC.get())
             return literalValue;
 
-        Logger.printDebug(()-> "Response: " + literalValue);
+        Logger.printDebug(() -> "Response: " + literalValue);
 
         if (literalValue != LITERAL_VALUE_AV01)
             return literalValue;

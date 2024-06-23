@@ -14,7 +14,8 @@ import app.revanced.integrations.shared.utils.StringTrieSearch;
 /**
  * Placeholder for actual filters.
  */
-final class DummyFilter extends Filter { }
+final class DummyFilter extends Filter {
+}
 
 @SuppressWarnings("unused")
 public final class LithoFilterPatch {
@@ -81,7 +82,7 @@ public final class LithoFilterPatch {
         }
     }
 
-    private static final Filter[] filters = new Filter[] {
+    private static final Filter[] filters = new Filter[]{
             new DummyFilter() // Replaced by patch.
     };
 

@@ -14,27 +14,35 @@ public class StringSetting extends Setting<String> {
     public StringSetting(String key, String defaultValue) {
         super(key, defaultValue);
     }
+
     public StringSetting(String key, String defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
+
     public StringSetting(String key, String defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
+
     public StringSetting(String key, String defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
+
     public StringSetting(String key, String defaultValue, Availability availability) {
         super(key, defaultValue, availability);
     }
+
     public StringSetting(String key, String defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
+
     public StringSetting(String key, String defaultValue, boolean rebootApp, Availability availability) {
         super(key, defaultValue, rebootApp, availability);
     }
+
     public StringSetting(String key, String defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
+
     public StringSetting(@NonNull String key, @NonNull String defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
         super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }

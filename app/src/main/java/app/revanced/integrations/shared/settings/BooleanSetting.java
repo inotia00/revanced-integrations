@@ -13,27 +13,35 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue) {
         super(key, defaultValue);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, Availability availability) {
         super(key, defaultValue, availability);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, Availability availability) {
         super(key, defaultValue, rebootApp, availability);
     }
+
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
+
     public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
         super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }

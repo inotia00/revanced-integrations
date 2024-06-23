@@ -270,7 +270,9 @@ public class ReturnYouTubeDislike {
         return destination;
     }
 
-    /** @noinspection deprecation*/
+    /**
+     * @noinspection deprecation
+     */
     private static String formatDislikeCount(long dislikeCount) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikeCountFormatter == null) {
@@ -286,7 +288,9 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    /** @noinspection deprecation*/
+    /**
+     * @noinspection deprecation
+     */
     private static String formatDislikePercentage(float dislikePercentage) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {

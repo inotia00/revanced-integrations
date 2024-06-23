@@ -22,12 +22,15 @@ public class ResettableEditTextPreference extends EditTextPreference {
     public ResettableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
+
     public ResettableEditTextPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     public ResettableEditTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     public ResettableEditTextPreference(Context context) {
         super(context);
     }

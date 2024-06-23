@@ -19,8 +19,8 @@ public final class RootView {
 
     /**
      * @return If the search bar is on screen.  This includes if the player
-     *         is on screen and the search results are behind the player (and not visible).
-     *         Detecting the search is covered by the player can be done by checking {@link RootView#isPlayerActive()}.
+     * is on screen and the search results are behind the player (and not visible).
+     * Detecting the search is covered by the player can be done by checking {@link RootView#isPlayerActive()}.
      */
     public static boolean isSearchBarActive() {
         View searchbarResults = searchBarResultsRef.get();

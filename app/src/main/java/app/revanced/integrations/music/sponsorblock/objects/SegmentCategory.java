@@ -232,6 +232,7 @@ public enum SegmentCategory {
         this.behaviour = Objects.requireNonNull(behaviour);
         this.behaviorSetting.save(behaviour.reVancedKeyValue);
     }
+
     /**
      * @return HTML color format string
      */
@@ -258,7 +259,9 @@ public enum SegmentCategory {
         return String.format("<font color=\"#%06X\">⬤</font>", color);
     }
 
-    /** @noinspection deprecation*/
+    /**
+     * @noinspection deprecation
+     */
     @NonNull
     public static Spanned getCategoryColorDot(int color) {
         return Html.fromHtml(getCategoryColorDotHTML(color));

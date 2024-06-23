@@ -90,7 +90,7 @@ public abstract class Filter {
      * @return True if the litho component should be filtered out.
      */
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (BaseSettings.ENABLE_DEBUG_LOGGING.get()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {

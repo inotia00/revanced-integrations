@@ -21,16 +21,16 @@ import app.revanced.integrations.youtube.shared.VideoInformation;
 
 /**
  * @noinspection ALL
- *
+ * <p>
  * Searches for video id's in the proto buffer of Shorts dislike.
- *
+ * <p>
  * Because multiple litho dislike spans are created in the background
  * (and also anytime litho refreshes the components, which is somewhat arbitrary),
  * that makes the value of {@link VideoInformation#getVideoId()} and {@link VideoInformation#getPlayerResponseVideoId()}
  * unreliable to determine which video id a Shorts litho span belongs to.
- *
+ * <p>
  * But the correct video id does appear in the protobuffer just before a Shorts litho span is created.
- *
+ * <p>
  * Once a way to asynchronously update litho text is found, this strategy will no longer be needed.
  */
 public final class ReturnYouTubeDislikeFilterPatch extends Filter {

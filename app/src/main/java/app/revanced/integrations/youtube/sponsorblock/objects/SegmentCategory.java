@@ -43,7 +43,9 @@ import app.revanced.integrations.shared.utils.StringRef;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
-/** @noinspection deprecation*/
+/**
+ * @noinspection deprecation
+ */
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("revanced_sb_segments_sponsor"), sf("revanced_sb_segments_sponsor_sum"), sf("revanced_sb_skip_button_sponsor"), sf("revanced_sb_skipped_sponsor"),
             SB_CATEGORY_SPONSOR, SB_CATEGORY_SPONSOR_COLOR),
@@ -71,7 +73,8 @@ public enum SegmentCategory {
     MUSIC_OFFTOPIC("music_offtopic", sf("revanced_sb_segments_nomusic"), sf("revanced_sb_segments_nomusic_sum"), sf("revanced_sb_skip_button_nomusic"), sf("revanced_sb_skipped_nomusic"),
             SB_CATEGORY_MUSIC_OFFTOPIC, SB_CATEGORY_MUSIC_OFFTOPIC_COLOR),
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("revanced_sb_skip_button_unsubmitted"), sf("revanced_sb_skipped_unsubmitted"),
-            SB_CATEGORY_UNSUBMITTED, SB_CATEGORY_UNSUBMITTED_COLOR),;
+            SB_CATEGORY_UNSUBMITTED, SB_CATEGORY_UNSUBMITTED_COLOR),
+    ;
 
     private static final StringRef skipSponsorTextCompact = sf("revanced_sb_skip_button_compact");
     private static final StringRef skipSponsorTextCompactHighlight = sf("revanced_sb_skip_button_compact_highlight");
@@ -265,6 +268,7 @@ public enum SegmentCategory {
         this.behaviour = Objects.requireNonNull(behaviour);
         this.behaviorSetting.save(behaviour.reVancedKeyValue);
     }
+
     /**
      * @return HTML color format string
      */

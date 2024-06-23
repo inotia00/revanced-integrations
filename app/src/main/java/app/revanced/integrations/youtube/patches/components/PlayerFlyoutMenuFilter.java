@@ -131,7 +131,7 @@ public final class PlayerFlyoutMenuFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == playerFlyoutMenu) {
             // Overflow menu is always the start of the path.
             if (contentIndex != 0) {

@@ -52,6 +52,7 @@ public abstract class TrieSearch<T> {
             this.patternLength = patternLength;
             this.callback = callback;
         }
+
         boolean matches(TrieNode<T> enclosingNode, // Used only for the get character method.
                         T searchText, int searchTextLength, int searchTextIndex, Object callbackParameter) {
             if (searchTextLength - searchTextIndex < patternLength - patternStartIndex) {
@@ -126,6 +127,7 @@ public abstract class TrieSearch<T> {
         TrieNode() {
             this.nodeValue = ROOT_NODE_CHARACTER_VALUE;
         }
+
         TrieNode(char nodeCharacterValue) {
             this.nodeValue = nodeCharacterValue;
         }
@@ -202,7 +204,7 @@ public abstract class TrieSearch<T> {
 
         private static <T> boolean addNodeToArray(TrieNode<T>[] array, TrieNode<T> childToAdd) {
             final int insertIndex = hashIndexForTableSize(array.length, childToAdd.nodeValue);
-            if (array[insertIndex] != null ) {
+            if (array[insertIndex] != null) {
                 return false; // Collision.
             }
             array[insertIndex] = childToAdd;
@@ -293,7 +295,9 @@ public abstract class TrieSearch<T> {
         }
 
         abstract TrieNode<T> createNode(char nodeValue);
+
         abstract char getCharValue(T text, int index);
+
         abstract int getTextLength(T text);
     }
 
@@ -364,9 +368,9 @@ public abstract class TrieSearch<T> {
     /**
      * Searches through text, looking for any substring that matches any pattern in this tree.
      *
-     * @param textToSearch Text to search through.
-     * @param startIndex Index to start searching, inclusive value.
-     * @param endIndex Index to stop matching, exclusive value.
+     * @param textToSearch      Text to search through.
+     * @param startIndex        Index to start searching, inclusive value.
+     * @param endIndex          Index to stop matching, exclusive value.
      * @param callbackParameter Optional parameter passed to the callbacks.
      * @return If any pattern matched, and it's callback halted searching.
      */

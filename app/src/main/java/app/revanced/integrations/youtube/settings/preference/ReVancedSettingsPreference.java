@@ -17,7 +17,7 @@ import app.revanced.integrations.youtube.utils.ExtendedUtils;
  * @noinspection ALL
  */
 public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
-    
+
     private static void enableDisablePreferences() {
         for (Setting<?> setting : Setting.allLoadedSettings()) {
             final Preference preference = mPreferenceManager.findPreference(setting.key);
@@ -207,9 +207,9 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
 
     private static void WhitelistPreferenceLinks() {
         final boolean enabled = PatchStatus.RememberPlaybackSpeed() || PatchStatus.SponsorBlock();
-        final String [] whitelistKey = { Settings.OVERLAY_BUTTON_WHITELIST.key, "revanced_whitelist_settings" };
+        final String[] whitelistKey = {Settings.OVERLAY_BUTTON_WHITELIST.key, "revanced_whitelist_settings"};
 
-        for (String key: whitelistKey) {
+        for (String key : whitelistKey) {
             final Preference preference = mPreferenceManager.findPreference(key);
             if (preference != null) {
                 preference.setEnabled(enabled);

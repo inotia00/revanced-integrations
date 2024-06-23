@@ -40,11 +40,11 @@ import app.revanced.integrations.youtube.shared.VideoInformation;
  * A (yet to be implemented) solution that fixes this problem.  Any one of:
  * - Modify patch to hook onto the Shorts Litho TextView, and update the dislikes text asynchronously.
  * - Find a way to force Litho to rebuild it's component tree,
- *   and use that hook to force the shorts dislikes to update after the fetch is completed.
+ * and use that hook to force the shorts dislikes to update after the fetch is completed.
  * - Hook into the dislikes button image view, and replace the dislikes thumb down image with a
- *   generated image of the number of dislikes, then update the image asynchronously.  This Could
- *   also be used for the regular video player to give a better UI layout and completely remove
- *   the need for the Rolling Number patches.
+ * generated image of the number of dislikes, then update the image asynchronously.  This Could
+ * also be used for the regular video player to give a better UI layout and completely remove
+ * the need for the Rolling Number patches.
  */
 @SuppressWarnings("unused")
 public class ReturnYouTubeDislikePatch {

@@ -105,7 +105,8 @@ public final class FeedVideoViewsFilter extends Filter {
     }
 
     private boolean checkDuration(long durationInSeconds, long shorterThan, long longerThan) {
-        if (shorterThan < 0 || longerThan < 0) throw new IllegalArgumentException("Duration cannot be negative.");
+        if (shorterThan < 0 || longerThan < 0)
+            throw new IllegalArgumentException("Duration cannot be negative.");
 
         return durationInSeconds < shorterThan || durationInSeconds > longerThan;
     }

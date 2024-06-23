@@ -56,6 +56,7 @@ public class ThemeUtils {
     /**
      * Since {@link android.widget.Toolbar} is used instead of {@link android.support.v7.widget.Toolbar},
      * We have to manually specify the toolbar background.
+     *
      * @return toolbar background color.
      */
     public static int getToolbarBackgroundColor() {

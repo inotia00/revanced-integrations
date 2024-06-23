@@ -49,6 +49,7 @@ public class ShortsPatch {
     public static boolean hideShortsPaidPromotionLabel() {
         return Settings.HIDE_SHORTS_PAID_PROMOTION_LABEL.get();
     }
+
     public static void hideShortsPaidPromotionLabel(TextView textView) {
         hideViewUnderCondition(Settings.HIDE_SHORTS_PAID_PROMOTION_LABEL.get(), textView);
     }

@@ -7,7 +7,9 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 
-/** @noinspection ALL*/
+/**
+ * @noinspection ALL
+ */
 public class ResourceUtils extends Utils {
 
     private ResourceUtils() {

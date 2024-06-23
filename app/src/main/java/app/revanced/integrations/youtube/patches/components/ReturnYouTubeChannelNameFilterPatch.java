@@ -25,7 +25,7 @@ public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (shortsChannelBarAvatarFilterGroup.check(protobufBufferArray).isFiltered()) {
             setLastShortsChannelId(protobufBufferArray);
         }
@@ -42,8 +42,8 @@ public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
             final String handleIdentifierWithDelimitingCharacter = "❙/@";
 
             final String bufferString = findAsciiStrings(protobufBufferArray);
-            final String splitedBufferString =  channelIdIdentifierCharacter + bufferString.split(channelIdIdentifierWithDelimitingCharacter)[1];
-            final String channelId =  splitedBufferString.split(delimitingCharacter)[0].replaceAll("\"", "");
+            final String splitedBufferString = channelIdIdentifierCharacter + bufferString.split(channelIdIdentifierWithDelimitingCharacter)[1];
+            final String channelId = splitedBufferString.split(delimitingCharacter)[0].replaceAll("\"", "");
             final String handle = handleIdentifierCharacter + splitedBufferString.split(handleIdentifierWithDelimitingCharacter)[1].split(delimitingCharacter)[0];
 
             ReturnYouTubeChannelNamePatch.setLastShortsChannelId(handle.trim(), channelId.trim());

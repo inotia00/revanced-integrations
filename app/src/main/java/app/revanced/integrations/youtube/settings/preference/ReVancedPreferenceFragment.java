@@ -174,7 +174,8 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     public void setPreferenceFragmentToolbar(final String key) {
         PreferenceFragment fragment;
         switch (key) {
-            case "revanced_preference_screen_ryd" -> fragment = new ReturnYouTubeDislikePreferenceFragment();
+            case "revanced_preference_screen_ryd" ->
+                    fragment = new ReturnYouTubeDislikePreferenceFragment();
             case "revanced_preference_screen_sb" -> fragment = new SponsorBlockPreferenceFragment();
             default -> {
                 Logger.printException(() -> "Unknown key: " + key);
@@ -220,7 +221,8 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 if (!(childPreference instanceof PreferenceGroup nestedPreferenceGroup)) continue;
                 putPreferenceScreenMap(preferenceScreenMap, nestedPreferenceGroup);
                 for (Preference nestedPreference : getAllPreferencesBy(nestedPreferenceGroup)) {
-                    if (!(nestedPreference instanceof PreferenceGroup childPreferenceGroup)) continue;
+                    if (!(nestedPreference instanceof PreferenceGroup childPreferenceGroup))
+                        continue;
                     putPreferenceScreenMap(preferenceScreenMap, childPreferenceGroup);
                 }
             }

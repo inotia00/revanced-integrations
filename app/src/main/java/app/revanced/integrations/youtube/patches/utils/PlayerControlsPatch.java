@@ -85,12 +85,12 @@ public class PlayerControlsPatch {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Called whenever a motion event occurs on the player controller.
-     *
+     * <p>
      * When the user touches the player overlay (motion event occurs), the player overlay disappears immediately.
      * In this case, the overlay buttons should also disappear immediately.
-     *
+     * <p>
      * In other words, this method detects when the player overlay disappears immediately upon the user's touch,
      * and quickly fades out all overlay buttons.
      */

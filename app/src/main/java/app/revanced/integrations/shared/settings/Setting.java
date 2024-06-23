@@ -158,24 +158,31 @@ public abstract class Setting<T> {
     public Setting(String key, T defaultValue) {
         this(key, defaultValue, false, true, null, null);
     }
+
     public Setting(String key, T defaultValue, boolean rebootApp) {
         this(key, defaultValue, rebootApp, true, null, null);
     }
+
     public Setting(String key, T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         this(key, defaultValue, rebootApp, includeWithImportExport, null, null);
     }
+
     public Setting(String key, T defaultValue, String userDialogMessage) {
         this(key, defaultValue, false, true, userDialogMessage, null);
     }
+
     public Setting(String key, T defaultValue, Availability availability) {
         this(key, defaultValue, false, true, null, availability);
     }
+
     public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
         this(key, defaultValue, rebootApp, true, userDialogMessage, null);
     }
+
     public Setting(String key, T defaultValue, boolean rebootApp, Availability availability) {
         this(key, defaultValue, rebootApp, true, null, availability);
     }
+
     public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         this(key, defaultValue, rebootApp, true, userDialogMessage, availability);
     }
@@ -366,7 +373,7 @@ public abstract class Setting<T> {
             for (Setting<?> setting : allLoadedSettingsSorted()) {
                 String importExportKey = setting.getImportExportKey();
                 if (json.has(importExportKey)) {
-                     throw new IllegalArgumentException("duplicate key found: " + importExportKey);
+                    throw new IllegalArgumentException("duplicate key found: " + importExportKey);
                 }
 
                 final boolean exportDefaultValues = false; // Enable to see what all settings looks like in the UI.

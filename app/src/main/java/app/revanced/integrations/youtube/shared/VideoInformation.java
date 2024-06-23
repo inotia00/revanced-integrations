@@ -16,6 +16,7 @@ import app.revanced.integrations.youtube.patches.utils.AlwaysRepeatPatch;
 
 /**
  * Hooking class for the current playing video.
+ *
  * @noinspection ALL
  */
 public final class VideoInformation {
@@ -129,12 +130,12 @@ public final class VideoInformation {
     /**
      * Injection point.
      *
-     * @param newlyLoadedChannelId          id of the current channel.
-     * @param newlyLoadedChannelName        name of the current channel.
-     * @param newlyLoadedVideoId            id of the current video.
-     * @param newlyLoadedVideoTitle         title of the current video.
-     * @param newlyLoadedVideoLength        length of the video in milliseconds.
-     * @param newlyLoadedLiveStreamValue    whether the current video is a livestream.
+     * @param newlyLoadedChannelId       id of the current channel.
+     * @param newlyLoadedChannelName     name of the current channel.
+     * @param newlyLoadedVideoId         id of the current video.
+     * @param newlyLoadedVideoTitle      title of the current video.
+     * @param newlyLoadedVideoLength     length of the video in milliseconds.
+     * @param newlyLoadedLiveStreamValue whether the current video is a livestream.
      */
     public static void setVideoInformation(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
                                            @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
@@ -416,13 +417,12 @@ public final class VideoInformation {
 
     /**
      * @return If the playback is at the end of the video.
-     *        <p>
+     * <p>
      * If video is playing in the background with no video visible,
      * this always returns false (even if the video is actually at the end).
      * <p>
      * This is equivalent to checking for {@link VideoState#ENDED},
      * but can give a more up-to-date result for code calling from some hooks.
-     *
      * @see VideoState
      */
     public static boolean isAtEndOfVideo() {

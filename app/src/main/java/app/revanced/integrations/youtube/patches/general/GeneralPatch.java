@@ -122,8 +122,8 @@ public class GeneralPatch {
     /**
      * Returns an array of stream format models containing the default audio tracks.
      *
-     * @param localizedFormatStreamModelArray   stream format model array consisting of audio tracks in the system's language.
-     * @return                                  stream format model array consisting of original audio tracks.
+     * @param localizedFormatStreamModelArray stream format model array consisting of audio tracks in the system's language.
+     * @return stream format model array consisting of original audio tracks.
      */
     public static ArrayList<Object> getFormatStreamModelArray(final ArrayList<Object> localizedFormatStreamModelArray) {
         if (!Settings.DISABLE_AUTO_AUDIO_TRACKS.get()) {
@@ -464,8 +464,8 @@ public class GeneralPatch {
 
     /**
      * Limitation: Premium header will not be applied for YouTube Premium users if the user uses the 'Wide search bar with header' option.
-     *             This is because it forces the deprecated search bar to be loaded.
-     *             As a solution to this limitation, 'Change YouTube header' patch is required.
+     * This is because it forces the deprecated search bar to be loaded.
+     * As a solution to this limitation, 'Change YouTube header' patch is required.
      */
     public static boolean enableWideSearchBarWithHeader(boolean original) {
         if (!wideSearchbarEnabled)
@@ -630,7 +630,7 @@ public class GeneralPatch {
     /**
      * The theme of {@link Shell_SettingsActivity} is dark theme.
      * Since this theme is hardcoded, we should manually specify the theme for the activity.
-     *
+     * <p>
      * Since {@link Shell_SettingsActivity} only invokes {@link SettingsActivity}, finish activity after specifying a theme.
      *
      * @param base {@link Shell_SettingsActivity}

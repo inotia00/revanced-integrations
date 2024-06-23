@@ -110,7 +110,7 @@ public class SharedPrefCategory {
                     return (T) Enum.valueOf(_default.getClass(), enumName);
                 } catch (IllegalArgumentException ex) {
                     // Info level to allow removing enum values in the future without showing any user errors.
-                    Logger.printInfo(() -> "Using default, and ignoring unknown enum value: "  + enumName);
+                    Logger.printInfo(() -> "Using default, and ignoring unknown enum value: " + enumName);
                     removeKey(key);
                 }
             }

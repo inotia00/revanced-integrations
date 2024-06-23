@@ -39,7 +39,9 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
-/** @noinspection deprecation*/
+/**
+ * @noinspection deprecation
+ */
 public class Whitelist {
     private static final String ZERO_WIDTH_SPACE_CHARACTER = "\u200B";
     private static final Map<WhitelistType, ArrayList<VideoChannel>> whitelistMap = parseWhitelist();
@@ -127,7 +129,7 @@ public class Whitelist {
     }
 
     private static void appendStringBuilder(StringBuilder sb, WhitelistType whitelistType,
-                                         String channelId, boolean eol) {
+                                            String channelId, boolean eol) {
         final String status = isWhitelisted(whitelistType, channelId)
                 ? whitelistIncluded
                 : whitelistExcluded;
@@ -150,7 +152,9 @@ public class Whitelist {
         }
     }
 
-    /** @noinspection unchecked*/
+    /**
+     * @noinspection unchecked
+     */
     private static Map<WhitelistType, ArrayList<VideoChannel>> parseWhitelist() {
         WhitelistType[] whitelistTypes = WhitelistType.values();
         Map<WhitelistType, ArrayList<VideoChannel>> whitelistMap = new EnumMap<>(WhitelistType.class);

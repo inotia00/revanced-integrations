@@ -37,12 +37,15 @@ public class OpenDefaultAppSettingsPreference extends Preference {
     public OpenDefaultAppSettingsPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
+
     public OpenDefaultAppSettingsPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     public OpenDefaultAppSettingsPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     public OpenDefaultAppSettingsPreference(Context context) {
         super(context);
     }

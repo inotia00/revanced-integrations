@@ -38,14 +38,17 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
     public ImportExportPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
+
     public ImportExportPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
+
     public ImportExportPreference(Context context) {
         super(context);
         init();

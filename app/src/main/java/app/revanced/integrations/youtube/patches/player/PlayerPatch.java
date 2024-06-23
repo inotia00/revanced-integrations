@@ -197,9 +197,9 @@ public class PlayerPatch {
     /**
      * This method is invoked only when the view type of descriptionView is {@link TextView}. (A/B tests)
      *
-     * @param textView  descriptionView.
-     * @param original  Whether to apply {@link TextView#setTextIsSelectable}.
-     *                  Patch replaces the {@link TextView#setTextIsSelectable} method invoke.
+     * @param textView descriptionView.
+     * @param original Whether to apply {@link TextView#setTextIsSelectable}.
+     *                 Patch replaces the {@link TextView#setTextIsSelectable} method invoke.
      */
     public static void disableVideoDescriptionInteraction(TextView textView, boolean original) {
         if (textView != null) {

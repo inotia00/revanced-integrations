@@ -119,7 +119,7 @@ public class Requester {
      * This does not close the url connection. If further requests to this host are unlikely
      * in the near future, then instead use {@link #parseJSONArrayAndDisconnect(HttpURLConnection)}.
      */
-    public static JSONArray parseJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
+    public static JSONArray parseJSONArray(HttpURLConnection connection) throws JSONException, IOException {
         return new JSONArray(parseString(connection));
     }
 
@@ -130,7 +130,7 @@ public class Requester {
      *
      * @see #parseJSONArray(HttpURLConnection)
      */
-    public static JSONArray parseJSONArrayAndDisconnect(HttpURLConnection connection) throws JSONException, IOException  {
+    public static JSONArray parseJSONArrayAndDisconnect(HttpURLConnection connection) throws JSONException, IOException {
         JSONArray array = parseJSONArray(connection);
         connection.disconnect();
         return array;

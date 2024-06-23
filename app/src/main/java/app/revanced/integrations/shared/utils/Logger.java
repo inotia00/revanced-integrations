@@ -92,8 +92,8 @@ public class Logger {
      * If the calling code is showing it's own error toast,
      * instead use {@link #printInfo(LogMessage, Exception)}
      *
-     * @param message          log message
-     * @param ex               exception (optional)
+     * @param message log message
+     * @param ex      exception (optional)
      */
     public static void printException(@NonNull LogMessage message, @Nullable Throwable ex) {
         String messageString = message.buildMessageString();

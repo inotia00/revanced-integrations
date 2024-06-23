@@ -28,17 +28,17 @@ public final class NavigationBar {
     /**
      * How long to wait for the set nav button latch to be released.  Maximum wait time must
      * be as small as possible while still allowing enough time for the nav bar to update.
-     *
+     * <p>
      * YT calls it's back button handlers out of order,
      * and litho starts filtering before the navigation bar is updated.
-     *
+     * <p>
      * Fixing this situation and not needlessly waiting requires somehow
      * detecting if a back button key-press will cause a tab change.
-     *
+     * <p>
      * Typically after pressing the back button, the time between the first litho event and
      * when the nav button is updated is about 10-20ms. Using 50-100ms here should be enough time
      * and not noticeable, since YT typically takes 100-200ms (or more) to update the view anyways.
-     *
+     * <p>
      * This issue can also be avoided on a patch by patch basis, by avoiding calls to
      * {@link NavigationButton#getSelectedNavigationButton()} unless absolutely necessary.
      */
@@ -48,7 +48,7 @@ public final class NavigationBar {
      * Used as a workaround to fix the issue of YT calling back button handlers out of order.
      * Used to hold calls to {@link NavigationButton#getSelectedNavigationButton()}
      * until the current navigation button can be determined.
-     *
+     * <p>
      * Only used when the hardware back button is pressed.
      */
     @Nullable
@@ -155,7 +155,7 @@ public final class NavigationBar {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Unique hook just for the 'Create' and 'You' tab.
      */
     public static void navigationImageResourceTabLoaded(View view) {
@@ -208,7 +208,9 @@ public final class NavigationBar {
         createNavButtonLatch();
     }
 
-    /** @noinspection EmptyMethod*/
+    /**
+     * @noinspection EmptyMethod
+     */
     private static void navigationTabCreatedCallback(NavigationButton button, View tabView) {
         // Code is added during patching.
     }
@@ -242,7 +244,7 @@ public final class NavigationBar {
         /**
          * 'You' library tab that is sometimes momentarily loaded.
          * When this is loaded, {@link #LIBRARY_YOU} is also present.
-         *
+         * <p>
          * This might be a temporary tab while the user profile photo is loading,
          * but its exact purpose is not entirely clear.
          */
@@ -260,7 +262,7 @@ public final class NavigationBar {
          * This will return null only if the currently selected tab is unknown.
          * This scenario will only happen if the UI has different tabs due to an A/B user test
          * or YT abruptly changes the navigation layout for some other reason.
-         *
+         * <p>
          * All code calling this method should handle a null return value.
          *
          * <b>Due to issues with how YT processes physical back button events,
@@ -268,8 +270,8 @@ public final class NavigationBar {
          * if the device back button was recently pressed.</b>
          *
          * @return The active navigation tab.
-         *         If the user is in the upload video UI, this returns tab that is still visually
-         *         selected on screen (whatever tab the user was on before tapping the upload button).
+         * If the user is in the upload video UI, this returns tab that is still visually
+         * selected on screen (whatever tab the user was on before tapping the upload button).
          */
         @Nullable
         public static NavigationButton getSelectedNavigationButton() {

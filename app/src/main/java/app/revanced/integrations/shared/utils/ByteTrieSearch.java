@@ -10,17 +10,21 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
         ByteTrieNode() {
             super();
         }
+
         ByteTrieNode(char nodeCharacterValue) {
             super(nodeCharacterValue);
         }
+
         @Override
         TrieNode<byte[]> createNode(char nodeCharacterValue) {
             return new ByteTrieNode(nodeCharacterValue);
         }
+
         @Override
         char getCharValue(byte[] text, int index) {
             return (char) text[index];
         }
+
         @Override
         int getTextLength(byte[] text) {
             return text.length;

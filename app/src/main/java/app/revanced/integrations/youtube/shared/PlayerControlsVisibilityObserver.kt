@@ -26,7 +26,11 @@ class PlayerControlsVisibilityObserverImpl(
      * id of R.id.player_control_play_pause_replay_button_touch_area
      */
     private val controlsLayoutId =
-        getIdentifier("player_control_play_pause_replay_button_touch_area", ResourceType.ID, activity)
+        getIdentifier(
+            "player_control_play_pause_replay_button_touch_area",
+            ResourceType.ID,
+            activity
+        )
 
     /**
      * reference to the controls layout view

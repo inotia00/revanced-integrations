@@ -72,7 +72,7 @@ public class SponsorBlockViewController {
 
             Context context = Utils.getContext();
             RelativeLayout layout = new RelativeLayout(context);
-            layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT));
+            layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             LayoutInflater.from(context).inflate(getLayoutIdentifier("revanced_sb_inline_sponsor_overlay"), layout);
             inlineSponsorOverlayRef = new WeakReference<>(layout);
 
@@ -86,6 +86,7 @@ public class SponsorBlockViewController {
                         layout.bringToFront();
                     }
                 }
+
                 @Override
                 public void onChildViewRemoved(View parent, View child) {
                 }
@@ -120,6 +121,7 @@ public class SponsorBlockViewController {
         final boolean buttonVisibility = newSegmentLayout == null || newSegmentLayout.getVisibility() != View.VISIBLE;
         updateSkipButton(skipHighlightButtonRef.get(), segment, buttonVisibility);
     }
+
     public static void showSkipSegmentButton(@NonNull SponsorSegment segment) {
         skipSegment = Objects.requireNonNull(segment);
         updateSkipButton(skipSponsorButtonRef.get(), segment, true);
@@ -129,6 +131,7 @@ public class SponsorBlockViewController {
         skipHighlight = null;
         updateSkipButton(skipHighlightButtonRef.get(), null, false);
     }
+
     public static void hideSkipSegmentButton() {
         skipSegment = null;
         updateSkipButton(skipSponsorButtonRef.get(), null, false);
@@ -206,6 +209,7 @@ public class SponsorBlockViewController {
             setLayoutMargins(button, fullScreen);
         }
     }
+
     private static void setLayoutMargins(@NonNull View view, boolean fullScreen) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
         if (params == null) {

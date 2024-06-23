@@ -80,7 +80,7 @@ public class FullscreenAdsPatch {
             this.code = code;
         }
 
-        private static DialogType getDialogType(int code){
+        private static DialogType getDialogType(int code) {
             return Arrays.stream(values())
                     .filter(val -> code == val.code)
                     .findFirst()

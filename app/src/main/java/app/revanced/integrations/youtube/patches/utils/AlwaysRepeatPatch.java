@@ -10,6 +10,7 @@ public class AlwaysRepeatPatch {
 
     /**
      * Injection point.
+     *
      * @return video is repeated.
      */
     public static boolean alwaysRepeat() {

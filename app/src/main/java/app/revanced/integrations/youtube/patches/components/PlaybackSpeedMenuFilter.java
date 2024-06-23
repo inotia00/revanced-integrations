@@ -25,7 +25,7 @@ public final class PlaybackSpeedMenuFilter extends Filter {
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
-                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+                              StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         isPlaybackSpeedMenuVisible = true;
 
         return false;

@@ -21,7 +21,9 @@ import java.util.Objects;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 
-/** @noinspection ALL*/
+/**
+ * @noinspection ALL
+ */
 public class SegmentCategoryListPreference extends ListPreference {
     private final SegmentCategory category;
     private EditText mEditText;
