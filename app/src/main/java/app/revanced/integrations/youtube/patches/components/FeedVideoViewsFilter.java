@@ -20,7 +20,8 @@ public final class FeedVideoViewsFilter extends Filter {
     public FeedVideoViewsFilter() {
         feedVideoFilter = new StringFilterGroup(
                 null, // Multiple settings are used and must be individually checked if active.
-                "video_with_context.eml"
+                "video_with_context.eml",
+                "video_lockup_with_attachment.eml"
         );
 
         // Paths.

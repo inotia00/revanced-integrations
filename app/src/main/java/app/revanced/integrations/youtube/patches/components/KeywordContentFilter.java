@@ -86,6 +86,7 @@ public final class KeywordContentFilter extends Filter {
             "search_video_with_context.eml",
             "video_with_context.eml", // Subscription tab videos.
             "related_video_with_context.eml",
+            "video_lockup_with_attachment.eml", // A/B tests.
             "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",

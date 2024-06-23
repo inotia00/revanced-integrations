@@ -34,7 +34,8 @@ public final class FeedVideoFilter extends Filter {
     public FeedVideoFilter() {
         homeFeedVideoFilter = new StringFilterGroup(
                 null,
-                "home_video_with_context.eml"
+                "home_video_with_context.eml",
+                "video_lockup_with_attachment.eml"
         );
         feedVideo = new StringFilterGroup(
                 Settings.HIDE_RECOMMENDED_VIDEO,
