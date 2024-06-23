@@ -55,6 +55,7 @@ public final class FeedComponentsFilter extends Filter {
         carouselShelf = new StringFilterGroup(
                 Settings.HIDE_CAROUSEL_SHELF,
                 "horizontal_shelf.eml",
+                "horizontal_shelf_inline.eml",
                 "horizontal_tile_shelf.eml",
                 "horizontal_video_shelf.eml"
         );
