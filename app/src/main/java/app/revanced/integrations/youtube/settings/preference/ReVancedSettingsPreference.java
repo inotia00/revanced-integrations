@@ -3,6 +3,7 @@ package app.revanced.integrations.youtube.settings.preference;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
 import android.app.Activity;
+import android.os.Build;
 import android.preference.Preference;
 
 import androidx.annotation.NonNull;
@@ -187,6 +188,10 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.HIDE_NAVIGATION_NOTIFICATIONS_BUTTON,
                 Settings.REPLACE_TOOLBAR_CREATE_BUTTON,
                 Settings.REPLACE_TOOLBAR_CREATE_BUTTON_TYPE
+        );
+        enableDisablePreferences(
+                Build.VERSION.SDK_INT < 31,
+                Settings.ENABLE_TRANSLUCENT_NAVIGATION_BAR
         );
     }
 

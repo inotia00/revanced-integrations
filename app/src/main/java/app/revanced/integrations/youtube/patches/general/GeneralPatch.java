@@ -309,6 +309,10 @@ public class GeneralPatch {
         return Settings.ENABLE_NARROW_NAVIGATION_BUTTONS.get() || original;
     }
 
+    public static boolean enableTranslucentNavigationBar() {
+        return Settings.ENABLE_TRANSLUCENT_NAVIGATION_BAR.get();
+    }
+
     public static boolean switchCreateWithNotificationButton(boolean original) {
         return Settings.SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON.get() || original;
     }
