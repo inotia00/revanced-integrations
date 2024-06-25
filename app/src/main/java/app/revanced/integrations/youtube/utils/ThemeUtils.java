@@ -1,10 +1,8 @@
 package app.revanced.integrations.youtube.utils;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.getColor;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getDrawable;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getStyleIdentifier;
-
 import android.graphics.drawable.Drawable;
+
+import static app.revanced.integrations.shared.utils.ResourceUtils.*;
 
 @SuppressWarnings("unused")
 public class ThemeUtils {
@@ -67,12 +65,34 @@ public class ThemeUtils {
         return getColor(colorName);
     }
 
-    // Modified by a patch. Do not touch.
-    public static String getLightHexValue() {
-        return "#696969";
+    // Convert HEX to RGB
+    private static int[] hexToRgb(String hex) {
+        int r = Integer.valueOf(hex.substring(1, 3), 16);
+        int g = Integer.valueOf(hex.substring(3, 5), 16);
+        int b = Integer.valueOf(hex.substring(5, 7), 16);
+        return new int[]{r, g, b};
     }
-    // Modified by a patch. Do not touch.
-    public static String getDarkHexValue() {
-        return "#696969";
+
+    // Convert RGB to HEX
+    private static String rgbToHex(int r, int g, int b) {
+        return String.format("#%02x%02x%02x", r, g, b);
+    }
+
+    // Darken color by percentage
+    public static String darkenColor(String hex, double percentage) {
+        int[] rgb = hexToRgb(hex);
+        int r = (int) (rgb[0] * (1 - percentage / 100));
+        int g = (int) (rgb[1] * (1 - percentage / 100));
+        int b = (int) (rgb[2] * (1 - percentage / 100));
+        return rgbToHex(r, g, b);
+    }
+
+    // Lighten color by percentage
+    public static String lightenColor(String hex, double percentage) {
+        int[] rgb = hexToRgb(hex);
+        int r = (int) (rgb[0] + (255 - rgb[0]) * (percentage / 100));
+        int g = (int) (rgb[1] + (255 - rgb[1]) * (percentage / 100));
+        int b = (int) (rgb[2] + (255 - rgb[2]) * (percentage / 100));
+        return rgbToHex(r, g, b);
     }
 }

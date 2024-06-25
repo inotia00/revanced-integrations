@@ -15,6 +15,7 @@ import android.widget.Toolbar;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
+import app.revanced.integrations.youtube.patches.utils.DrawableColorPatch;
 import app.revanced.integrations.youtube.settings.preference.ReVancedPreferenceFragment;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
@@ -77,6 +78,7 @@ public class VideoQualitySettingsActivity extends Activity {
             // Set search view
             SearchView searchView = findViewById(ResourceUtils.getIdIdentifier("search_view"));
 
+            // region SearchView dimensions
             // Get the current layout parameters of the SearchView
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) searchView.getLayoutParams();
 
@@ -86,18 +88,43 @@ public class VideoQualitySettingsActivity extends Activity {
 
             // Apply the layout parameters to the SearchView
             searchView.setLayoutParams(layoutParams);
+
+            // endregion
+
+            // region SearchView color
+
             GradientDrawable shape = new GradientDrawable();
 
-            Logger.printInfo(() -> "HEX DARK: " + ThemeUtils.getDarkHexValue());
-            Logger.printInfo(() -> "HEX LIGHT: " + ThemeUtils.getLightHexValue());
-            if (ThemeUtils.isDarkTheme())
-                shape.setColor(Color.parseColor("#1A1A1A"));
-            else
-                shape.setColor(Color.parseColor("#E5E5E5"));
+            String currentDarkHex = DrawableColorPatch.getDarkBackgroundHexValue();
+            String currentLightHex = DrawableColorPatch.getLightBackgroundHexValue();
 
+            String currentHex = ThemeUtils.isDarkTheme() ? currentDarkHex : currentLightHex;
+            String defaultHex = ThemeUtils.isDarkTheme() ? "#1A1A1A" : "#E5E5E5";
+
+            String finalHex;
+            if (currentHex.equals(ThemeUtils.isDarkTheme() ? "#000000" : "#FFFFFF")) {
+                shape.setColor(Color.parseColor(defaultHex)); // stock black/white color
+                finalHex = defaultHex;
+            } else {
+                // custom color theme
+                String adjustedColor = ThemeUtils.isDarkTheme()
+                        ? ThemeUtils.lightenColor(currentHex, 15)
+                        : ThemeUtils.darkenColor(currentHex, 15);
+                shape.setColor(Color.parseColor(adjustedColor));
+                finalHex = adjustedColor;
+            }
+            Logger.printInfo(() -> "searchbar color: " + finalHex);
 
             shape.setCornerRadius(30 * getResources().getDisplayMetrics().density);
             searchView.setBackground(shape);
+
+            /*
+             * in order to match the original app's search bar, we'd need to change the searchbar cursor color
+             * to white (#FFFFFF) if ThemeUtils.isDarkTheme(), and black (#000000) if not.
+             */
+
+            // endregion
+
             searchView.setPadding(20, 15, 20, 15);
 
             searchView.setOnQueryTextListener(onQueryTextListener);
