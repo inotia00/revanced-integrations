@@ -66,4 +66,13 @@ public class ThemeUtils {
 
         return getColor(colorName);
     }
+
+    // Modified by a patch. Do not touch.
+    public static String getLightHexValue() {
+        return "#696969";
+    }
+    // Modified by a patch. Do not touch.
+    public static String getDarkHexValue() {
+        return "#696969";
+    }
 }

@@ -2,6 +2,8 @@ package com.google.android.apps.youtube.app.settings.videoquality;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -10,15 +12,14 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toolbar;
-
-import java.lang.ref.WeakReference;
-import java.util.Objects;
-
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.preference.ReVancedPreferenceFragment;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
+
+import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 public class VideoQualitySettingsActivity extends Activity {
@@ -75,6 +76,30 @@ public class VideoQualitySettingsActivity extends Activity {
 
             // Set search view
             SearchView searchView = findViewById(ResourceUtils.getIdIdentifier("search_view"));
+
+            // Get the current layout parameters of the SearchView
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) searchView.getLayoutParams();
+
+            // Set the margins (in pixels)
+            int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()); // for example, 10dp
+            layoutParams.setMargins(margin, layoutParams.topMargin, margin, layoutParams.bottomMargin);
+
+            // Apply the layout parameters to the SearchView
+            searchView.setLayoutParams(layoutParams);
+            GradientDrawable shape = new GradientDrawable();
+
+            Logger.printInfo(() -> "HEX DARK: " + ThemeUtils.getDarkHexValue());
+            Logger.printInfo(() -> "HEX LIGHT: " + ThemeUtils.getLightHexValue());
+            if (ThemeUtils.isDarkTheme())
+                shape.setColor(Color.parseColor("#1A1A1A"));
+            else
+                shape.setColor(Color.parseColor("#E5E5E5"));
+
+
+            shape.setCornerRadius(30 * getResources().getDisplayMetrics().density);
+            searchView.setBackground(shape);
+            searchView.setPadding(20, 15, 20, 15);
+
             searchView.setOnQueryTextListener(onQueryTextListener);
             searchViewRef = new WeakReference<>(searchView);
         } catch (Exception ex) {
