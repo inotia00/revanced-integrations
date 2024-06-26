@@ -76,9 +76,22 @@ public class VideoQualitySettingsActivity extends Activity {
                     .commit();
 
             // Set search view
+
             SearchView searchView = findViewById(ResourceUtils.getIdIdentifier("search_view"));
 
+            // region compose search hint
+
+            String revancedSettingsName = ResourceUtils.getString("revanced_extended_settings_title");
+            String searchHint = ResourceUtils.getString("revanced_extended_settings_search_title");
+
+            String finalSearchHint = String.format(searchHint, revancedSettingsName);
+
+            searchView.setQueryHint(finalSearchHint);
+
+            // endregion
+
             // region SearchView dimensions
+
             // Get the current layout parameters of the SearchView
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) searchView.getLayoutParams();
 
@@ -118,9 +131,10 @@ public class VideoQualitySettingsActivity extends Activity {
             shape.setCornerRadius(30 * getResources().getDisplayMetrics().density);
             searchView.setBackground(shape);
 
-            /*
-             * in order to match the original app's search bar, we'd need to change the searchbar cursor color
-             * to white (#FFFFFF) if ThemeUtils.isDarkTheme(), and black (#000000) if not.
+            /* TODO:
+                in order to match the original app's search bar, we'd need to change the searchbar cursor color
+                to white (#FFFFFF) if ThemeUtils.isDarkTheme(), and black (#000000) if not.
+                Currently it's always blue.
              */
 
             // endregion
