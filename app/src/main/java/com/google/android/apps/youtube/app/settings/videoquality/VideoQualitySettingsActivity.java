@@ -22,6 +22,8 @@ import app.revanced.integrations.youtube.utils.ThemeUtils;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+import static app.revanced.integrations.shared.utils.StringRef.str;
+
 @SuppressWarnings("deprecation")
 public class VideoQualitySettingsActivity extends Activity {
 
@@ -81,9 +83,11 @@ public class VideoQualitySettingsActivity extends Activity {
 
             // region compose search hint
 
-            String revancedSettingsName = ResourceUtils.getString("revanced_extended_settings_title");
-            String searchHint = ResourceUtils.getString("revanced_extended_settings_search_title");
+            String revancedSettingsName = str("revanced_extended_settings_title");
+            String searchHint = str("revanced_extended_settings_search_title");
 
+            // if the translation is missing the %s, then it
+            // will use the default search hint for that language
             String finalSearchHint = String.format(searchHint, revancedSettingsName);
 
             searchView.setQueryHint(finalSearchHint);
