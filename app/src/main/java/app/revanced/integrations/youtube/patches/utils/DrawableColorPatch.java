@@ -45,14 +45,6 @@ public class DrawableColorPatch {
         for (int v : of) if (value == v) return true;
         return false;
     }
-
-    public static String getLightBackgroundHexValue() {
-        return String.format("#%06X", (0xFFFFFF & getWhiteColor()));
-    }
-
-    public static String getDarkBackgroundHexValue() {
-        return String.format("#%06X", (0xFFFFFF & getBlackColor()));
-    }
 }
 
 

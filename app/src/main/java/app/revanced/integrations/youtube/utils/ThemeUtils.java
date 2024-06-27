@@ -1,10 +1,18 @@
 package app.revanced.integrations.youtube.utils;
 
+import static app.revanced.integrations.shared.utils.ResourceUtils.getColor;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getDrawable;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getStyleIdentifier;
+import static app.revanced.integrations.shared.utils.Utils.getResources;
+
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.*;
+import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.ResourceUtils;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SameParameterValue"})
 public class ThemeUtils {
     private static int themeValue;
 
@@ -65,6 +73,51 @@ public class ThemeUtils {
         return getColor(colorName);
     }
 
+    public static GradientDrawable getSearchViewShape() {
+        GradientDrawable shape = new GradientDrawable();
+
+        String currentHex = getThemeHexValue();
+        String defaultHex = isDarkTheme() ? "#1A1A1A" : "#E5E5E5";
+
+        String finalHex;
+        if (currentThemeColorIsBlackOrWhite()) {
+            shape.setColor(Color.parseColor(defaultHex)); // stock black/white color
+            finalHex = defaultHex;
+        } else {
+            // custom color theme
+            String adjustedColor = isDarkTheme()
+                    ? lightenColor(currentHex, 15)
+                    : darkenColor(currentHex, 15);
+            shape.setColor(Color.parseColor(adjustedColor));
+            finalHex = adjustedColor;
+        }
+        Logger.printInfo(() -> "searchbar color: " + finalHex);
+
+        shape.setCornerRadius(30 * getResources().getDisplayMetrics().density);
+
+        return shape;
+    }
+
+    private static String getThemeHexValue() {
+        return String.format("#%06X", (0xFFFFFF & getThemeColor()));
+    }
+
+    private static int getThemeColor() {
+        final String colorName = isDarkTheme()
+                ? "yt_black1"
+                : "yt_white1";
+
+        return ResourceUtils.getColor(colorName);
+    }
+
+    private static boolean currentThemeColorIsBlackOrWhite() {
+        final int color = isDarkTheme()
+                ? Color.BLACK
+                : Color.WHITE;
+
+        return getThemeColor() == color;
+    }
+
     // Convert HEX to RGB
     private static int[] hexToRgb(String hex) {
         int r = Integer.valueOf(hex.substring(1, 3), 16);
@@ -79,7 +132,7 @@ public class ThemeUtils {
     }
 
     // Darken color by percentage
-    public static String darkenColor(String hex, double percentage) {
+    private static String darkenColor(String hex, double percentage) {
         int[] rgb = hexToRgb(hex);
         int r = (int) (rgb[0] * (1 - percentage / 100));
         int g = (int) (rgb[1] * (1 - percentage / 100));
@@ -88,7 +141,7 @@ public class ThemeUtils {
     }
 
     // Lighten color by percentage
-    public static String lightenColor(String hex, double percentage) {
+    private static String lightenColor(String hex, double percentage) {
         int[] rgb = hexToRgb(hex);
         int r = (int) (rgb[0] + (255 - rgb[0]) * (percentage / 100));
         int g = (int) (rgb[1] + (255 - rgb[1]) * (percentage / 100));
