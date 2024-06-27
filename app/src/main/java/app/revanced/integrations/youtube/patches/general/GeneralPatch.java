@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.patches.general;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.shared.utils.Utils.getChildView;
+import static app.revanced.integrations.shared.utils.Utils.hideViewByLayoutParams;
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
@@ -561,18 +562,40 @@ public class GeneralPatch {
         return Settings.HIDE_SEARCH_TERM_THUMBNAIL.get();
     }
 
+    private static final boolean hideImageSearchButton = Settings.HIDE_IMAGE_SEARCH_BUTTON.get();
+    private static final boolean hideVoiceSearchButton = Settings.HIDE_VOICE_SEARCH_BUTTON.get();
+
+    /**
+     * If the user does not hide the Image search button but only the Voice search button,
+     * {@link View#setVisibility(int)} cannot be used on the Voice search button.
+     * (This breaks the search bar layout.)
+     *
+     * In this case, {@link Utils#hideViewByLayoutParams(View)} should be used.
+     */
+    private static final boolean showImageSearchButtonAndHideVoiceSearchButton = !hideImageSearchButton && hideVoiceSearchButton;
+
+    public static boolean hideImageSearchButton(boolean original) {
+        return !hideImageSearchButton && original;
+    }
+
     public static void hideVoiceSearchButton(View view) {
-        hideViewUnderCondition(
-                Settings.HIDE_VOICE_SEARCH_BUTTON.get(),
-                view
-        );
+        if (showImageSearchButtonAndHideVoiceSearchButton) {
+            hideViewByLayoutParams(view);
+        } else {
+            hideViewUnderCondition(hideVoiceSearchButton, view);
+        }
     }
 
     public static void hideVoiceSearchButton(View view, int visibility) {
-        view.setVisibility(
-                Settings.HIDE_VOICE_SEARCH_BUTTON.get()
-                        ? View.GONE : visibility
-        );
+        if (showImageSearchButtonAndHideVoiceSearchButton) {
+            view.setVisibility(visibility);
+            hideViewByLayoutParams(view);
+        } else {
+            view.setVisibility(
+                    hideVoiceSearchButton
+                            ? View.GONE : visibility
+            );
+        }
     }
 
     private static final int settingsDrawableId = ResourceUtils.getDrawableIdentifier("yt_outline_gear_black_24");
