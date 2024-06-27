@@ -1,5 +1,6 @@
 package app.revanced.integrations.music.patches.player;
 
+import static app.revanced.integrations.shared.utils.Utils.hideViewByRemovingFromParentUnderCondition;
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
 
 import android.annotation.SuppressLint;
@@ -125,6 +126,10 @@ public class PlayerPatch {
         if (view.getParent() instanceof ViewGroup viewGroup) {
             viewGroup.removeView(view);
         }
+    }
+
+    public static void hideDoubleTapOverlayFilter(View view) {
+        hideViewByRemovingFromParentUnderCondition(Settings.HIDE_DOUBLE_TAP_OVERLAY_FILTER, view);
     }
 
     public static int hideFullscreenShareButton(int original) {

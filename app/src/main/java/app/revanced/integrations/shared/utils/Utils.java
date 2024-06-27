@@ -111,6 +111,7 @@ public class Utils {
 
     public static void hideViewByRemovingFromParentUnderCondition(boolean condition, View view) {
         if (!condition) return;
+        if (view == null) return;
         if (!(view.getParent() instanceof ViewGroup viewGroup))
             return;
 
