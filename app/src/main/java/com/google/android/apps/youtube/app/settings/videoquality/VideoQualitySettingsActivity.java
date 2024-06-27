@@ -143,22 +143,6 @@ public class VideoQualitySettingsActivity extends Activity {
 
             // endregion
 
-            int leftPaddingDp = 5;
-            int topPaddingDp = 5;
-            int rightPaddingDp = 5;
-            int bottomPaddingDp = 5;
-
-            int leftPaddingPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, leftPaddingDp, getResources().getDisplayMetrics());
-            int topPaddingPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, topPaddingDp, getResources().getDisplayMetrics());
-            int rightPaddingPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, rightPaddingDp, getResources().getDisplayMetrics());
-            int bottomPaddingPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, bottomPaddingDp, getResources().getDisplayMetrics());
-
-            searchView.setPadding(leftPaddingPx, topPaddingPx, rightPaddingPx, bottomPaddingPx);
-
             searchView.setOnQueryTextListener(onQueryTextListener);
             searchViewRef = new WeakReference<>(searchView);
         } catch (Exception ex) {
