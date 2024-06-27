@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches.player;
 
 import static app.revanced.integrations.shared.utils.Utils.hideViewBy0dpUnderCondition;
+import static app.revanced.integrations.shared.utils.Utils.hideViewByRemovingFromParentUnderCondition;
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue;
 
@@ -457,6 +458,10 @@ public class PlayerPatch {
 
     public static void hideCrowdfundingBox(View view) {
         hideViewBy0dpUnderCondition(Settings.HIDE_CROWDFUNDING_BOX.get(), view);
+    }
+
+    public static void hideDoubleTapOverlayFilter(View view) {
+        hideViewByRemovingFromParentUnderCondition(Settings.HIDE_DOUBLE_TAP_OVERLAY_FILTER, view);
     }
 
     public static void hideEndScreenCards(View view) {
