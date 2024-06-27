@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 
+import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -66,8 +67,12 @@ public class ShortsPatch {
         return Settings.HIDE_SHORTS_SOUND_BUTTON.get();
     }
 
-    public static Object hideShortsSoundButton(Object object) {
-        return Settings.HIDE_SHORTS_SOUND_BUTTON.get() ? null : object;
+    private static final int zeroPaddingDimenId = ResourceUtils.getDimenIdentifier("revanced_zero_padding");
+
+    public static int getShortsSoundButtonDimenId(int dimenId) {
+        return Settings.HIDE_SHORTS_SOUND_BUTTON.get()
+                ? zeroPaddingDimenId
+                : dimenId;
     }
 
     public static int hideShortsSubscribeButton(int original) {
