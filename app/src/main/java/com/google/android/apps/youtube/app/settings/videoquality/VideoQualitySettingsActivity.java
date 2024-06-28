@@ -104,13 +104,23 @@ public class VideoQualitySettingsActivity extends Activity {
     private void setToolbar() {
         if (!(findViewById(ResourceUtils.getIdIdentifier("revanced_toolbar_parent")) instanceof ViewGroup toolBarParent))
             return;
+
+        // Remove dummy toolbar.
+        for (int i = 0; i < toolBarParent.getChildCount(); i++) {
+            View view = toolBarParent.getChildAt(i);
+            if (view != null) {
+                toolBarParent.removeView(view);
+            }
+        }
+
         Toolbar toolbar = new Toolbar(toolBarParent.getContext());
         toolbar.setBackgroundColor(ThemeUtils.getToolbarBackgroundColor());
         toolbar.setNavigationIcon(ThemeUtils.getBackButtonDrawable());
         toolbar.setNavigationOnClickListener(view -> VideoQualitySettingsActivity.this.onBackPressed());
         toolbar.setTitle(rvxSettingsLabel);
         int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-        toolbar.setTitleMargin(margin, 0, margin, 0);
+        toolbar.setTitleMarginStart(margin);
+        toolbar.setTitleMarginEnd(margin);
         TextView toolbarTextView = Utils.getChildView(toolbar, view -> view instanceof TextView);
         textViewRef = new WeakReference<>(toolbarTextView);
         if (toolbarTextView != null) {
