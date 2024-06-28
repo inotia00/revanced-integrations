@@ -51,7 +51,7 @@ public final class FeedVideoFilter extends Filter {
         // Used for home, related videos, subscriptions, and search results.
         videoLockup = new StringFilterGroup(
                 null,
-                    "video_lockup_with_attachment.eml"
+                "video_lockup_with_attachment.eml"
         );
 
         addPathCallbacks(videoLockup);

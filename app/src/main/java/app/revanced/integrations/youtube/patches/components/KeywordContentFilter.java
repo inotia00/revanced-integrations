@@ -1,6 +1,5 @@
 package app.revanced.integrations.youtube.patches.components;
 
-import static app.revanced.integrations.shared.utils.ByteTrieSearch.convertStringsToBytes;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
