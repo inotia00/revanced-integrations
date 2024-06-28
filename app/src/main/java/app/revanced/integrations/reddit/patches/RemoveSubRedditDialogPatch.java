@@ -20,13 +20,22 @@ public class RemoveSubRedditDialogPatch {
         if (!textView.getText().toString().equals(str("nsfw_continue_non_anonymously")))
             return;
 
-        Utils.clickView(textView);
+        clickViewDelayed(textView);
     }
 
     public static void dismissDialog(View cancelButtonView) {
         if (!Settings.REMOVE_NOTIFICATION_DIALOG.get())
             return;
 
-        Utils.clickView(cancelButtonView);
+        clickViewDelayed(cancelButtonView);
+    }
+
+    private static void clickViewDelayed(View view) {
+        Utils.runOnMainThreadDelayed(() -> {
+            if (view != null) {
+                view.setSoundEffectsEnabled(false);
+                view.performClick();
+            }
+        }, 0);
     }
 }
