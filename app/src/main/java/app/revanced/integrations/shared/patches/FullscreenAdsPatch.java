@@ -58,7 +58,7 @@ public class FullscreenAdsPatch {
             lastTimeClosedFullscreenAd = currentTime;
 
             showToastShort(str("revanced_hide_fullscreen_ads_closed_success"));
-        }, 500);
+        }, 1000);
     }
 
     public static void hideFullscreenAds(View view) {
