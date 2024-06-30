@@ -1,7 +1,10 @@
 package app.revanced.integrations.youtube.patches.alternativethumbnails;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_ALTERNATIVE_DOMAIN;
+
+
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_ALTERNATIVE_DOMAIN_NAME;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_ALTERNATIVE_DOMAIN_ENABLE;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_LIBRARY;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_PLAYER;
@@ -68,6 +71,13 @@ public final class AlternativeThumbnailsPatch {
         @Override
         public boolean isAvailable() {
             return usingDeArrowAnywhere();
+        }
+    }
+
+    public static final class DeArrowAlternativeDomainAvailability implements Setting.Availability {
+        @Override
+        public boolean isAvailable() {
+            return ALT_THUMBNAIL_ALTERNATIVE_DOMAIN_ENABLE.get();
         }
     }
 
@@ -265,8 +275,8 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            if (ALT_THUMBNAIL_ALTERNATIVE_DOMAIN.get())
-                originalUrl = originalUrl.replaceAll("yt3.ggpht.com", "yt4.ggpht.com");
+            if (ALT_THUMBNAIL_ALTERNATIVE_DOMAIN_ENABLE.get() && originalUrl.contains("yt3.ggpht.com"))
+                originalUrl = originalUrl.replaceAll("yt3.ggpht.com", ALT_THUMBNAIL_ALTERNATIVE_DOMAIN_NAME.get());
 
             ThumbnailOption option = optionSettingForCurrentNavigation();
 
