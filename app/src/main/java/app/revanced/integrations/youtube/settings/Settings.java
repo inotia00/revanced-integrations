@@ -59,6 +59,9 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST = new BooleanSetting("revanced_alt_thumbnail_dearrow_connection_toast", FALSE, new DeArrowAvailability());
     public static final EnumSetting<ThumbnailStillTime> ALT_THUMBNAIL_STILLS_TIME = new EnumSetting<>("revanced_alt_thumbnail_stills_time", ThumbnailStillTime.MIDDLE, new StillImagesAvailability());
     public static final BooleanSetting ALT_THUMBNAIL_STILLS_FAST = new BooleanSetting("revanced_alt_thumbnail_stills_fast", FALSE, new StillImagesAvailability());
+    public static final BooleanSetting ALT_THUMBNAIL_ALTERNATIVE_DOMAIN = new BooleanSetting("revanced_alt_thumbnail_alternative_domain", FALSE);
+
+
 
 
     // PreferenceScreen: Feed
