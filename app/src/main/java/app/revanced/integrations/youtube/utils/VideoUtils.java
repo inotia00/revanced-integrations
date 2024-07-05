@@ -1,5 +1,6 @@
 package app.revanced.integrations.youtube.utils;
 
+import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.patches.video.PlaybackSpeedPatch.userSelectedPlaybackSpeed;
 import static app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPreference.checkPackageIsEnabled;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.IntentUtils;
 import app.revanced.integrations.shared.utils.Logger;
@@ -134,6 +136,31 @@ public class VideoUtils extends IntentUtils {
                     userSelectedPlaybackSpeed(selectedPlaybackSpeed);
                     mDialog.dismiss();
                 })
+                .show();
+    }
+
+    private static int mClickedDialogEntryIndex;
+
+    public static void showShortsRepeatDialog(@NonNull Context context) {
+        final IntegerSetting setting = Settings.CHANGE_SHORTS_REPEAT_STATE;
+        final String settingsKey = setting.key;
+
+        final String entryKey = settingsKey + "_entries";
+        final String entryValueKey = settingsKey + "_entry_values";
+        final String[] mEntries = getStringArray(entryKey);
+        final String[] mEntryValues = getStringArray(entryValueKey);
+
+        final int findIndex = Arrays.binarySearch(mEntryValues, String.valueOf(setting.get()));
+        mClickedDialogEntryIndex = findIndex >= 0 ? findIndex : setting.defaultValue;
+
+        new AlertDialog.Builder(context)
+                .setTitle(str(settingsKey + "_title"))
+                .setSingleChoiceItems(mEntries, mClickedDialogEntryIndex, (dialog, id) -> {
+                    mClickedDialogEntryIndex = id;
+                    setting.save(id);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
