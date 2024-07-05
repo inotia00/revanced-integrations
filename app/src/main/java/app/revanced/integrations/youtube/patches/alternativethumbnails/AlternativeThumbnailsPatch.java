@@ -267,7 +267,7 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * Replace blocked thumbnail domain so that video thumbnails, channel avatars, community post images, etc. can be received.
+     * Replace blocked thumbnail domain so that video thumbnails, channel avatars, community post images, etc. can be fetched.
      *
      * @param  originalDomain Original thumbnail domain.
      * @return The alternative thumbnail domain, or the original domain.
@@ -289,7 +289,7 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            // Redirect YouTube image domain to make thumbnails image accessible in Russia
+            // Redirect YouTube image domain to make thumbnails image accessible, for example, in Russia.
             if (ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN.get() && originalUrl.startsWith("https://yt3.")) {
                 Uri originalUri = Uri.parse(originalUrl);
                 final String originalDomain = originalUri.getHost();
