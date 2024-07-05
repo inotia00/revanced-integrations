@@ -27,7 +27,6 @@ import app.revanced.integrations.shared.settings.LongSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
-import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.DeArrowAlternativeDomainAvailability;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.DeArrowAvailability;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.StillImagesAvailability;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailOption;
