@@ -67,11 +67,18 @@ public final class MiniplayerPatch {
 
     private static final MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
 
+    private static final boolean DOUBLE_TAP_ACTION_ENABLED =
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get();
+
     private static final boolean DRAG_AND_DROP_ENABLED =
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_DRAG_AND_DROP.get();
 
+    private static final boolean HIDE_EXPAND_CLOSE_AVAILABLE =
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) &&
+                    !DOUBLE_TAP_ACTION_ENABLED &&
+                    !DRAG_AND_DROP_ENABLED;
     private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+            HIDE_EXPAND_CLOSE_AVAILABLE && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 
     private static final boolean HIDE_SUBTEXT_ENABLED =
             (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_SUBTEXT.get();
@@ -128,6 +135,13 @@ public final class MiniplayerPatch {
         if (CURRENT_TYPE == MODERN_1) {
             view.setImageAlpha(OPACITY_LEVEL);
         }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean enableMiniplayerDoubleTapAction() {
+        return DOUBLE_TAP_ACTION_ENABLED;
     }
 
     /**

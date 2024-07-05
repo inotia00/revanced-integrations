@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_1;
+import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
 import android.app.Activity;
@@ -9,6 +11,7 @@ import android.preference.Preference;
 import androidx.annotation.NonNull;
 
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.patches.general.MiniplayerPatch;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
@@ -46,6 +49,7 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
         ExternalDownloaderPreferenceLinks();
         FullScreenPanelPreferenceLinks();
         LayoutOverrideLinks();
+        MiniPlayerPreferenceLinks();
         NavigationPreferenceLinks();
         SpeedOverlayPreferenceLinks();
         QuickActionsPreferenceLinks();
@@ -172,6 +176,22 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON,
                 Settings.HIDE_QUICK_ACTIONS_SHARE_BUTTON
+        );
+    }
+
+    /**
+     * Enable/Disable Preference related to Miniplayer settings
+     */
+    private static void MiniPlayerPreferenceLinks() {
+        final MiniplayerPatch.MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
+        final boolean available =
+                (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) &&
+                        !Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get() &&
+                        !Settings.MINIPLAYER_DRAG_AND_DROP.get();
+
+        enableDisablePreferences(
+                !available,
+                Settings.MINIPLAYER_HIDE_EXPAND_CLOSE
         );
     }
 
