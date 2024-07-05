@@ -46,7 +46,7 @@ public final class PlayerRoutes {
     private static final String ANDROID_TESTSUITE_CLIENT_VERSION = "1.9";
 
 
-    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.21.0";
+    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.01.0";
     /**
      * The device machine id for the Chromecast with Google TV 4K.
      *
@@ -74,7 +74,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code Additional details} section.
      * </p>
      */
-    private static final String ANDROID_VR_CLIENT_VERSION = "1.57.29";
+    private static final String ANDROID_VR_CLIENT_VERSION = "1.56.21";
 
     /**
      * The device machine id for the Meta Quest 3, used to get opus codec with the Android VR client.
@@ -112,7 +112,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_CLIENT_VERSION = "19.20.2";
+    private static final String IOS_CLIENT_VERSION = "19.01.1";
     /**
      * The device machine id for the iPhone 14 Pro Max, used to get 60fps with the iOS client.
      *
