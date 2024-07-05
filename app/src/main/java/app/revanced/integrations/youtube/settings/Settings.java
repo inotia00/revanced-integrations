@@ -59,7 +59,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST = new BooleanSetting("revanced_alt_thumbnail_dearrow_connection_toast", FALSE, new DeArrowAvailability());
     public static final EnumSetting<ThumbnailStillTime> ALT_THUMBNAIL_STILLS_TIME = new EnumSetting<>("revanced_alt_thumbnail_stills_time", ThumbnailStillTime.MIDDLE, new StillImagesAvailability());
     public static final BooleanSetting ALT_THUMBNAIL_STILLS_FAST = new BooleanSetting("revanced_alt_thumbnail_stills_fast", FALSE, new StillImagesAvailability());
-    public static final BooleanSetting ALT_THUMBNAIL_USE_ALTERNATIVE_HOST = new BooleanSetting("revanced_alt_thumbnail_use_alternative_host", FALSE);
+    public static final BooleanSetting ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN = new BooleanSetting("revanced_alt_thumbnail_use_alternative_domain", FALSE);
 
     // PreferenceScreen: Feed
     public static final BooleanSetting HIDE_ALBUM_CARDS = new BooleanSetting("revanced_hide_album_card", TRUE);
