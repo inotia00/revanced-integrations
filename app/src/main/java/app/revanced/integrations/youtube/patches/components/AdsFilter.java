@@ -48,13 +48,12 @@ public final class AdsFilter extends Filter {
                 "product_details",
                 "square_image_layout",
                 "statement_banner",
-                "text_image_button_group_layout",
                 "text_image_button_layout",
-                "video_display_button_group_layout",
                 "video_display_carousel_button",
                 "video_display_full_layout",
                 "watch_metadata_app_promo",
                 "_ad_with",
+                "_button_group_layout",
                 "_buttoned_layout",
                 "_image_layout"
         );
