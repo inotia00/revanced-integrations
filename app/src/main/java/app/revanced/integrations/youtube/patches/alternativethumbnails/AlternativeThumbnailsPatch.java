@@ -72,13 +72,6 @@ public final class AlternativeThumbnailsPatch {
         }
     }
 
-    public static final class DeArrowAlternativeDomainAvailability implements Setting.Availability {
-        @Override
-        public boolean isAvailable() {
-            return ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN.get();
-        }
-    }
-
     public static final class StillImagesAvailability implements Setting.Availability {
         public static boolean usingStillImagesAnywhere() {
             return ALT_THUMBNAIL_HOME.get().useStillImages
