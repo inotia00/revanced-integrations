@@ -77,6 +77,7 @@ public final class MiniplayerPatch {
             (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) &&
                     !DOUBLE_TAP_ACTION_ENABLED &&
                     !DRAG_AND_DROP_ENABLED;
+
     private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
             HIDE_EXPAND_CLOSE_AVAILABLE && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 

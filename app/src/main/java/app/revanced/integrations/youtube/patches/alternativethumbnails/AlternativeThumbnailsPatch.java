@@ -1,15 +1,13 @@
 package app.revanced.integrations.youtube.patches.alternativethumbnails;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
-
-
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_ALTERNATIVE_DOMAIN;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_LIBRARY;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_PLAYER;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SEARCH;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SUBSCRIPTIONS;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.net.Uri;

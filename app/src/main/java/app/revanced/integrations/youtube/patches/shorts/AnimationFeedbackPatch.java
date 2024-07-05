@@ -18,12 +18,12 @@ public final class AnimationFeedbackPatch {
         /**
          * Unmodified type, and same as un-patched.
          */
-        ORIGINAL( null),
-        THUMBS_UP( "like_tap_feedback"),
-        THUMBS_UP_CAIRO( "like_tap_feedback_cairo"),
-        HEART( "like_tap_feedback_heart"),
-        HEART_TINT( "like_tap_feedback_heart_tint"),
-        HIDDEN( "like_tap_feedback_hidden");
+        ORIGINAL(null),
+        THUMBS_UP("like_tap_feedback"),
+        THUMBS_UP_CAIRO("like_tap_feedback_cairo"),
+        HEART("like_tap_feedback_heart"),
+        HEART_TINT("like_tap_feedback_heart_tint"),
+        HIDDEN("like_tap_feedback_hidden");
 
         /**
          * Animation id.

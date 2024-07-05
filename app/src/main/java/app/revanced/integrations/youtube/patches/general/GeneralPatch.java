@@ -569,7 +569,7 @@ public class GeneralPatch {
      * If the user does not hide the Image search button but only the Voice search button,
      * {@link View#setVisibility(int)} cannot be used on the Voice search button.
      * (This breaks the search bar layout.)
-     *
+     * <p>
      * In this case, {@link Utils#hideViewByLayoutParams(View)} should be used.
      */
     private static final boolean showImageSearchButtonAndHideVoiceSearchButton = !hideImageSearchButton && hideVoiceSearchButton;
