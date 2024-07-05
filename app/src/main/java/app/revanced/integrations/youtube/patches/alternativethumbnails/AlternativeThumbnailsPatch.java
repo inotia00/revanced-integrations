@@ -269,16 +269,16 @@ public final class AlternativeThumbnailsPatch {
     /**
      * Replace blocked thumbnail domain so that video thumbnails, channel avatars, community post images, etc. can be received.
      *
-     * @param  originalHost Original thumbnail host.
-     * @return The alternative thumbnail host, or the original host.
+     * @param  originalDomain Original thumbnail domain.
+     * @return The alternative thumbnail domain, or the original domain.
      */
     @NonNull
-    private static String getYoutubeAlternativeThumbnailsHost(@NonNull String originalHost) {
+    private static String getYoutubeAlternativeDomain(@NonNull String originalDomain) {
         // see https://github.com/dayanch96/YTLite/blob/main/YTLite.x#L1356-L1369
-        return switch (originalHost) {
+        return switch (originalDomain) {
             case "yt3.ggpht.com" -> "yt4.ggpht.com";
             case "yt3.googleusercontent.com" -> "yt4.googleusercontent.com";
-            default -> originalHost; 
+            default -> originalDomain; 
         };
     }
 
@@ -292,9 +292,9 @@ public final class AlternativeThumbnailsPatch {
             // Redirect YouTube image domain to make thumbnails image accessible in Russia
             if (ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN.get() && originalUrl.startsWith("https://yt3.")) {
                 Uri originalUri = Uri.parse(originalUrl);
-                final String originalHost = originalUri.getHost();
+                final String originalDomain = originalUri.getHost();
                 originalUrl = originalUrl
-                    .replaceAll(originalHost, getYoutubeAlternativeThumbnailsHost(originalHost));
+                    .replaceAll(originalDomain, getYoutubeAlternativeDomain(originalDomain));
             }
 
             ThumbnailOption option = optionSettingForCurrentNavigation();
