@@ -1,10 +1,5 @@
 package app.revanced.integrations.youtube.patches.overlaybutton;
 
-import static app.revanced.integrations.shared.utils.ResourceUtils.getAnimation;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getInteger;
-import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.shared.utils.Utils.getChildView;
-
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
@@ -13,16 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
-import app.revanced.integrations.shared.settings.BooleanSetting;
-import app.revanced.integrations.shared.utils.Logger;
-import app.revanced.integrations.shared.utils.Utils;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getAnimation;
+import static app.revanced.integrations.shared.utils.ResourceUtils.getInteger;
+import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.getChildView;
 
 public abstract class BottomControlButton {
     private static final Animation fadeIn;
@@ -115,6 +113,10 @@ public abstract class BottomControlButton {
 
         imageView.setSelected(selected);
         primaryInteractionSetting.save(selected);
+    }
+
+    public void changeActivated(boolean activated) {
+        buttonRef.get().setActivated(activated);
     }
 
     public void changeColorFilter() {
