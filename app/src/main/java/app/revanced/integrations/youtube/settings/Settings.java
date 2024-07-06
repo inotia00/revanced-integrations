@@ -63,7 +63,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN = new BooleanSetting("revanced_alt_thumbnail_use_alternative_domain", FALSE);
     public static final StringSetting ALT_THUMBNAIL_ALTERNATIVE_DOMAIN = new StringSetting("revanced_alt_thumbnail_alternative_domain", "yt4.ggpht.com", new DeArrowAlternativeDomainAvailability());
 
-    
+
     // PreferenceScreen: Feed
     public static final BooleanSetting HIDE_ALBUM_CARDS = new BooleanSetting("revanced_hide_album_card", TRUE);
     public static final BooleanSetting HIDE_CAROUSEL_SHELF = new BooleanSetting("revanced_hide_carousel_shelf", FALSE, true);
