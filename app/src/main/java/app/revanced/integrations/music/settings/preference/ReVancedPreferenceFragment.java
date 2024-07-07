@@ -5,6 +5,7 @@ import static app.revanced.integrations.music.settings.Settings.CUSTOM_FILTER_ST
 import static app.revanced.integrations.music.settings.Settings.CUSTOM_PLAYBACK_SPEEDS;
 import static app.revanced.integrations.music.settings.Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
 import static app.revanced.integrations.music.settings.Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS;
+import static app.revanced.integrations.music.settings.Settings.ALT_THUMBNAIL_ALTERNATIVE_DOMAIN;
 import static app.revanced.integrations.music.settings.Settings.OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX;
 import static app.revanced.integrations.music.settings.Settings.SB_API_URL;
 import static app.revanced.integrations.music.settings.Settings.SETTINGS_IMPORT_EXPORT;
@@ -138,7 +139,9 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 importExportListDialogBuilder();
             } else if (settings.equals(SPOOF_APP_VERSION_TARGET)) {
                 ResettableListPreference.showDialog(mActivity, setting, 1);
-            } else {
+            } else if (settings.equals(ALT_THUMBNAIL_ALTERNATIVE_DOMAIN)) {
+                ResettableEditTextPreference.showDialog(mActivity, setting);
+            }  else {
                 Logger.printDebug(() -> "Failed to find the right value: " + dataString);
             }
         } catch (Exception ex) {
