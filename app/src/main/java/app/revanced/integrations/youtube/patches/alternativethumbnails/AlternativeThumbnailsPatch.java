@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
@@ -135,6 +137,14 @@ public final class AlternativeThumbnailsPatch {
      * How long to temporarily turn off DeArrow if it fails for any reason.
      */
     private static final long DEARROW_FAILURE_API_BACKOFF_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes.
+
+    /**
+     * Regex to match youtube static thumbnails domain.
+     * Used to find and replace blocked domain with a working ones
+     */
+    private static final String YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX = "(yt[3-4]|lh[3-6]|play-lh)\\.(ggpht|googleusercontent)\\.com";
+
+    private static final Pattern YOUTUBE_STATIC_THUMBNAILS_DOMAIN_PATTERN = Pattern.compile(YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX);
 
     /**
      * If non zero, then the system time of when DeArrow API calls can resume.
@@ -273,8 +283,18 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            if (ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN.get() && originalUrl.contains("yt3.ggpht.com"))
-                originalUrl = originalUrl.replaceAll("yt3.ggpht.com", ALT_THUMBNAIL_ALTERNATIVE_DOMAIN.get());
+            if (ALT_THUMBNAIL_USE_ALTERNATIVE_DOMAIN.get()) {
+                final Matcher matcher = YOUTUBE_STATIC_THUMBNAILS_DOMAIN_PATTERN.matcher(originalUrl);
+                if (matcher.find()) {
+                    final String finalOriginalUrl = originalUrl;
+                    final String finalReplacementUrl = originalUrl.replaceAll(
+                            YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX,
+                            ALT_THUMBNAIL_ALTERNATIVE_DOMAIN.get()
+                    );
+                    Logger.printDebug(() -> "Replaced: '" + finalOriginalUrl + "' with: '" + finalReplacementUrl + "'");
+                    originalUrl = finalReplacementUrl;
+                }
+            }
 
             ThumbnailOption option = optionSettingForCurrentNavigation();
 
