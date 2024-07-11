@@ -1,13 +1,23 @@
 package app.revanced.integrations.youtube.utils;
 
+import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
+import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.youtube.patches.video.PlaybackSpeedPatch.userSelectedPlaybackSpeed;
+import static app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPreference.checkPackageIsEnabled;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.media.AudioManager;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.StringSetting;
@@ -16,16 +26,6 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
-import app.revanced.integrations.youtube.swipecontrols.controller.AudioVolumeController;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
-import static app.revanced.integrations.shared.utils.StringRef.str;
-import static app.revanced.integrations.youtube.patches.video.PlaybackSpeedPatch.userSelectedPlaybackSpeed;
-import static app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPreference.checkPackageIsEnabled;
 
 @SuppressWarnings("unused")
 public class VideoUtils extends IntentUtils {
@@ -34,28 +34,6 @@ public class VideoUtils extends IntentUtils {
     private static final StringSetting externalDownloaderPackageName =
             Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
     private static final AtomicBoolean isExternalDownloaderLaunched = new AtomicBoolean(false);
-    public static AudioVolumeController audioVolumeController = new AudioVolumeController(getContext(), AudioManager.STREAM_MUSIC);
-    private static Integer previousVolumeLevel = 0;
-
-
-    public static void toggleMuteVolume() {
-        int currentVolume = audioVolumeController.getVolume();
-        if (currentVolume > 0) {
-            // Mute the volume
-            audioVolumeController.setVolume(0);
-            // save the current volume level to restore later
-            previousVolumeLevel = currentVolume;
-        } else {
-            // Unmute the volume - restore the previous volume level
-            audioVolumeController.setVolume(
-                    previousVolumeLevel > 0 ? previousVolumeLevel : audioVolumeController.getMaxVolume()
-            );
-        }
-    }
-
-    public static boolean isAudioMuted() {
-        return audioVolumeController.getVolume() == 0;
-    }
 
     public static void copyUrl(boolean withTimestamp) {
         StringBuilder builder = new StringBuilder("https://youtu.be/");
@@ -80,7 +58,7 @@ public class VideoUtils extends IntentUtils {
     /**
      * Injection point.
      * <p>
-     * Called from the in-app download hook,
+     * Called from the in app download hook,
      * for both the player action button (below the video)
      * and the 'Download video' flyout option for feed videos.
      * <p>
