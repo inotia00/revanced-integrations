@@ -22,19 +22,21 @@ public class PlayerControlsPatch {
     /**
      * Injection point.
      */
-    public static void initializeOverlayButtons(View bottomControlsViewGroup) {
+    public static void initializeBottomControlButton(View bottomControlsViewGroup) {
         // AlwaysRepeat.initialize(bottomControlsViewGroup);
         // CopyVideoUrl.initialize(bottomControlsViewGroup);
         // CopyVideoUrlTimestamp.initialize(bottomControlsViewGroup);
-        // ExternalDownload.initialize(bottomControlsViewGroup);
         // MuteVolume.initialize(bottomControlsViewGroup);
+        // ExternalDownload.initialize(bottomControlsViewGroup);
         // SpeedDialog.initialize(bottomControlsViewGroup);
+        // TimeOrderedPlaylist.initialize(bottomControlsViewGroup);
+        // Whitelists.initialize(bottomControlsViewGroup);
     }
 
     /**
      * Injection point.
      */
-    public static void initializeSponsorBlockButtons(View youtubeControlsLayout) {
+    public static void initializeTopControlButton(View youtubeControlsLayout) {
         // CreateSegmentButtonController.initialize(youtubeControlsLayout);
         // VotingButtonController.initialize(youtubeControlsLayout);
     }
@@ -58,9 +60,11 @@ public class PlayerControlsPatch {
         // AlwaysRepeat.changeVisibility(showing, animation);
         // CopyVideoUrl.changeVisibility(showing, animation);
         // CopyVideoUrlTimestamp.changeVisibility(showing, animation);
-        // ExternalDownload.changeVisibility(showing, animation);
         // MuteVolume.changeVisibility(showing, animation);
+        // ExternalDownload.changeVisibility(showing, animation);
         // SpeedDialog.changeVisibility(showing, animation);
+        // TimeOrderedPlaylist.changeVisibility(showing, animation);
+        // Whitelists.changeVisibility(showing, animation);
 
         // CreateSegmentButtonController.changeVisibility(showing, animation);
         // VotingButtonController.changeVisibility(showing, animation);
@@ -106,9 +110,11 @@ public class PlayerControlsPatch {
         // AlwaysRepeat.changeVisibilityNegatedImmediate();
         // CopyVideoUrl.changeVisibilityNegatedImmediate();
         // CopyVideoUrlTimestamp.changeVisibilityNegatedImmediate();
-        // ExternalDownload.changeVisibilityNegatedImmediate();
         // MuteVolume.changeVisibilityNegatedImmediate();
+        // ExternalDownload.changeVisibilityNegatedImmediate();
         // SpeedDialog.changeVisibilityNegatedImmediate();
+        // TimeOrderedPlaylist.changeVisibilityNegatedImmediate();
+        // Whitelists.changeVisibilityNegatedImmediate();
 
         // CreateSegmentButtonController.changeVisibilityNegatedImmediate();
         // VotingButtonController.changeVisibilityNegatedImmediate();
