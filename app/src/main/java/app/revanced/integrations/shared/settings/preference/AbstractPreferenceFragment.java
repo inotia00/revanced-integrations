@@ -25,7 +25,6 @@ import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
-import app.revanced.integrations.youtube.patches.overlaybutton.MuteVolume;
 
 @SuppressWarnings({"unused", "deprecation"})
 public abstract class AbstractPreferenceFragment extends PreferenceFragment {
@@ -276,7 +275,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     @Override
     public void onDestroy() {
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
-        MuteVolume.destroy();
         super.onDestroy();
     }
 }
