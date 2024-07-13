@@ -26,6 +26,7 @@ public class PlayerControlsPatch {
         // AlwaysRepeat.initialize(bottomControlsViewGroup);
         // CopyVideoUrl.initialize(bottomControlsViewGroup);
         // CopyVideoUrlTimestamp.initialize(bottomControlsViewGroup);
+        // MuteVolume.initialize(bottomControlsViewGroup);
         // ExternalDownload.initialize(bottomControlsViewGroup);
         // SpeedDialog.initialize(bottomControlsViewGroup);
         // TimeOrderedPlaylist.initialize(bottomControlsViewGroup);
@@ -59,6 +60,7 @@ public class PlayerControlsPatch {
         // AlwaysRepeat.changeVisibility(showing, animation);
         // CopyVideoUrl.changeVisibility(showing, animation);
         // CopyVideoUrlTimestamp.changeVisibility(showing, animation);
+        // MuteVolume.changeVisibility(showing, animation);
         // ExternalDownload.changeVisibility(showing, animation);
         // SpeedDialog.changeVisibility(showing, animation);
         // TimeOrderedPlaylist.changeVisibility(showing, animation);
@@ -108,6 +110,7 @@ public class PlayerControlsPatch {
         // AlwaysRepeat.changeVisibilityNegatedImmediate();
         // CopyVideoUrl.changeVisibilityNegatedImmediate();
         // CopyVideoUrlTimestamp.changeVisibilityNegatedImmediate();
+        // MuteVolume.changeVisibilityNegatedImmediate();
         // ExternalDownload.changeVisibilityNegatedImmediate();
         // SpeedDialog.changeVisibilityNegatedImmediate();
         // TimeOrderedPlaylist.changeVisibilityNegatedImmediate();

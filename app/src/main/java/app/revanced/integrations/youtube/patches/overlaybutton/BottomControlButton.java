@@ -103,6 +103,13 @@ public abstract class BottomControlButton {
         buttonRef = new WeakReference<>(imageView);
     }
 
+    public void changeActivated(boolean activated) {
+        ImageView imageView = buttonRef.get();
+        if (imageView == null)
+            return;
+        imageView.setActivated(activated);
+    }
+
     public void changeSelected(boolean selected) {
         ImageView imageView = buttonRef.get();
         if (imageView == null || primaryInteractionSetting == null)
