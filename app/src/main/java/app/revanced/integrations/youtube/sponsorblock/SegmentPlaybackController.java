@@ -189,7 +189,7 @@ public class SegmentPlaybackController {
      * Injection point.
      * Initializes SponsorBlock when the video player starts playing a new video.
      */
-    public static void initialize() {
+    public static void initialize(@NonNull Object ignoredPlayerController) {
         try {
             Utils.verifyOnMainThread();
             SponsorBlockSettings.initialize();

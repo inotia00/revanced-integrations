@@ -42,8 +42,8 @@ public class ReloadVideoPatch {
         final long lastVideoTime = VideoInformation.getVideoTime();
         final float playbackSpeed = VideoInformation.getPlaybackSpeed();
         final long speedAdjustedTimeThreshold = (long) (playbackSpeed * 300);
-        VideoInformation.overrideVideoTime(videoLength);
-        VideoInformation.overrideVideoTime(lastVideoTime + speedAdjustedTimeThreshold);
+        VideoInformation.seekTo(videoLength);
+        VideoInformation.seekTo(lastVideoTime + speedAdjustedTimeThreshold);
 
         if (!Settings.SKIP_PRELOADED_BUFFER_TOAST.get())
             return;
