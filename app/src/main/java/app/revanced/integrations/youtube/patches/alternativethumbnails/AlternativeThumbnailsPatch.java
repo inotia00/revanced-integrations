@@ -142,7 +142,7 @@ public final class AlternativeThumbnailsPatch {
      * Regex to match youtube static thumbnails domain.
      * Used to find and replace blocked domain with a working ones
      */
-    private static final String YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX = "(yt[3-4]|lh[3-6]|play-lh)\\.(ggpht|googleusercontent)\\.com";
+    private static final String YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX = "(ap[1-2]|gm[1-4]|gz[0]|(cp|ci|gp|lh)[3-6]|sp[1-3]|yt[3-4]|(play|ccp)-lh)\\.(ggpht|googleusercontent)\\.com";
 
     private static final Pattern YOUTUBE_STATIC_THUMBNAILS_DOMAIN_PATTERN = Pattern.compile(YOUTUBE_STATIC_THUMBNAILS_DOMAIN_REGEX);
 
