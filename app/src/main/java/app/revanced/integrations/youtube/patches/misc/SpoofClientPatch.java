@@ -265,7 +265,6 @@ public class SpoofClientPatch {
         // Block until the renderer fetch completes.
         // This is desired because if this returns without finishing the fetch
         // then video will start playback but the storyboard is not ready yet.
-        getLiveStreamRenderer(true);
         getStoryboardRenderer(true);
     }
 
