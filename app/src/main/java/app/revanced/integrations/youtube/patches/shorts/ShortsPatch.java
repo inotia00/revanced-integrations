@@ -132,6 +132,10 @@ public class ShortsPatch {
         return Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON.get() ? 0 : original;
     }
 
+    public static boolean hideShortsPausedHeader() {
+        return Settings.HIDE_SHORTS_PAUSED_HEADER.get();
+    }
+
     public static boolean hideShortsToolBar(boolean original) {
         return !Settings.HIDE_SHORTS_TOOLBAR.get() && original;
     }
