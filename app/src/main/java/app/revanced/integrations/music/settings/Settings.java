@@ -153,6 +153,8 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ENABLE_OPUS_CODEC = new BooleanSetting("revanced_enable_opus_codec", FALSE, true);
     public static final BooleanSetting ENABLE_CAIRO_SPLASH_ANIMATION = new BooleanSetting("revanced_enable_cairo_splash_animation", FALSE, true);
     public static final BooleanSetting SANITIZE_SHARING_LINKS = new BooleanSetting("revanced_sanitize_sharing_links", TRUE, true);
+    public static final BooleanSetting USE_ALTERNATIVE_DOMAIN = new BooleanSetting("revanced_use_alternative_domain", FALSE, true);
+    public static final StringSetting ALTERNATIVE_DOMAIN = new StringSetting("revanced_alternative_domain", "yt4.ggpht.com");
     public static final BooleanSetting SETTINGS_IMPORT_EXPORT = new BooleanSetting("revanced_extended_settings_import_export", FALSE, false);
 
 
@@ -209,6 +211,7 @@ public class Settings extends BaseSettings {
             SB_API_URL.key,
             SETTINGS_IMPORT_EXPORT.key,
             SPOOF_APP_VERSION_TARGET.key,
+            ALTERNATIVE_DOMAIN.key,
             OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX
     };
 
