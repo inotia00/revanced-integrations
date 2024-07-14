@@ -22,6 +22,13 @@ public class VideoQualityPatch {
     /**
      * Injection point.
      */
+    public static void newVideoStarted(Object ignoredPlayerController) {
+        setVideoQuality(0);
+    }
+
+    /**
+     * Injection point.
+     */
     public static void newVideoStarted(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
                                        @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
                                        final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
@@ -29,28 +36,8 @@ public class VideoQualityPatch {
             return;
         if (videoId.equals(newlyLoadedVideoId))
             return;
-        Utils.runOnMainThreadDelayed(() -> videoId = newlyLoadedVideoId, 5000);
-
-        final int defaultQuality = Utils.getNetworkType() == Utils.NetworkType.MOBILE
-                ? mobileQualitySetting.get()
-                : wifiQualitySetting.get();
-
-        if (defaultQuality == DEFAULT_YOUTUBE_VIDEO_QUALITY)
-            return;
-
-        long delayMillis;
-        if (Settings.SKIP_PRELOADED_BUFFER.get()) {
-            delayMillis = 250;
-        } else {
-            delayMillis = 500;
-        }
-
-        Utils.runOnMainThreadDelayed(() ->
-                        VideoInformation.overrideVideoQuality(
-                                VideoInformation.getAvailableVideoQuality(defaultQuality)
-                        ),
-                delayMillis
-        );
+        videoId = newlyLoadedVideoId;
+        setVideoQuality(Settings.SKIP_PRELOADED_BUFFER.get() ? 250 : 500);
     }
 
     /**
@@ -60,6 +47,22 @@ public class VideoQualityPatch {
         Utils.runOnMainThreadDelayed(() ->
                         userSelectedVideoQuality(VideoInformation.getVideoQuality()),
                 300
+        );
+    }
+
+    private static void setVideoQuality(final long delayMillis) {
+        final int defaultQuality = Utils.getNetworkType() == Utils.NetworkType.MOBILE
+                ? mobileQualitySetting.get()
+                : wifiQualitySetting.get();
+
+        if (defaultQuality == DEFAULT_YOUTUBE_VIDEO_QUALITY)
+            return;
+
+        Utils.runOnMainThreadDelayed(() ->
+                        VideoInformation.overrideVideoQuality(
+                                VideoInformation.getAvailableVideoQuality(defaultQuality)
+                        ),
+                delayMillis
         );
     }
 
