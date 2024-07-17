@@ -158,15 +158,15 @@ public class StoryboardRendererRequester {
     public static StoryboardRenderer getStoryboardRenderer(@NonNull String videoId) {
         Objects.requireNonNull(videoId);
 
-        // Fetch with Android.
-        ClientType clientType = ClientType.ANDROID;
+        // Fetch with iOS.
+        ClientType clientType = ClientType.IOS;
         StoryboardRenderer renderer = getStoryboardRendererUsingBody(
                 videoId,
                 String.format(clientType.innerTubeBody, videoId),
                 clientType.userAgent
         );
         if (renderer == null) {
-            Logger.printDebug(() -> videoId + " not available using Android client");
+            Logger.printDebug(() -> videoId + " not available using iOS client");
 
             clientType = ClientType.TVHTML5_SIMPLY_EMBEDDED_PLAYER;
             renderer = getStoryboardRendererUsingBody(
