@@ -189,9 +189,9 @@ public class GmsCoreSupport {
 
     private static String getGmsCoreDownload() {
         final String vendorGroupId = getGmsCoreVendorGroupId();
-        //noinspection SwitchStatementWithTooFewBranches
         return switch (vendorGroupId) {
             case "app.revanced" -> "https://github.com/revanced/gmscore/releases/latest";
+            case "com.mgoogle" -> "https://github.com/inotia00/VancedMicroG/releases/latest";
             default -> vendorGroupId + ".android.gms";
         };
     }
