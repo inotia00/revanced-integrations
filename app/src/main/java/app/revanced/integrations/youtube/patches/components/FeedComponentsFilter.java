@@ -115,8 +115,7 @@ public final class FeedComponentsFilter extends Filter {
 
         final StringFilterGroup expandableChip = new StringFilterGroup(
                 Settings.HIDE_EXPANDABLE_CHIP,
-                "inline_expansion",
-                "inline_expander"
+                "inline_expansion"
         );
 
         final StringFilterGroup feedSurvey = new StringFilterGroup(
