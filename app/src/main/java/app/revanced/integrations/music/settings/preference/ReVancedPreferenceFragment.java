@@ -1,6 +1,6 @@
 package app.revanced.integrations.music.settings.preference;
 
-import static app.revanced.integrations.music.settings.Settings.ALTERNATIVE_DOMAIN;
+import static app.revanced.integrations.music.settings.Settings.BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN;
 import static app.revanced.integrations.music.settings.Settings.CHANGE_START_PAGE;
 import static app.revanced.integrations.music.settings.Settings.CUSTOM_FILTER_STRINGS;
 import static app.revanced.integrations.music.settings.Settings.CUSTOM_PLAYBACK_SPEEDS;
@@ -127,7 +127,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
             if (settings.equals(CHANGE_START_PAGE)) {
                 ResettableListPreference.showDialog(mActivity, setting, 2);
-            } else if (settings.equals(ALTERNATIVE_DOMAIN)
+            } else if (settings.equals(BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN)
                     || settings.equals(CUSTOM_FILTER_STRINGS)
                     || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)
                     || settings.equals(CUSTOM_PLAYBACK_SPEEDS)) {
