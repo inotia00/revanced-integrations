@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.patches.components;
 
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
+
 import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -226,7 +228,14 @@ public final class FeedComponentsFilter extends Filter {
         // Check browseId last.
         // Only filter in home feed, search results, playlist.
         final String browseId = RootView.getBrowseId();
-        return browseId.isEmpty() || StringUtils.startsWithAny(browseId, BROWSE_ID_DEFAULT, BROWSE_ID_PLAYLIST);
+
+        if (StringUtils.startsWithAny(browseId, BROWSE_ID_DEFAULT, BROWSE_ID_PLAYLIST)) {
+            return true;
+        } else if (browseId.isEmpty()) {
+            NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
+            return selectedNavButton != null && !selectedNavButton.isLibraryOrYouTab();
+        }
+        return false;
     }
 
     @Override
