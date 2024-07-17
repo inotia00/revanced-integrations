@@ -3,17 +3,36 @@ package app.revanced.integrations.reddit.patches;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import app.revanced.integrations.reddit.settings.Settings;
 import app.revanced.integrations.shared.utils.Logger;
 
 @SuppressWarnings("unused")
 public final class NavigationButtonsPatch {
 
+    public static List<?> hideNavigationButtons(List<?> list) {
+        try {
+            for (NavigationButton button : NavigationButton.values()) {
+                if (button.enabled && list.size() > button.index) {
+                    list.remove(button.index);
+                }
+            }
+        } catch (Exception exception) {
+            Logger.printException(() -> "Failed to remove button list", exception);
+        }
+        return list;
+    }
+
     public static void hideNavigationButtons(ViewGroup viewGroup) {
         try {
-            for (NavigationButton button : NavigationButton.values())
-                if (button.enabled && viewGroup.getChildCount() > button.index)
-                    viewGroup.getChildAt(button.index).setVisibility(View.GONE);
+            if (viewGroup == null) return;
+            for (NavigationButton button : NavigationButton.values()) {
+                if (button.enabled && viewGroup.getChildCount() > button.index) {
+                    View view = viewGroup.getChildAt(button.index);
+                    if (view != null) view.setVisibility(View.GONE);
+                }
+            }
         } catch (Exception exception) {
             Logger.printException(() -> "Failed to remove button view", exception);
         }
