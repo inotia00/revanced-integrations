@@ -230,12 +230,16 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     }
 
     public static void showRestartDialog(@NonNull final Context context, String message) {
+        showRestartDialog(context, message, 0);
+    }
+
+    public static void showRestartDialog(@NonNull final Context context, String message, long delay) {
         Utils.verifyOnMainThread();
 
         new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, (dialog, id)
-                        -> Utils.restartApp(context))
+                        -> Utils.runOnMainThreadDelayed(() -> Utils.restartApp(context), delay))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }

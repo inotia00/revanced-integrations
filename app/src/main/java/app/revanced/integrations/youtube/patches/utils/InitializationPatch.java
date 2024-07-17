@@ -23,7 +23,7 @@ public class InitializationPatch {
     public static void onCreate(@NonNull Activity mActivity) {
         if (BaseSettings.SETTINGS_INITIALIZED.get())
             return;
-        runOnMainThreadDelayed(() -> showRestartDialog(mActivity, str("revanced_extended_restart_first_run")), 500);
+        runOnMainThreadDelayed(() -> showRestartDialog(mActivity, str("revanced_extended_restart_first_run"), 3500), 500);
         runOnMainThreadDelayed(() -> BaseSettings.SETTINGS_INITIALIZED.save(true), 1000);
     }
 
