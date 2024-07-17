@@ -3,6 +3,7 @@ package app.revanced.integrations.youtube.swipecontrols.controller
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
+import app.revanced.integrations.shared.utils.Logger.printException
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
 import kotlin.properties.Delegates
 
@@ -14,7 +15,7 @@ import kotlin.properties.Delegates
  */
 class AudioVolumeController(
     context: Context,
-    private val targetStream: Int = AudioManager.STREAM_MUSIC
+    private val targetStream: Int = AudioManager.STREAM_MUSIC,
 ) {
 
     /**
@@ -27,13 +28,19 @@ class AudioVolumeController(
     init {
         // bind audio service
         val mgr = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
-        if (mgr != null) {
+        if (mgr == null) {
+            printException { "failed to acquire AUDIO_SERVICE" }
+        } else {
             audioManager = mgr
             maximumVolumeIndex = audioManager.getStreamMaxVolume(targetStream)
             minimumVolumeIndex =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) audioManager.getStreamMinVolume(
-                    targetStream
-                ) else 0
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    audioManager.getStreamMinVolume(
+                        targetStream,
+                    )
+                } else {
+                    0
+                }
         }
     }
 

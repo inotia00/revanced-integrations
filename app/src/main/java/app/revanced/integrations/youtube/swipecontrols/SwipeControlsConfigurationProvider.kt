@@ -12,7 +12,7 @@ import app.revanced.integrations.youtube.shared.PlayerType
  * @param context the context to create in
  */
 class SwipeControlsConfigurationProvider(
-    private val context: Context
+    private val context: Context,
 ) {
     // region swipe enable
 
@@ -115,20 +115,19 @@ class SwipeControlsConfigurationProvider(
     // region behaviour
 
     /**
-     * whether the last used brightness was auto-brightness
+     * should the brightness be saved and restored when exiting or entering fullscreen
      */
-    var lastUsedBrightnessIsAuto: Boolean
-        get() = Settings.SWIPE_BRIGHTNESS_AUTO.get()
-        set(value) = Settings.SWIPE_BRIGHTNESS_AUTO.save(value)
+    val shouldSaveAndRestoreBrightness: Boolean
+        get() = Settings.ENABLE_SAVE_AND_RESTORE_BRIGHTNESS.get()
 
     /**
-     * should the auto-brightness be enabled at the lowest value of the brightness gesture
+     * should auto-brightness be enabled at the lowest value of the brightness gesture
      */
-    val shouldEnableLowestValueAutoBrightness: Boolean
+    val shouldLowestValueEnableAutoBrightness: Boolean
         get() = Settings.ENABLE_SWIPE_LOWEST_VALUE_AUTO_BRIGHTNESS.get()
 
     /**
-     * variable that stores the brightness gesture value
+     * variable that stores the brightness gesture value in the settings
      */
     var savedScreenBrightnessValue: Float
         get() = Settings.SWIPE_BRIGHTNESS_VALUE.get()

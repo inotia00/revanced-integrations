@@ -1,19 +1,18 @@
 package app.revanced.integrations.youtube.swipecontrols.controller
 
-import android.app.Activity
 import android.view.WindowManager
-import app.revanced.integrations.youtube.swipecontrols.SwipeControlsConfigurationProvider
+import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
 
 /**
  * controller to adjust the screen brightness level
  *
- * @param host the host activity of which the brightness is adjusted
+ * @param host the host activity of which the brightness is adjusted, the main controller instance
  */
 class ScreenBrightnessController(
-    private val host: Activity,
-    val config: SwipeControlsConfigurationProvider,
+    val host: SwipeControlsHostActivity,
 ) {
+
     /**
      * the current screen brightness in percent, ranging from 0.0 to 100.0
      */
@@ -30,20 +29,29 @@ class ScreenBrightnessController(
         rawScreenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
     }
 
+    // Flag that indicates whether the brightness has been restored
+    private var isBrightnessRestored = false
+
     /**
      * save the current screen brightness into settings, to be brought back using [restore]
      */
     fun save() {
-        config.savedScreenBrightnessValue = rawScreenBrightness
+        if (isBrightnessRestored) {
+            // Saves the current screen brightness value into settings
+            host.config.savedScreenBrightnessValue = rawScreenBrightness
+            // Reset the flag
+            isBrightnessRestored = false
+        }
     }
 
     /**
      * restore the screen brightness from settings saved using [save]
      */
     fun restore() {
-        if (!config.lastUsedBrightnessIsAuto) {
-            rawScreenBrightness = config.savedScreenBrightnessValue
-        }
+        // Restores the screen brightness value from the saved settings
+        rawScreenBrightness = host.config.savedScreenBrightnessValue
+        // Mark that brightness has been restored
+        isBrightnessRestored = true
     }
 
     /**

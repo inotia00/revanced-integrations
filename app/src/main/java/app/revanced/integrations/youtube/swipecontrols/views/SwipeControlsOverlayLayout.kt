@@ -26,7 +26,7 @@ import kotlin.math.round
  */
 class SwipeControlsOverlayLayout(
     context: Context,
-    private val config: SwipeControlsConfigurationProvider
+    private val config: SwipeControlsConfigurationProvider,
 ) : RelativeLayout(context), SwipeControlsOverlay {
     /**
      * DO NOT use this, for tools only
@@ -49,7 +49,7 @@ class SwipeControlsOverlayLayout(
                 0,
                 0,
                 width,
-                height
+                height,
             )
         }
     }
@@ -62,7 +62,7 @@ class SwipeControlsOverlayLayout(
         feedbackTextView = TextView(context).apply {
             layoutParams = LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply {
                 addRule(CENTER_IN_PARENT, TRUE)
                 setPadding(
@@ -111,7 +111,7 @@ class SwipeControlsOverlayLayout(
                 icon,
                 null,
                 null,
-                null
+                null,
             )
             visibility = VISIBLE
         }
@@ -120,20 +120,18 @@ class SwipeControlsOverlayLayout(
     override fun onVolumeChanged(newVolume: Int, maximumVolume: Int) {
         showFeedbackView(
             "$newVolume",
-            if (newVolume > 0) normalVolumeIcon else mutedVolumeIcon
+            if (newVolume > 0) normalVolumeIcon else mutedVolumeIcon,
         )
     }
 
     override fun onBrightnessChanged(brightness: Double) {
-        if (config.shouldEnableLowestValueAutoBrightness && brightness <= 0) {
+        if (config.shouldLowestValueEnableAutoBrightness && brightness <= 0) {
             showFeedbackView(
                 str("revanced_swipe_lowest_value_auto_brightness_overlay_text"),
-                autoBrightnessIcon
+                autoBrightnessIcon,
             )
-            config.lastUsedBrightnessIsAuto = true
         } else if (brightness >= 0) {
             showFeedbackView("${round(brightness).toInt()}%", manualBrightnessIcon)
-            config.lastUsedBrightnessIsAuto = false
         }
     }
 
@@ -142,7 +140,7 @@ class SwipeControlsOverlayLayout(
         if (config.shouldEnableHapticFeedback) {
             performHapticFeedback(
                 HapticFeedbackConstants.LONG_PRESS,
-                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING,
             )
         }
     }

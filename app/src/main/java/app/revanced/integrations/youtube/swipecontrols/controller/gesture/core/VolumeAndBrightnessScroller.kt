@@ -48,7 +48,7 @@ class VolumeAndBrightnessScrollerImpl(
     private val screenController: ScreenBrightnessController?,
     private val overlayController: SwipeControlsOverlay,
     volumeDistance: Int = 10,
-    brightnessDistance: Int = 1
+    brightnessDistance: Int = 1,
 ) : VolumeAndBrightnessScroller {
 
     // region volume
@@ -56,8 +56,8 @@ class VolumeAndBrightnessScrollerImpl(
         ScrollDistanceHelper(
             volumeDistance.applyDimension(
                 context,
-                TypedValue.COMPLEX_UNIT_DIP
-            )
+                TypedValue.COMPLEX_UNIT_DIP,
+            ),
         ) { _, _, direction ->
             volumeController?.run {
                 volume += direction
@@ -73,25 +73,21 @@ class VolumeAndBrightnessScrollerImpl(
         ScrollDistanceHelper(
             brightnessDistance.applyDimension(
                 context,
-                TypedValue.COMPLEX_UNIT_DIP
-            )
+                TypedValue.COMPLEX_UNIT_DIP,
+            ),
         ) { _, _, direction ->
             screenController?.run {
-                val shouldAdjustBrightness =
-                    if (config.shouldEnableLowestValueAutoBrightness) {
-                        screenBrightness > 0 || direction > 0
-                    } else {
-                        screenBrightness >= 0 || direction >= 0
-                    }
+                val shouldAdjustBrightness = if (host.config.shouldLowestValueEnableAutoBrightness) {
+                    screenBrightness > 0 || direction > 0
+                } else {
+                    screenBrightness >= 0 || direction >= 0
+                }
 
                 if (shouldAdjustBrightness) {
-                    restore()
                     screenBrightness += direction
-                    save()
                 } else {
                     restoreDefaultBrightness()
                 }
-
                 overlayController.onBrightnessChanged(screenBrightness)
             }
         }

@@ -1,10 +1,13 @@
 package app.revanced.integrations.youtube.swipecontrols
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ViewGroup
+import app.revanced.integrations.shared.utils.Logger.printDebug
+import app.revanced.integrations.shared.utils.Logger.printException
 import app.revanced.integrations.youtube.shared.PlayerType
 import app.revanced.integrations.youtube.swipecontrols.controller.AudioVolumeController
 import app.revanced.integrations.youtube.swipecontrols.controller.ScreenBrightnessController
@@ -77,14 +80,18 @@ class SwipeControlsHostActivity : Activity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         ensureInitialized()
-        return if ((ev != null) && gesture.submitTouchEvent(ev)) true else {
+        return if ((ev != null) && gesture.submitTouchEvent(ev)) {
+            true
+        } else {
             super.dispatchTouchEvent(ev)
         }
     }
 
     override fun dispatchKeyEvent(ev: KeyEvent?): Boolean {
         ensureInitialized()
-        return if ((ev != null) && keys.onKeyEvent(ev)) true else {
+        return if ((ev != null) && keys.onKeyEvent(ev)) {
+            true
+        } else {
             super.dispatchKeyEvent(ev)
         }
     }
@@ -105,6 +112,9 @@ class SwipeControlsHostActivity : Activity() {
      */
     private fun ensureInitialized() {
         if (!this::config.isInitialized) {
+            printException {
+                "swipe controls were not initialized in onCreate, initializing on-the-fly (SDK is ${Build.VERSION.SDK_INT})"
+            }
             initialize()
             reAttachOverlays()
         }
@@ -115,6 +125,7 @@ class SwipeControlsHostActivity : Activity() {
      */
     private fun initialize() {
         // create controllers
+        printDebug { "initializing swipe controls controllers" }
         config = SwipeControlsConfigurationProvider(this)
         keys = VolumeKeysController(this)
         audio = createAudioController()
@@ -132,7 +143,7 @@ class SwipeControlsHostActivity : Activity() {
                 contentRoot.x.toInt(),
                 contentRoot.y.toInt(),
                 contentRoot.width,
-                contentRoot.height
+                contentRoot.height,
             )
         }
 
@@ -150,9 +161,13 @@ class SwipeControlsHostActivity : Activity() {
      * (re) attaches swipe overlays
      */
     private fun reAttachOverlays() {
+        printDebug { "attaching swipe controls overlay" }
         contentRoot.removeView(overlay)
         contentRoot.addView(overlay)
     }
+
+    // Flag that indicates whether the brightness has been saved and restored default brightness
+    private var isBrightnessSaved = false
 
     /**
      * called when the player type changes
@@ -160,13 +175,22 @@ class SwipeControlsHostActivity : Activity() {
      * @param type the new player type
      */
     private fun onPlayerTypeChanged(type: PlayerType) {
-        when (type) {
-            PlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
-            else -> {
+        when {
+            // If saving and restoring brightness is enabled, and the player type is WATCH_WHILE_FULLSCREEN,
+            // and brightness has already been saved, then restore the screen brightness
+            config.shouldSaveAndRestoreBrightness && type == PlayerType.WATCH_WHILE_FULLSCREEN && isBrightnessSaved -> {
                 screen?.restore()
+                isBrightnessSaved = false
+            }
+            // If saving and restoring brightness is enabled, and brightness has not been saved,
+            // then save the current screen state, restore default brightness, and mark brightness as saved
+            config.shouldSaveAndRestoreBrightness && !isBrightnessSaved -> {
                 screen?.save()
                 screen?.restoreDefaultBrightness()
+                isBrightnessSaved = true
             }
+            // If saving and restoring brightness is disabled, simply keep the default brightness
+            else -> screen?.restoreDefaultBrightness()
         }
     }
 
@@ -174,23 +198,31 @@ class SwipeControlsHostActivity : Activity() {
      * create the audio volume controller
      */
     private fun createAudioController() =
-        if (config.enableVolumeControls)
-            AudioVolumeController(this) else null
+        if (config.enableVolumeControls) {
+            AudioVolumeController(this)
+        } else {
+            null
+        }
 
     /**
      * create the screen brightness controller instance
      */
     private fun createScreenController() =
-        if (config.enableBrightnessControl)
-            ScreenBrightnessController(this, config) else null
+        if (config.enableBrightnessControl) {
+            ScreenBrightnessController(this)
+        } else {
+            null
+        }
 
     /**
      * create the gesture controller based on settings
      */
     private fun createGestureController() =
-        if (config.shouldEnablePressToSwipe)
+        if (config.shouldEnablePressToSwipe) {
             PressToSwipeController(this, config)
-        else ClassicSwipeController(this, config)
+        } else {
+            ClassicSwipeController(this, config)
+        }
 
     companion object {
         /**

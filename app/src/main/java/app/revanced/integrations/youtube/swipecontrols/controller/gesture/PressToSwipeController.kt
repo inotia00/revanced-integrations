@@ -29,10 +29,16 @@ class PressToSwipeController(
     override fun shouldDropMotion(motionEvent: MotionEvent): Boolean = false
 
     override fun isInSwipeZone(motionEvent: MotionEvent): Boolean {
-        val inVolumeZone = if (controller.config.enableVolumeControls)
-            (motionEvent.toPoint() in controller.zones.volume) else false
-        val inBrightnessZone = if (controller.config.enableBrightnessControl)
-            (motionEvent.toPoint() in controller.zones.brightness) else false
+        val inVolumeZone = if (controller.config.enableVolumeControls) {
+            (motionEvent.toPoint() in controller.zones.volume)
+        } else {
+            false
+        }
+        val inBrightnessZone = if (controller.config.enableBrightnessControl) {
+            (motionEvent.toPoint() in controller.zones.brightness)
+        } else {
+            false
+        }
 
         return inVolumeZone || inBrightnessZone
     }
@@ -56,7 +62,7 @@ class PressToSwipeController(
         from: MotionEvent,
         to: MotionEvent,
         distanceX: Double,
-        distanceY: Double
+        distanceY: Double,
     ): Boolean {
         // cancel if locked
         if (!config.enableSwipeControlsLockMode && config.isScreenLocked)
@@ -72,12 +78,10 @@ class PressToSwipeController(
                 scrollVolume(distanceY)
                 true
             }
-
             in controller.zones.brightness -> {
                 scrollBrightness(distanceY)
                 true
             }
-
             else -> false
         }
     }

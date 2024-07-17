@@ -39,7 +39,7 @@ import kotlin.math.min
 @Suppress("PrivatePropertyName")
 class SwipeZonesController(
     private val host: Activity,
-    private val fallbackScreenRect: () -> Rectangle
+    private val fallbackScreenRect: () -> Rectangle,
 ) {
 
     private val overlayRectSize = validateValue(
@@ -85,7 +85,7 @@ class SwipeZonesController(
                 p.x + _20dp,
                 p.y + _40dp,
                 p.width - _20dp,
-                p.height - _20dp - _80dp
+                p.height - _20dp - _80dp,
             )
         }
 
@@ -99,7 +99,7 @@ class SwipeZonesController(
                 effectiveSwipeRect.right - zoneWidth,
                 effectiveSwipeRect.top,
                 zoneWidth,
-                effectiveSwipeRect.height
+                effectiveSwipeRect.height,
             )
         }
 
@@ -113,7 +113,7 @@ class SwipeZonesController(
                 effectiveSwipeRect.left,
                 effectiveSwipeRect.top,
                 zoneWidth,
-                effectiveSwipeRect.height
+                effectiveSwipeRect.height,
             )
         }
 
@@ -147,7 +147,7 @@ class SwipeZonesController(
                 playerView.x.toInt(),
                 playerView.y.toInt(),
                 min(playerView.width, playerWidthWithPadding),
-                playerView.height
+                playerView.height,
             )
         }
     }
