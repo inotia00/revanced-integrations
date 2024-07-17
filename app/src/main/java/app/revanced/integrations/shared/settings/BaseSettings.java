@@ -29,6 +29,7 @@ public class BaseSettings {
     /**
      * @noinspection DeprecatedIsStillUsed
      */
-    @Deprecated // The official ReVanced does not offer this, so it has been removed from the settings only. Users can still access settings through import / export settings.
+    @Deprecated
+    // The official ReVanced does not offer this, so it has been removed from the settings only. Users can still access settings through import / export settings.
     public static final StringSetting BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN = new StringSetting("revanced_bypass_image_region_restrictions_domain", "yt4.ggpht.com", true);
 }
