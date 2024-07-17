@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.BooleanSetting;
@@ -32,6 +33,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.utils.InitializationPatch;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.shared.RootView;
 import app.revanced.integrations.youtube.utils.VideoUtils;
 
@@ -432,8 +434,22 @@ public class PlayerPatch {
         imageView.setImageAlpha(PLAYER_OVERLAY_OPACITY_LEVEL);
     }
 
-    public static boolean disableAutoPlayerPopupPanels() {
-        return Settings.DISABLE_AUTO_PLAYER_POPUP_PANELS.get();
+    private static boolean isAutoPopupPanel;
+
+    public static boolean disableAutoPlayerPopupPanels(boolean isLiveChatOrPlaylistPanel) {
+        if (!Settings.DISABLE_AUTO_PLAYER_POPUP_PANELS.get()) {
+            return false;
+        }
+        if (isLiveChatOrPlaylistPanel) {
+            return true;
+        }
+        // There is a bug where 'Description' does not open in the flyout menu of Shorts.
+        // Check PlayerType to fix this bug.
+        return isAutoPopupPanel && !PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized();
+    }
+
+    public static void setInitVideoPanel(boolean initVideoPanel) {
+        isAutoPopupPanel = initVideoPanel;
     }
 
     public static boolean disableSpeedOverlay() {
