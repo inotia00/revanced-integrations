@@ -11,10 +11,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-
-import java.util.Objects;
-
 import app.revanced.integrations.music.settings.Settings;
 
 /**
@@ -36,27 +32,8 @@ public class GeneralPatch {
 
     // region [Disable auto captions] patch
 
-    @NonNull
-    private static String videoId = "";
-    private static boolean subtitlePrefetched = true;
-
     public static boolean disableAutoCaptions(boolean original) {
-        if (!Settings.DISABLE_AUTO_CAPTIONS.get())
-            return original;
-
-        return subtitlePrefetched;
-    }
-
-    public static void newVideoStarted(@NonNull String newlyLoadedVideoId) {
-        if (Objects.equals(newlyLoadedVideoId, videoId)) {
-            return;
-        }
-        videoId = newlyLoadedVideoId;
-        subtitlePrefetched = false;
-    }
-
-    public static void prefetchSubtitleTrack() {
-        subtitlePrefetched = true;
+        return Settings.DISABLE_AUTO_CAPTIONS.get() || original;
     }
 
     // endregion

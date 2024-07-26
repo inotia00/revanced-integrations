@@ -46,6 +46,7 @@ import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.utils.ViewGroupMarginLayoutParamsPatch;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
 /**
@@ -146,29 +147,16 @@ public class GeneralPatch {
 
     // region [Disable auto captions] patch
 
-    private static boolean subtitlePrefetched = true;
-    @NonNull
-    private static String videoId = "";
+    private static boolean captionsButtonStatus;
 
-    public static boolean disableAutoCaptions(boolean original) {
-        if (!Settings.DISABLE_AUTO_CAPTIONS.get())
-            return original;
-
-        return subtitlePrefetched;
+    public static boolean disableAutoCaptions() {
+        return Settings.DISABLE_AUTO_CAPTIONS.get() &&
+                !captionsButtonStatus &&
+                !PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized();
     }
 
-    public static void newVideoStarted(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
-                                       @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
-                                       final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
-        if (Objects.equals(newlyLoadedVideoId, videoId)) {
-            return;
-        }
-        videoId = newlyLoadedVideoId;
-        subtitlePrefetched = false;
-    }
-
-    public static void prefetchSubtitleTrack() {
-        subtitlePrefetched = true;
+    public static void setCaptionsButtonStatus(boolean status) {
+        captionsButtonStatus = status;
     }
 
     // endregion
