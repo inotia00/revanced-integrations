@@ -12,20 +12,12 @@ import app.revanced.integrations.youtube.settings.Settings;
 public final class DescriptionsFilter extends Filter {
     private final ByteArrayFilterGroupList macroMarkerShelfGroupList = new ByteArrayFilterGroupList();
 
+    private final StringFilterGroup howThisWasMadeSection;
+    private final StringFilterGroup infoCardsSection;
     private final StringFilterGroup macroMarkerShelf;
     private final StringFilterGroup shoppingLinks;
 
     public DescriptionsFilter() {
-        final StringFilterGroup infoCardsSection = new StringFilterGroup(
-                Settings.HIDE_INFO_CARDS_SECTION,
-                "infocards_section.eml"
-        );
-
-        final StringFilterGroup podcastSection = new StringFilterGroup(
-                Settings.HIDE_PODCAST_SECTION,
-                "playlist_section.eml"
-        );
-
         // game section, music section and places section now use the same identifier in the latest version.
         final StringFilterGroup attributesSection = new StringFilterGroup(
                 Settings.HIDE_ATTRIBUTES_SECTION,
@@ -35,6 +27,11 @@ public final class DescriptionsFilter extends Filter {
                 "video_attributes_section.eml"
         );
 
+        final StringFilterGroup podcastSection = new StringFilterGroup(
+                Settings.HIDE_PODCAST_SECTION,
+                "playlist_section.eml"
+        );
+
         final StringFilterGroup transcriptSection = new StringFilterGroup(
                 Settings.HIDE_TRANSCRIPT_SECTION,
                 "transcript_section.eml"
@@ -42,9 +39,18 @@ public final class DescriptionsFilter extends Filter {
 
         addIdentifierCallbacks(
                 attributesSection,
-                infoCardsSection,
                 podcastSection,
                 transcriptSection
+        );
+
+        howThisWasMadeSection = new StringFilterGroup(
+                Settings.HIDE_CONTENTS_SECTION,
+                "how_this_was_made_section.eml"
+        );
+
+        infoCardsSection = new StringFilterGroup(
+                Settings.HIDE_INFO_CARDS_SECTION,
+                "infocards_section.eml"
         );
 
         macroMarkerShelf = new StringFilterGroup(
@@ -59,6 +65,8 @@ public final class DescriptionsFilter extends Filter {
         );
 
         addPathCallbacks(
+                howThisWasMadeSection,
+                infoCardsSection,
                 macroMarkerShelf,
                 shoppingLinks
         );
@@ -79,7 +87,7 @@ public final class DescriptionsFilter extends Filter {
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         // Check for the index because of likelihood of false positives.
-        if (matchedGroup == shoppingLinks) {
+        if (matchedGroup == howThisWasMadeSection || matchedGroup == infoCardsSection || matchedGroup == shoppingLinks) {
             if (contentIndex != 0) {
                 return false;
             }
