@@ -207,6 +207,7 @@ public class Settings extends BaseSettings {
             CUSTOM_PLAYBACK_SPEEDS.key,
             EXTERNAL_DOWNLOADER_PACKAGE_NAME.key,
             HIDE_ACCOUNT_MENU_FILTER_STRINGS.key,
+            HIDE_SETTINGS_MENU_FILTER_STRINGS.key,
             SB_API_URL.key,
             SETTINGS_IMPORT_EXPORT.key,
             SPOOF_APP_VERSION_TARGET.key,
