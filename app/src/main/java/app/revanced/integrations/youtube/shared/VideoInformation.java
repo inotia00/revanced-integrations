@@ -129,8 +129,7 @@ public final class VideoInformation {
 
             Logger.printDebug(() -> "Seeking to " + getFormattedTimeStamp(adjustedSeekTime));
             try {
-                //noinspection DataFlowIssue
-                if ((Boolean) seekMethod.invoke(playerControllerRef.get(), adjustedSeekTime)) {
+                if (overrideVideoTime(adjustedSeekTime)) {
                     return true;
                 } // Else the video is loading or changing videos, or video is casting to a different device.
             } catch (Exception ex) {
@@ -146,8 +145,7 @@ public final class VideoInformation {
                 return false;
             }
             try {
-                //noinspection DataFlowIssue
-                return (Boolean) mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
+                return overrideMDXVideoTime(adjustedSeekTime);
             } catch (Exception ex) {
                 Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
                 return false;
@@ -509,6 +507,16 @@ public final class VideoInformation {
      * Rest of the implementation added by patch.
      */
     public static boolean overrideVideoTime(final long seekTime) {
+        // These instructions are ignored by patch.
+        Logger.printDebug(() -> "Seeking to " + seekTime);
+        return false;
+    }
+
+    /**
+     * Overrides the current video time by seeking. (MDX player)
+     * Rest of the implementation added by patch.
+     */
+    public static boolean overrideMDXVideoTime(final long seekTime) {
         // These instructions are ignored by patch.
         Logger.printDebug(() -> "Seeking to " + seekTime);
         return false;

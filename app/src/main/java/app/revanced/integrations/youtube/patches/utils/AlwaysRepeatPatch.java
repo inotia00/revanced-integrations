@@ -14,7 +14,7 @@ public class AlwaysRepeatPatch {
      * @return video is repeated.
      */
     public static boolean alwaysRepeat() {
-        return alwaysRepeatEnabled() && VideoInformation.seekTo(0);
+        return alwaysRepeatEnabled() && VideoInformation.overrideVideoTime(0);
     }
 
     public static boolean alwaysRepeatEnabled() {
