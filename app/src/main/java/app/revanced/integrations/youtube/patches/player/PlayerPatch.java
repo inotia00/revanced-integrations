@@ -518,6 +518,10 @@ public class PlayerPatch {
         Utils.clickView(view);
     }
 
+    public static boolean hideZoomOverlay() {
+        return Settings.HIDE_ZOOM_OVERLAY.get();
+    }
+
     // endregion
 
     // region [Hide player flyout menu] patch
