@@ -24,6 +24,9 @@ public class BaseSettings {
     public static final BooleanSetting HIDE_FULLSCREEN_ADS = new BooleanSetting("revanced_hide_fullscreen_ads", TRUE, true);
     public static final BooleanSetting HIDE_FULLSCREEN_ADS_TYPE = new BooleanSetting("revanced_hide_fullscreen_ads_type", TRUE, true);
 
+    public static final BooleanSetting HIDE_SETTINGS_MENU = new BooleanSetting("revanced_hide_settings_menu", FALSE);
+    public static final StringSetting HIDE_SETTINGS_MENU_FILTER_STRINGS = new StringSetting("revanced_hide_settings_menu_filter_strings", "", true);
+
     public static final BooleanSetting BYPASS_IMAGE_REGION_RESTRICTIONS = new BooleanSetting("revanced_bypass_image_region_restrictions", FALSE, true);
 
     /**
