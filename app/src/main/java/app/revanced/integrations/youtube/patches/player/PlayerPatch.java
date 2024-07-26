@@ -459,10 +459,6 @@ public class PlayerPatch {
         return !Settings.DISABLE_SPEED_OVERLAY.get() && original;
     }
 
-    public static boolean disableZoomOverlay() {
-        return Settings.DISABLE_ZOOM_OVERLAY.get();
-    }
-
     public static double speedOverlayValue() {
         return speedOverlayValue(2.0f);
     }
@@ -520,6 +516,10 @@ public class PlayerPatch {
             return;
 
         Utils.clickView(view);
+    }
+
+    public static boolean hideZoomOverlay() {
+        return Settings.HIDE_ZOOM_OVERLAY.get();
     }
 
     // endregion
