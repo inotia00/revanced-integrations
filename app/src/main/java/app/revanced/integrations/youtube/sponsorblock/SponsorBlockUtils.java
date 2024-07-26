@@ -232,9 +232,7 @@ public class SponsorBlockUtils {
             new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                     .setTitle(str("revanced_sb_new_segment_title"))
                     .setMessage(str("revanced_sb_new_segment_mark_time_as_question",
-                            newSponsorSegmentDialogShownMillis / 3600000,
-                            newSponsorSegmentDialogShownMillis / 1000 % 60,
-                            newSponsorSegmentDialogShownMillis % 1000))
+                            formatSegmentTime(newSponsorSegmentDialogShownMillis)))
                     .setNeutralButton(android.R.string.cancel, null)
                     .setNegativeButton(str("revanced_sb_new_segment_mark_start"), newSponsorSegmentDialogListener)
                     .setPositiveButton(str("revanced_sb_new_segment_mark_end"), newSponsorSegmentDialogListener)
