@@ -569,6 +569,11 @@ public class Utils {
         }
     }
 
+    public static void hideViewGroupByMarginLayoutParams(ViewGroup viewGroup) {
+        // Rest of the implementation added by patch.
+        viewGroup.setVisibility(View.GONE);
+    }
+
     /**
      * {@link PreferenceScreen} and {@link PreferenceGroup} sorting styles.
      */
