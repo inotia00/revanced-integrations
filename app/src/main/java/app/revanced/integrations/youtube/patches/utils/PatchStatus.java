@@ -2,6 +2,11 @@ package app.revanced.integrations.youtube.patches.utils;
 
 public class PatchStatus {
 
+    public static boolean ImageSearchButton() {
+        // Replace this with true if the Hide image search buttons patch succeeds
+        return false;
+    }
+
     public static boolean PlayerButtons() {
         // Replace this with true if the Hide player buttons patch succeeds
         return false;
