@@ -51,12 +51,11 @@ import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.utils.ExtendedUtils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("all")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     private static final String IMPORT_EXPORT_SETTINGS_ENTRY_KEY = "revanced_extended_settings_import_export_entries";
@@ -123,25 +122,29 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             }
 
             final Setting<?> settings = getSettingFromPath(dataString);
-            final Setting<String> setting = (Setting<String>) settings;
-
-            if (settings.equals(CHANGE_START_PAGE)) {
-                ResettableListPreference.showDialog(mActivity, setting, 2);
-            } else if (settings.equals(BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN)
-                    || settings.equals(CUSTOM_FILTER_STRINGS)
-                    || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)
-                    || settings.equals(CUSTOM_PLAYBACK_SPEEDS)) {
-                ResettableEditTextPreference.showDialog(mActivity, setting);
-            } else if (settings.equals(EXTERNAL_DOWNLOADER_PACKAGE_NAME)) {
-                ExternalDownloaderPreference.showDialog(mActivity);
-            } else if (settings.equals(SB_API_URL)) {
-                SponsorBlockApiUrlPreference.showDialog(mActivity);
-            } else if (settings.equals(SETTINGS_IMPORT_EXPORT)) {
-                importExportListDialogBuilder();
-            } else if (settings.equals(SPOOF_APP_VERSION_TARGET)) {
-                ResettableListPreference.showDialog(mActivity, setting, 1);
-            } else {
-                Logger.printDebug(() -> "Failed to find the right value: " + dataString);
+            if (settings instanceof StringSetting stringSetting) {
+                if (settings.equals(CHANGE_START_PAGE)) {
+                    ResettableListPreference.showDialog(mActivity, stringSetting, 2);
+                } else if (settings.equals(BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN)
+                        || settings.equals(CUSTOM_FILTER_STRINGS)
+                        || settings.equals(CUSTOM_PLAYBACK_SPEEDS)
+                        || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)) {
+                    ResettableEditTextPreference.showDialog(mActivity, stringSetting);
+                } else if (settings.equals(EXTERNAL_DOWNLOADER_PACKAGE_NAME)) {
+                    ExternalDownloaderPreference.showDialog(mActivity);
+                } else if (settings.equals(SB_API_URL)) {
+                    SponsorBlockApiUrlPreference.showDialog(mActivity);
+                } else if (settings.equals(SPOOF_APP_VERSION_TARGET)) {
+                    ResettableListPreference.showDialog(mActivity, stringSetting, 1);
+                } else {
+                    Logger.printDebug(() -> "Failed to find the right value: " + dataString);
+                }
+            } else if (settings instanceof BooleanSetting) {
+                if (settings.equals(SETTINGS_IMPORT_EXPORT)) {
+                    importExportListDialogBuilder();
+                } else {
+                    Logger.printDebug(() -> "Failed to find the right value: " + dataString);
+                }
             }
         } catch (Exception ex) {
             Logger.printException(() -> "onCreate failure", ex);
