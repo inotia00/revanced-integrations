@@ -42,19 +42,18 @@ public final class FeedVideoFilter extends Filter {
                 "inline_shorts.eml" // vertical video with shorts label
         );
 
-        addIdentifierCallbacks(
-                homeFeedVideo,
-                feedVideo,
-                inlineShorts
-        );
-
         // Used for home, related videos, subscriptions, and search results.
         videoLockup = new StringFilterGroup(
                 null,
                 "video_lockup_with_attachment.eml"
         );
 
-        addPathCallbacks(videoLockup);
+        addPathCallbacks(
+                homeFeedVideo,
+                feedVideo,
+                inlineShorts,
+                videoLockup
+        );
 
         bufferGroupList.addAll(
                 new ByteArrayFilterGroup(
@@ -80,6 +79,9 @@ public final class FeedVideoFilter extends Filter {
                 return false;
             }
         } else {
+            if (contentIndex != 0) {
+                return false;
+            }
             if (matchedGroup == videoLockup && !feedVideoPattern.matches(allValue)) {
                 return false;
             }
