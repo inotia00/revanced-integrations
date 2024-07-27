@@ -16,19 +16,19 @@ import app.revanced.integrations.shared.utils.Logger;
 
 @SuppressWarnings("unused")
 public final class SettingsMenuPatch {
+    private static String[] settingsMenuBlockList;
 
-    private static String[] settingsMenuBlockList = BaseSettings.HIDE_SETTINGS_MENU_FILTER_STRINGS.get().split("\\n");
-    private static final String hideSettingsLabel = str("revanced_hide_settings_menu_title");
-    private static final String rvxSettingsLabel = str("revanced_extended_settings_title");
+    static {
+        settingsMenuBlockList = BaseSettings.HIDE_SETTINGS_MENU_FILTER_STRINGS.get().split("\\n");
+        // Some settings should not be hidden.
+        settingsMenuBlockList = Arrays.stream(settingsMenuBlockList)
+                .filter(item -> !StringUtils.equalsAny(item, str("revanced_hide_settings_menu_title"), str("revanced_extended_settings_title")))
+                .toArray(String[]::new);
+    }
 
     public static void hideSettingsMenu(RecyclerView recyclerView) {
         if (!BaseSettings.HIDE_SETTINGS_MENU.get())
             return;
-
-        // RVX Settings are not hidden.
-        settingsMenuBlockList = Arrays.stream(settingsMenuBlockList)
-                .filter(item -> !StringUtils.equalsAny(item, hideSettingsLabel, rvxSettingsLabel))
-                .toArray(String[]::new);
 
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             final int childCount = recyclerView.getChildCount();

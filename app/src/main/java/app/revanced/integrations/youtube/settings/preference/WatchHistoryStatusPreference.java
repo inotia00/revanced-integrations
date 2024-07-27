@@ -30,12 +30,15 @@ public class WatchHistoryStatusPreference extends Preference {
     public WatchHistoryStatusPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
+
     public WatchHistoryStatusPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     public WatchHistoryStatusPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     public WatchHistoryStatusPreference(Context context) {
         super(context);
     }

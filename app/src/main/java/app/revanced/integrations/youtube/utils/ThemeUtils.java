@@ -91,7 +91,7 @@ public class ThemeUtils {
             shape.setColor(Color.parseColor(adjustedColor));
             finalHex = adjustedColor;
         }
-        Logger.printInfo(() -> "searchbar color: " + finalHex);
+        Logger.printDebug(() -> "searchbar color: " + finalHex);
 
         shape.setCornerRadius(30 * getResources().getDisplayMetrics().density);
 
