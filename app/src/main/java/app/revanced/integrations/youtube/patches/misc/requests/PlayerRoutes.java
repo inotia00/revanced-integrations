@@ -46,7 +46,7 @@ public final class PlayerRoutes {
     private static final String ANDROID_TESTSUITE_CLIENT_VERSION = "1.9";
 
 
-    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.01.0";
+    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.30.1";
     /**
      * The device machine id for the Chromecast with Google TV 4K.
      *
@@ -74,7 +74,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code Additional details} section.
      * </p>
      */
-    private static final String ANDROID_VR_CLIENT_VERSION = "1.56.21";
+    private static final String ANDROID_VR_CLIENT_VERSION = "1.58.14";
 
     /**
      * The device machine id for the Meta Quest 3, used to get opus codec with the Android VR client.
@@ -112,9 +112,9 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_CLIENT_VERSION = "19.01.1";
+    private static final String IOS_CLIENT_VERSION = "19.29.1";
     /**
-     * The device machine id for the iPhone 14 Pro Max, used to get 60fps with the iOS client.
+     * The device machine id for the iPhone 14 Pro Max (iPhone15,3), used to get 60fps.
      *
      * <p>
      * See <a href="https://gist.github.com/adamawolf/3048717">this GitHub Gist</a> for more
@@ -136,7 +136,7 @@ public final class PlayerRoutes {
     private static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
             " 85.0.4183.93/6.5 TV Safari/537.36";
-    private static final String WEB_CLIENT_VERSION = "2.20240304.00.00";
+    private static final String WEB_CLIENT_VERSION = "2.20240718.01.00";
     private static final String WEB_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; SM-G981B)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
             " Chrome/80.0.3987.162 Mobile Safari/537.36";
