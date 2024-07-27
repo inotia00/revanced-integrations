@@ -31,6 +31,7 @@ import app.revanced.integrations.youtube.patches.alternativethumbnails.Alternati
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.StillImagesAvailability;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailOption;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailStillTime;
+import app.revanced.integrations.youtube.patches.misc.WatchHistoryPatch.WatchHistoryType;
 import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
 import app.revanced.integrations.youtube.patches.shorts.AnimationFeedbackPatch.AnimationType;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
@@ -461,6 +462,8 @@ public class Settings extends BaseSettings {
             // Some private videos cannot be played with {@code ClientType.IOS}.
             // Use {@code ClientType.ANDROID_TESTSUITE}.
             ClientType.ANDROID_TESTSUITE);
+
+    public static final EnumSetting<WatchHistoryType> WATCH_HISTORY_TYPE = new EnumSetting<>("revanced_watch_history_type", WatchHistoryType.REPLACE);
 
     public static final BooleanSetting ENABLE_OPUS_CODEC = new BooleanSetting("revanced_enable_opus_codec", FALSE, true);
 
