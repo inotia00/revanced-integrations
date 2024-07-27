@@ -176,6 +176,33 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
+    public static String getOsVersion(String originalOsVersion) {
+        if (SPOOF_CLIENT_ENABLED) {
+            return getSpoofClientType().osVersion;
+        }
+
+        return originalOsVersion;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static String getUserAgent(String originalUserAgent) {
+        if (SPOOF_CLIENT_ENABLED) {
+            ClientType clientType = getSpoofClientType();
+            if (clientType == ClientType.IOS) {
+                Logger.printDebug(() -> "Replaced: '" + originalUserAgent + "' with: '"
+                        + clientType.userAgent + "'");
+                return clientType.userAgent;
+            }
+        }
+
+        return originalUserAgent;
+    }
+
+    /**
+     * Injection point.
+     */
     public static boolean isClientSpoofingEnabled() {
         return SPOOF_CLIENT_ENABLED;
     }
