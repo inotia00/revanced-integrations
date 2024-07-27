@@ -4,12 +4,11 @@ import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationB
 
 import androidx.annotation.Nullable;
 
-import org.apache.commons.lang3.StringUtils;
-
 import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.shared.patches.components.StringFilterGroupList;
+import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.StringTrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.RootView;
@@ -225,17 +224,17 @@ public final class FeedComponentsFilter extends Filter {
             return true;
         }
 
+        NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
+        if (selectedNavButton != null && !selectedNavButton.isLibraryOrYouTab()) {
+            return true;
+        }
+
         // Check browseId last.
         // Only filter in home feed, search results, playlist.
         final String browseId = RootView.getBrowseId();
+        Logger.printInfo(() -> "browseId: " + browseId);
 
-        if (StringUtils.startsWithAny(browseId, BROWSE_ID_DEFAULT, BROWSE_ID_PLAYLIST)) {
-            return true;
-        } else if (browseId.isEmpty()) {
-            NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
-            return selectedNavButton != null && !selectedNavButton.isLibraryOrYouTab();
-        }
-        return false;
+        return browseId.startsWith(BROWSE_ID_PLAYLIST);
     }
 
     @Override
