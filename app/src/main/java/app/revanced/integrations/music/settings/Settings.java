@@ -119,6 +119,8 @@ public class Settings extends BaseSettings {
 
 
     // PreferenceScreen: Player
+    public static final BooleanSetting DISABLE_MINI_PLAYER_GESTURE = new BooleanSetting("revanced_disable_mini_player_gesture", FALSE, true);
+    public static final BooleanSetting DISABLE_PLAYER_GESTURE = new BooleanSetting("revanced_disable_player_gesture", FALSE, true);
     public static final BooleanSetting ENABLE_BLACK_PLAYER_BACKGROUND = new BooleanSetting("revanced_enable_black_player_background", FALSE, true);
     public static final BooleanSetting ENABLE_COLOR_MATCH_PLAYER = new BooleanSetting("revanced_enable_color_match_player", TRUE);
     public static final BooleanSetting ENABLE_FORCE_MINIMIZED_PLAYER = new BooleanSetting("revanced_enable_force_minimized_player", TRUE);

@@ -23,6 +23,14 @@ public class PlayerPatch {
     @SuppressLint("StaticFieldLeak")
     public static View nextButton;
 
+    public static boolean disableMiniPlayerGesture() {
+        return Settings.DISABLE_MINI_PLAYER_GESTURE.get();
+    }
+
+    public static boolean disablePlayerGesture() {
+        return Settings.DISABLE_PLAYER_GESTURE.get();
+    }
+
     public static boolean enableColorMatchPlayer() {
         return Settings.ENABLE_COLOR_MATCH_PLAYER.get();
     }
