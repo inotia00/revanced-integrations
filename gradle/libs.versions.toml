@@ -1,7 +1,8 @@
 [versions]
-agp = "8.0.2" # do not update if possible
-annotation = "1.7.1"
-lang3 = "3.14.0"
+# noinspection GradleDependency
+agp = "8.0.2"
+annotation = "1.8.1"
+lang3 = "3.15.0"
 # noinspection GradleDependency
 kotlin = "1.7.21"
 
