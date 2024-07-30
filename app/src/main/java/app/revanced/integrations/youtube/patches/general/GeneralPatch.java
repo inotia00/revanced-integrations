@@ -37,6 +37,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -183,6 +184,16 @@ public class GeneralPatch {
 
     // region [Hide layout components] patch
 
+    private static String[] accountMenuBlockList;
+
+    static {
+        accountMenuBlockList = Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS.get().split("\\n");
+        // Some settings should not be hidden.
+        accountMenuBlockList = Arrays.stream(accountMenuBlockList)
+                .filter(item -> !Objects.equals(item, str("settings")))
+                .toArray(String[]::new);
+    }
+
     /**
      * hide account menu in you tab
      *
@@ -214,8 +225,6 @@ public class GeneralPatch {
 
         hideAccountMenu(viewGroup, menuTitleCharSequence.toString());
     }
-
-    private static final String[] accountMenuBlockList = Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS.get().split("\\n");
 
     private static void hideAccountMenu(ViewGroup viewGroup, String menuTitleString) {
         for (String filter : accountMenuBlockList) {
