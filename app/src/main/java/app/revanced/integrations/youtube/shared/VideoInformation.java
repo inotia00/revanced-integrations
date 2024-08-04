@@ -66,7 +66,7 @@ public final class VideoInformation {
     /**
      * Injection point.
      */
-    public static void initialize(@NonNull Object ignoredPlayerController) {
+    public static void initialize() {
         videoTime = -1;
         videoLength = 0;
         playbackSpeed = DEFAULT_YOUTUBE_PLAYBACK_SPEED;
@@ -76,7 +76,7 @@ public final class VideoInformation {
     /**
      * Injection point.
      */
-    public static void initializeMdx(@NonNull Object ignoredMdxPlayerDirector) {
+    public static void initializeMdx() {
         Logger.printDebug(() -> "Initialized Mdx Player");
     }
 
@@ -100,29 +100,23 @@ public final class VideoInformation {
             final long videoTime = getVideoTime();
             final long adjustedSeekTime = getAdjustedSeekTime(seekTime, videoLength);
 
-            Logger.printDebug(() -> "Seeking to " + getFormattedTimeStamp(adjustedSeekTime));
-            try {
-                if (overrideVideoTime(adjustedSeekTime)) {
-                    return true;
-                } // Else the video is loading or changing videos, or video is casting to a different device.
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekTo method call failed", ex);
-            }
+            Logger.printDebug(() -> "Seeking to: " + getFormattedTimeStamp(adjustedSeekTime));
+
+            // Try regular playback controller first, and it will not succeed if casting.
+            if (overrideVideoTime(adjustedSeekTime)) return true;
+            Logger.printDebug(() -> "seekTo did not succeeded. Trying MXD.");
+            // Else the video is loading or changing videos, or video is casting to a different device.
 
             // Try calling the seekTo method of the MDX player director (called when casting).
             // The difference has to be a different second mark in order to avoid infinite skip loops
             // as the Lounge API only supports seconds.
-            if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
-                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small ("
-                        + (adjustedSeekTime - videoTime) + "ms)");
+            if (adjustedSeekTime / 1000 == videoTime / 1000) {
+                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small "
+                        + "(" + (adjustedSeekTime - videoTime) + "ms)");
                 return false;
             }
-            try {
-                return overrideMDXVideoTime(adjustedSeekTime);
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
-                return false;
-            }
+
+            return overrideMDXVideoTime(adjustedSeekTime);
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek", ex);
             return false;
@@ -148,13 +142,32 @@ public final class VideoInformation {
         }
     }
 
-    @Deprecated
-    public static void seekToRelative(long millisecondsRelative) {
-        seekToRelative(millisecondsRelative, getVideoLength());
-    }
+    /**
+     * Seeks a relative amount.  Should always be used over {@link #seekTo(long)}
+     * when the desired seek time is an offset of the current time.
+     *
+     * @noinspection UnusedReturnValue
+     */
+    public static boolean seekToRelative(long seekTime) {
+        Utils.verifyOnMainThread();
+        try {
+            Logger.printDebug(() -> "Seeking relative to: " + seekTime);
 
-    public static void seekToRelative(long millisecondsRelative, final long videoLength) {
-        seekTo(videoTime + millisecondsRelative, videoLength);
+            // Try regular playback controller first, and it will not succeed if casting.
+            if (overrideVideoTimeRelative(seekTime)) return true;
+            Logger.printDebug(() -> "seekToRelative did not succeeded. Trying MXD.");
+
+            // Adjust the fine adjustment function so it's at least 1 second before/after.
+            // Otherwise the fine adjustment will do nothing when casting.
+            final long adjustedSeekTime = seekTime < 0
+                    ? Math.min(seekTime, -1000)
+                    : Math.max(seekTime, 1000);
+
+            return overrideMDXVideoTimeRelative(adjustedSeekTime);
+        } catch (Exception ex) {
+            Logger.printException(() -> "Failed to seek relative", ex);
+            return false;
+        }
     }
 
     /**
@@ -490,6 +503,26 @@ public final class VideoInformation {
      * Rest of the implementation added by patch.
      */
     public static boolean overrideMDXVideoTime(final long seekTime) {
+        // These instructions are ignored by patch.
+        Logger.printDebug(() -> "Seeking to " + seekTime);
+        return false;
+    }
+
+    /**
+     * Overrides the current video time by seeking relative.
+     * Rest of the implementation added by patch.
+     */
+    public static boolean overrideVideoTimeRelative(final long seekTime) {
+        // These instructions are ignored by patch.
+        Logger.printDebug(() -> "Seeking to " + seekTime);
+        return false;
+    }
+
+    /**
+     * Overrides the current video time by seeking relative. (MDX player)
+     * Rest of the implementation added by patch.
+     */
+    public static boolean overrideMDXVideoTimeRelative(final long seekTime) {
         // These instructions are ignored by patch.
         Logger.printDebug(() -> "Seeking to " + seekTime);
         return false;

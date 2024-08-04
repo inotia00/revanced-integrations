@@ -22,7 +22,7 @@ public class VideoQualityPatch {
     /**
      * Injection point.
      */
-    public static void newVideoStarted(Object ignoredPlayerController) {
+    public static void newVideoStarted() {
         setVideoQuality(0);
     }
 

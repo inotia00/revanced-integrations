@@ -16,7 +16,6 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
-import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
 
 public final class NewSegmentLayout extends FrameLayout {
@@ -52,14 +51,14 @@ public final class NewSegmentLayout extends FrameLayout {
         initializeButton(
                 context,
                 "revanced_sb_new_segment_rewind",
-                () -> VideoInformation.seekToRelative(-Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), SegmentPlaybackController.getVideoLength()),
+                () -> VideoInformation.seekToRelative(-Settings.SB_CREATE_NEW_SEGMENT_STEP.get()),
                 "Rewind button clicked"
         );
 
         initializeButton(
                 context,
                 "revanced_sb_new_segment_forward",
-                () -> VideoInformation.seekToRelative(Settings.SB_CREATE_NEW_SEGMENT_STEP.get(), SegmentPlaybackController.getVideoLength()),
+                () -> VideoInformation.seekToRelative(Settings.SB_CREATE_NEW_SEGMENT_STEP.get()),
                 "Forward button clicked"
         );
 

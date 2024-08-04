@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import app.revanced.integrations.shared.utils.Logger;
@@ -189,7 +190,7 @@ public class SegmentPlaybackController {
      * Injection point.
      * Initializes SponsorBlock when the video player starts playing a new video.
      */
-    public static void initialize(@NonNull Object ignoredPlayerController) {
+    public static void initialize() {
         try {
             Utils.verifyOnMainThread();
             SponsorBlockSettings.initialize();
@@ -749,9 +750,9 @@ public class SegmentPlaybackController {
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
         final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
         if (hours > 0) {
-            timeWithoutSegments = String.format("\u2009(%d:%02d:%02d)", hours, minutes, seconds);
+            timeWithoutSegments = String.format(Locale.ENGLISH, "\u2009(%d:%02d:%02d)", hours, minutes, seconds);
         } else {
-            timeWithoutSegments = String.format("\u2009(%d:%02d)", minutes, seconds);
+            timeWithoutSegments = String.format(Locale.ENGLISH, "\u2009(%d:%02d)", minutes, seconds);
         }
     }
 
