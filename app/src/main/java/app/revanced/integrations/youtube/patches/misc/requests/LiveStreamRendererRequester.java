@@ -73,7 +73,7 @@ public class LiveStreamRendererRequester {
 
     private static boolean isLiveStream(@NonNull JSONObject playerResponse) {
         try {
-            return playerResponse.getJSONObject("videoDetails").getBoolean("isLive");
+            return playerResponse.getJSONObject("videoDetails").getBoolean("isLiveContent");
         } catch (JSONException e) {
             Logger.printDebug(() -> "Failed to get videoDetails for response: " + playerResponse);
         }

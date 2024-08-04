@@ -127,7 +127,7 @@ public class SpoofClientPatch {
         }
         LiveStreamRenderer renderer = getLiveStreamRenderer(false);
         if (renderer != null) {
-            if (renderer.isLive) {
+            if (renderer.isLiveContent) {
                 lastSpoofedClientType = Settings.SPOOF_CLIENT_LIVESTREAM.get();
                 return lastSpoofedClientType;
             }

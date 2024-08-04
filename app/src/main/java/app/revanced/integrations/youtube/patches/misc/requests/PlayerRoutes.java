@@ -31,7 +31,7 @@ public final class PlayerRoutes {
             Route.Method.POST,
             "player" +
                     "?fields=playabilityStatus.status," +
-                    "videoDetails.isLive"
+                    "videoDetails.isLiveContent"
     ).compile();
 
 
@@ -48,7 +48,7 @@ public final class PlayerRoutes {
     private static final String ANDROID_TESTSUITE_CLIENT_VERSION = "1.9";
 
 
-    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.30.1";
+    private static final String ANDROID_UNPLUGGED_CLIENT_VERSION = "8.31.0";
     /**
      * The device machine id for the Chromecast with Google TV 4K.
      *
@@ -114,7 +114,7 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_CLIENT_VERSION = "19.29.1";
+    private static final String IOS_CLIENT_VERSION = "19.30.2";
     /**
      * The device machine id for the iPhone 14 Pro Max (iPhone15,3), used to get 60fps.
      * The device machine id for the iPhone 15 Pro Max (iPhone16,2), used to get HDR with AV1 hardware decoding.
@@ -125,8 +125,8 @@ public final class PlayerRoutes {
      * </p>
      */
     private static final String IOS_DEVICE_MODEL = deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone15,3";
-    private static final String IOS_OS_VERSION = "17.5.1.21F90";
-    private static final String IOS_USER_AGENT_VERSION = "17_5_1";
+    private static final String IOS_OS_VERSION = "17.6.21G80";
+    private static final String IOS_USER_AGENT_VERSION = "17_6";
     private static final String IOS_USER_AGENT = "com.google.ios.youtube/" +
             IOS_CLIENT_VERSION +
             "(" +
@@ -139,10 +139,11 @@ public final class PlayerRoutes {
     private static final String TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.5)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
             " 85.0.4183.93/6.5 TV Safari/537.36";
-    private static final String WEB_CLIENT_VERSION = "2.20240718.01.00";
-    private static final String WEB_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; SM-G981B)" +
+    private static final String WEB_CLIENT_VERSION = "2.20240726.00.00";
+    private static final String WEB_OS_VERSION = "10";
+    private static final String WEB_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" +
             " AppleWebKit/537.36 (KHTML, like Gecko)" +
-            " Chrome/80.0.3987.162 Mobile Safari/537.36";
+            " Chrome/124.0.0.0 Mobile Safari/537.36";
 
     private static final String ANDROID_INNER_TUBE_BODY;
     private static final String ANDROID_EMBED_INNER_TUBE_BODY;
@@ -399,7 +400,7 @@ public final class PlayerRoutes {
         // No suitable model name was found for TVHTML5_SIMPLY_EMBEDDED_PLAYER. Use the model name of ANDROID.
         TVHTML5_SIMPLY_EMBEDDED_PLAYER(85, ANDROID_DEVICE_MODEL, TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION, TVHTML5_SIMPLY_EMBED_INNER_TUBE_BODY, TVHTML5_SIMPLY_EMBEDDED_PLAYER_CLIENT_VERSION, TVHTML5_SIMPLY_EMBEDDED_PLAYER_USER_AGENT),
         // No suitable model name was found for WEB. Use the model name of ANDROID.
-        WEB(1, ANDROID_DEVICE_MODEL, WEB_CLIENT_VERSION, WEB_INNER_TUBE_BODY, WEB_CLIENT_VERSION, WEB_USER_AGENT);
+        WEB(1, ANDROID_DEVICE_MODEL, WEB_CLIENT_VERSION, WEB_INNER_TUBE_BODY, WEB_OS_VERSION, WEB_USER_AGENT);
 
         public final String friendlyName;
         public final int id;
