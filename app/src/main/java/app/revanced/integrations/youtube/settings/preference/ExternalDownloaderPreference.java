@@ -160,4 +160,10 @@ public class ExternalDownloaderPreference extends Preference implements Preferen
         return checkPackageIsValid(context, packageName);
     }
 
+    public static boolean checkPackageIsEnabled(String packageName) {
+        final Context context = Utils.getActivity();
+        mClickedDialogEntryIndex = Arrays.asList(mEntryValues).indexOf(packageName);
+        return checkPackageIsValid(context, packageName);
+    }
+
 }

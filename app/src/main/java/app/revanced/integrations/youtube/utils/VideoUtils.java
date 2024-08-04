@@ -87,6 +87,7 @@ public class VideoUtils extends IntentUtils {
 
     public static void launchExternalDownloader(@NonNull String videoId) {
         try {
+
             String downloaderPackageName = externalDownloaderPackageName.get().trim();
 
             if (downloaderPackageName.isEmpty()) {
@@ -99,10 +100,33 @@ public class VideoUtils extends IntentUtils {
             }
 
             isExternalDownloaderLaunched.compareAndSet(false, true);
+
             final String content = String.format("https://youtu.be/%s", videoId);
+
             launchExternalDownloader(content, downloaderPackageName);
         } catch (Exception ex) {
             Logger.printException(() -> "launchExternalDownloader failure", ex);
+        } finally {
+            runOnMainThreadDelayed(() -> isExternalDownloaderLaunched.compareAndSet(true, false), 500);
+        }
+    }
+
+    public static void launchPlaylistExternalDownloader(@NonNull String playlistId) {
+        try {
+            // use default downloader (YTDLnis) if user tries to download a playlist
+            // because most downloaders don't support playlist download
+            String downloaderPackageName = "com.deniscerri.ytdl";
+
+            final String content = String.format("https://www.youtube.com/playlist?list=%s", playlistId);
+
+            if (!checkPackageIsEnabled(downloaderPackageName)) {
+                return;
+            }
+
+            isExternalDownloaderLaunched.compareAndSet(false, true);
+            launchExternalDownloader(content, downloaderPackageName);
+        } catch (Exception ex) {
+            Logger.printException(() -> "launchPlaylistExternalDownloader failure", ex);
         } finally {
             runOnMainThreadDelayed(() -> isExternalDownloaderLaunched.compareAndSet(true, false), 500);
         }
