@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.patches.misc;
 
+import android.net.Uri;
+
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -12,32 +14,24 @@ public final class WatchHistoryPatch {
         BLOCK
     }
 
-    private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
-    private static final String YOUTUBE_DOMAIN = "www.youtube.com";
-    private static final String YOUTUBE_TRACKING_DOMAIN = "s.youtube.com";
+    private static final Uri UNREACHABLE_HOST_URI = Uri.parse("https://127.0.0.0");
+    private static final String WWW_TRACKING_URL_AUTHORITY = "www.youtube.com";
 
-    public static String replaceTrackingUrl(String originalUrl) {
+    public static Uri replaceTrackingUrl(Uri trackingUrl) {
         final WatchHistoryType watchHistoryType = Settings.WATCH_HISTORY_TYPE.get();
         if (watchHistoryType != WatchHistoryType.ORIGINAL) {
             try {
-                if (originalUrl.contains(YOUTUBE_TRACKING_DOMAIN)) {
-                    if (watchHistoryType == WatchHistoryType.REPLACE) {
-                        final String replacement = originalUrl.replaceAll(YOUTUBE_TRACKING_DOMAIN, YOUTUBE_DOMAIN);
-                        if (!replacement.equals(originalUrl)) {
-                            Logger.printDebug(() -> "Replaced: '" + originalUrl + "'\nwith: '" + replacement + "'");
-                        }
-                        return replacement;
-                    } else if (watchHistoryType == WatchHistoryType.BLOCK) {
-                        Logger.printDebug(() -> "Blocking: " + originalUrl + " by returning: " + UNREACHABLE_HOST_URI_STRING);
-                        return UNREACHABLE_HOST_URI_STRING;
-                    }
+                if (watchHistoryType == WatchHistoryType.REPLACE) {
+                    return trackingUrl.buildUpon().authority(WWW_TRACKING_URL_AUTHORITY).build();
+                } else if (watchHistoryType == WatchHistoryType.BLOCK) {
+                    return UNREACHABLE_HOST_URI;
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "replaceTrackingUrl failure", ex);
             }
         }
 
-        return originalUrl;
+        return trackingUrl;
     }
 
 }

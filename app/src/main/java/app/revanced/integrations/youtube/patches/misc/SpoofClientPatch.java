@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -250,6 +252,104 @@ public class SpoofClientPatch {
         }
 
         return original;
+    }
+
+    private static final Uri VIDEO_STATS_PLAYBACK_URI = Uri.parse("https://www.youtube.com/api/stats/playback?ns=yt&ver=2&final=1");
+
+    private static final String PARAM_DOC_ID = "docid";
+    private static final String PARAM_LEN = "len";
+    private static final String PARAM_CPN = "cpn";
+
+    private static final String PARAM_EVENT_ID = "ei";
+    private static final String PARAM_VM = "vm";
+    private static final String PARAM_OF = "of";
+
+    private static String mDocId;
+    private static String mLen;
+    private static String mCpn;
+    private static String mEventId;
+    private static String mVisitorMonitoringData;
+    private static String mOfParam;
+
+    /**
+     * Injection point.
+     */
+    public static void setCpn(String cpn) {
+        if (SPOOF_CLIENT_ENABLED && !Objects.equals(mCpn, cpn)) {
+            mCpn = cpn;
+        }
+    }
+
+    /**
+     * Injection point.
+     *
+     * Parse parameters from the Tracking URL.
+     * See <a href="https://github.com/yuliskov/MediaServiceCore/blob/d83b56d98f75ba24eef0bf31073c72c3db2f9cb0/youtubeapi/src/main/java/com/liskovsoft/youtubeapi/videoinfo/models/VideoInfo.java#L327">yuliskov/MediaServiceCore</a>.
+     */
+    public static void setTrackingUriParameter(Uri trackingUri) {
+        try {
+            if (SPOOF_CLIENT_ENABLED) {
+                String path = trackingUri.getPath();
+
+                if (path == null || (!path.contains("playback") && !path.contains("watchtime"))) {
+                    return;
+                }
+
+                mDocId = getQueryParameter(trackingUri, PARAM_DOC_ID);
+                mLen = getQueryParameter(trackingUri, PARAM_LEN);
+                mEventId = getQueryParameter(trackingUri, PARAM_EVENT_ID);
+                mVisitorMonitoringData = getQueryParameter(trackingUri, PARAM_VM);
+                mOfParam = getQueryParameter(trackingUri, PARAM_OF);
+
+                Logger.printDebug(() -> "docId: " + mDocId + ", len: " + mLen + ", eventId: " + mEventId + ", visitorMonitoringData: " + mVisitorMonitoringData + ", of: " + mOfParam);
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "setTrackingUriParameter failure", ex);
+        }
+    }
+
+    /**
+     * Injection point.
+     * This only works on YouTube 18.38.45 or earlier.
+     *
+     * Build a Tracking URL.
+     * This does not include the last watched time.
+     * See <a href="https://github.com/yuliskov/MediaServiceCore/blob/d83b56d98f75ba24eef0bf31073c72c3db2f9cb0/youtubeapi/src/main/java/com/liskovsoft/youtubeapi/track/TrackingService.java#L72">yuliskov/MediaServiceCore</a>.
+     */
+    public static Uri overrideTrackingUrl(Uri trackingUrl) {
+        try {
+            if (SPOOF_CLIENT_ENABLED &&
+                    getSpoofClientType() == ClientType.IOS &&
+                    trackingUrl.toString().contains("youtube.com/csi") &&
+                    !StringUtils.isAnyEmpty(mDocId, mLen, mCpn, mEventId, mVisitorMonitoringData, mOfParam)
+            ) {
+                final Uri videoStatsPlaybackUri = VIDEO_STATS_PLAYBACK_URI
+                        .buildUpon()
+                        .appendQueryParameter(PARAM_DOC_ID, mDocId)
+                        .appendQueryParameter(PARAM_LEN, mLen)
+                        .appendQueryParameter(PARAM_CPN, mCpn)
+                        .appendQueryParameter(PARAM_EVENT_ID, mEventId)
+                        .appendQueryParameter(PARAM_VM, mVisitorMonitoringData)
+                        .appendQueryParameter(PARAM_OF, mOfParam)
+                        .build();
+
+                Logger.printDebug(() -> "Replaced: '" + trackingUrl + "' with: '" + videoStatsPlaybackUri + "'");
+                return videoStatsPlaybackUri;
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "overrideTrackingUrl failure", ex);
+        }
+
+        return trackingUrl;
+    }
+
+    private static String getQueryParameter(Uri uri, String key) {
+        List<String> queryParams = uri.getQueryParameters(key);
+        if (queryParams == null || queryParams.isEmpty()) {
+            return "";
+        } else {
+            return queryParams.get(0);
+        }
     }
 
     /**
