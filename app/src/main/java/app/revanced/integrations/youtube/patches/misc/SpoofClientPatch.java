@@ -229,6 +229,18 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
+     * This fix only works if {@link BackgroundPlaybackPatch} is included.
+     */
+    public static boolean forceEnableBackgroundPlayback() {
+        if (SPOOF_CLIENT_ENABLED && getSpoofClientType() == ClientType.IOS) {
+            return BackgroundPlaybackPatch.playbackIsNotShort();
+        }
+
+        return false;
+    }
+
+    /**
+     * Injection point.
      * When spoofing the client to Android TV the playback speed menu is missing from the player response.
      * Return false to force create the playback speed menu.
      */
