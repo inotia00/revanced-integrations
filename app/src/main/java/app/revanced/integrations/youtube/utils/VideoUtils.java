@@ -3,7 +3,6 @@ package app.revanced.integrations.youtube.utils;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.patches.video.PlaybackSpeedPatch.userSelectedPlaybackSpeed;
-import static app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPreference.checkPackageIsEnabled;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -25,6 +24,8 @@ import app.revanced.integrations.shared.utils.IntentUtils;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPreference;
+import app.revanced.integrations.youtube.settings.preference.ExternalPlaylistDownloaderPreference;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
@@ -33,6 +34,8 @@ public class VideoUtils extends IntentUtils {
             Settings.EXTERNAL_DOWNLOADER_ACTION_BUTTON;
     private static final StringSetting externalDownloaderPackageName =
             Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
+    private static final StringSetting playlistExternalDownloaderPackageName =
+            Settings.EXTERNAL_PLAYLIST_DOWNLOADER_BUTTON;
     private static final AtomicBoolean isExternalDownloaderLaunched = new AtomicBoolean(false);
 
     public static void copyUrl(boolean withTimestamp) {
@@ -95,7 +98,7 @@ public class VideoUtils extends IntentUtils {
                 downloaderPackageName = externalDownloaderPackageName.defaultValue;
             }
 
-            if (!checkPackageIsEnabled()) {
+            if (!ExternalDownloaderPreference.checkPackageIsEnabled()) {
                 return;
             }
 
@@ -113,13 +116,17 @@ public class VideoUtils extends IntentUtils {
 
     public static void launchPlaylistExternalDownloader(@NonNull String playlistId) {
         try {
-            // use default downloader (YTDLnis) if user tries to download a playlist
-            // because most downloaders don't support playlist download
-            String downloaderPackageName = "com.deniscerri.ytdl";
+
+            String downloaderPackageName = playlistExternalDownloaderPackageName.get().trim();
+
+            if (downloaderPackageName.isEmpty()) {
+                playlistExternalDownloaderPackageName.resetToDefault();
+                downloaderPackageName = playlistExternalDownloaderPackageName.defaultValue;
+            }
 
             final String content = String.format("https://www.youtube.com/playlist?list=%s", playlistId);
 
-            if (!checkPackageIsEnabled(downloaderPackageName)) {
+            if (!ExternalPlaylistDownloaderPreference.checkPackageIsEnabled()) {
                 return;
             }
 

@@ -1,7 +1,5 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import static app.revanced.integrations.shared.utils.StringRef.str;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,24 +13,25 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-
-import java.util.Arrays;
-
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
+import java.util.Arrays;
+
+import static app.revanced.integrations.shared.utils.StringRef.str;
+
 /**
  * @noinspection all
  */
-public class ExternalDownloaderPreference extends Preference implements Preference.OnPreferenceClickListener {
+public class ExternalPlaylistDownloaderPreference extends Preference implements Preference.OnPreferenceClickListener {
 
-    private static final StringSetting settings = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
-    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_external_downloader_label");
-    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_external_downloader_package_name");
-    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_external_downloader_website");
+    private static final StringSetting settings = Settings.EXTERNAL_PLAYLIST_DOWNLOADER_BUTTON;
+    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_playlist_external_downloader_label");
+    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_playlist_external_downloader_package_name");
+    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_playlist_external_downloader_website");
     private static EditText mEditText;
     private static String packageName;
     private static int mClickedDialogEntryIndex;
@@ -55,22 +54,22 @@ public class ExternalDownloaderPreference extends Preference implements Preferen
         setOnPreferenceClickListener(this);
     }
 
-    public ExternalDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
-    public ExternalDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public ExternalDownloaderPreference(Context context, AttributeSet attrs) {
+    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ExternalDownloaderPreference(Context context) {
+    public ExternalPlaylistDownloaderPreference(Context context) {
         super(context);
         init();
     }

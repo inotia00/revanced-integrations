@@ -322,6 +322,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting OVERLAY_BUTTON_TIME_ORDERED_PLAYLIST = new BooleanSetting("revanced_overlay_button_time_ordered_playlist", FALSE);
     public static final BooleanSetting OVERLAY_BUTTON_WHITELIST = new BooleanSetting("revanced_overlay_button_whitelist", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_package_name", "com.deniscerri.ytdl");
+    public static final StringSetting EXTERNAL_PLAYLIST_DOWNLOADER_BUTTON = new StringSetting("revanced_playlist_external_downloader_package_name", "com.deniscerri.ytdl");
     public static final BooleanSetting EXTERNAL_DOWNLOADER_ACTION_BUTTON = new BooleanSetting("revanced_external_downloader_action", FALSE);
 
     // PreferenceScreen: Player - Seekbar
