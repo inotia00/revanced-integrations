@@ -68,6 +68,10 @@ public class PlaybackSpeedPatch {
             return;
 
         Settings.DEFAULT_PLAYBACK_SPEED.save(playbackSpeed);
+
+        if (!Settings.SHOW_TOAST_ON_DEFAULT_SPEED_CHANGE.get())
+            return;
+
         showToastShort(str("revanced_remember_playback_speed_toast", playbackSpeed + "x"));
     }
 }
