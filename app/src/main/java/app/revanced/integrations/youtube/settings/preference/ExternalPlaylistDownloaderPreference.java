@@ -29,9 +29,9 @@ import static app.revanced.integrations.shared.utils.StringRef.str;
 public class ExternalPlaylistDownloaderPreference extends Preference implements Preference.OnPreferenceClickListener {
 
     private static final StringSetting settings = Settings.EXTERNAL_PLAYLIST_DOWNLOADER_BUTTON;
-    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_playlist_external_downloader_label");
-    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_playlist_external_downloader_package_name");
-    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_playlist_external_downloader_website");
+    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_external_downloader_label");
+    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_external_downloader_package_name");
+    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_external_downloader_website");
     private static EditText mEditText;
     private static String packageName;
     private static int mClickedDialogEntryIndex;
