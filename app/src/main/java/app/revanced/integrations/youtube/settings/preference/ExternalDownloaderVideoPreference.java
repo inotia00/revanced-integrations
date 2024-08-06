@@ -1,5 +1,8 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static app.revanced.integrations.shared.utils.StringRef.str;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,25 +16,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+
+import java.util.Arrays;
+
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
-import java.util.Arrays;
+@SuppressWarnings("unused")
+public class ExternalDownloaderVideoPreference extends Preference implements Preference.OnPreferenceClickListener {
 
-import static app.revanced.integrations.shared.utils.StringRef.str;
+    private static final StringSetting settings = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME_VIDEO;
+    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_external_downloader_video_label");
+    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_external_downloader_video_package_name");
+    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_external_downloader_video_website");
 
-/**
- * @noinspection all
- */
-public class ExternalPlaylistDownloaderPreference extends Preference implements Preference.OnPreferenceClickListener {
-
-    private static final StringSetting settings = Settings.EXTERNAL_PLAYLIST_DOWNLOADER_BUTTON;
-    private static final String[] mEntries = ResourceUtils.getStringArray("revanced_external_downloader_label");
-    private static final String[] mEntryValues = ResourceUtils.getStringArray("revanced_external_downloader_package_name");
-    private static final String[] mWebsiteEntries = ResourceUtils.getStringArray("revanced_external_downloader_website");
+    @SuppressLint("StaticFieldLeak")
     private static EditText mEditText;
     private static String packageName;
     private static int mClickedDialogEntryIndex;
@@ -54,29 +56,29 @@ public class ExternalPlaylistDownloaderPreference extends Preference implements 
         setOnPreferenceClickListener(this);
     }
 
-    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ExternalDownloaderVideoPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
-    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExternalDownloaderVideoPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public ExternalPlaylistDownloaderPreference(Context context, AttributeSet attrs) {
+    public ExternalDownloaderVideoPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ExternalPlaylistDownloaderPreference(Context context) {
+    public ExternalDownloaderVideoPreference(Context context) {
         super(context);
         init();
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        packageName = settings.get().toString();
+        packageName = settings.get();
         mClickedDialogEntryIndex = Arrays.asList(mEntryValues).indexOf(packageName);
 
         final Context context = getContext();
@@ -102,7 +104,7 @@ public class ExternalPlaylistDownloaderPreference extends Preference implements 
         builder.setTitle(str("revanced_external_downloader_dialog_title"));
         builder.setSingleChoiceItems(mEntries, mClickedDialogEntryIndex, (dialog, which) -> {
             mClickedDialogEntryIndex = which;
-            mEditText.setText(mEntryValues[which].toString());
+            mEditText.setText(mEntryValues[which]);
         });
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             final String packageName = mEditText.getText().toString().trim();
@@ -121,13 +123,13 @@ public class ExternalPlaylistDownloaderPreference extends Preference implements 
     private static boolean checkPackageIsValid(Context context, String packageName) {
         String appName = "";
         String website = "";
+
         if (mClickedDialogEntryIndex >= 0) {
-            appName = mEntries[mClickedDialogEntryIndex].toString();
-            website = mWebsiteEntries[mClickedDialogEntryIndex].toString();
-            return showToastOrOpenWebsites(context, appName, packageName, website);
-        } else {
-            return showToastOrOpenWebsites(context, appName, packageName, website);
+            appName = mEntries[mClickedDialogEntryIndex];
+            website = mWebsiteEntries[mClickedDialogEntryIndex];
         }
+
+        return showToastOrOpenWebsites(context, appName, packageName, website);
     }
 
     private static boolean showToastOrOpenWebsites(Context context, String appName, String packageName, String website) {
@@ -152,11 +154,22 @@ public class ExternalPlaylistDownloaderPreference extends Preference implements 
         return false;
     }
 
-    public static boolean checkPackageIsEnabled() {
+    public static boolean checkPackageIsDisabled() {
         final Context context = Utils.getActivity();
-        packageName = settings.get().toString();
+        packageName = settings.get();
         mClickedDialogEntryIndex = Arrays.asList(mEntryValues).indexOf(packageName);
-        return checkPackageIsValid(context, packageName);
+        return !checkPackageIsValid(context, packageName);
+    }
+
+    public static String getExternalDownloaderPackageName() {
+        String downloaderPackageName = settings.get().trim();
+
+        if (downloaderPackageName.isEmpty()) {
+            settings.resetToDefault();
+            downloaderPackageName = settings.defaultValue;
+        }
+
+        return downloaderPackageName;
     }
 
 }

@@ -72,9 +72,11 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
      * Enable/Disable Preference for External downloader settings
      */
     private static void ExternalDownloaderPreferenceLinks() {
+        // Override download button will not work if spoofed with YouTube 18.24.xx or earlier.
         enableDisablePreferences(
                 isSpoofingToLessThan("18.24.00"),
-                Settings.EXTERNAL_DOWNLOADER_ACTION_BUTTON
+                Settings.OVERRIDE_VIDEO_DOWNLOAD_BUTTON,
+                Settings.OVERRIDE_PLAYLIST_DOWNLOAD_BUTTON
         );
     }
 
