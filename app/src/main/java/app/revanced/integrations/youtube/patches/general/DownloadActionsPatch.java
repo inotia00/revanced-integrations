@@ -66,6 +66,30 @@ public final class DownloadActionsPatch extends VideoUtils {
 
     /**
      * Injection point.
+     * <p>
+     * Called from the 'Download playlist' flyout option.
+     * <p>
+     * Appears to always be called from the main thread.
+     */
+    public static boolean inAppPlaylistDownloadMenuOnClick(String playlistId) {
+        try {
+            if (!overridePlaylistDownloadButton.get()) {
+                return false;
+            }
+            if (playlistId == null || playlistId.isEmpty()) {
+                return false;
+            }
+            launchPlaylistExternalDownloader(playlistId);
+
+            return true;
+        } catch (Exception ex) {
+            Logger.printException(() -> "inAppPlaylistDownloadMenuOnClick failure", ex);
+        }
+        return false;
+    }
+
+    /**
+     * Injection point.
      */
     public static boolean overridePlaylistDownloadButtonVisibility() {
         return overridePlaylistDownloadButton.get();
