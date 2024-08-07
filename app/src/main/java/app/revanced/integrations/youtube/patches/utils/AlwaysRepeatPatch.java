@@ -1,12 +1,14 @@
 package app.revanced.integrations.youtube.patches.utils;
 
-import android.util.Log;
+import android.content.Context;
+import android.media.AudioManager;
 
+import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
-public class AlwaysRepeatPatch {
+public class AlwaysRepeatPatch extends Utils {
 
     /**
      * Injection point.
@@ -21,17 +23,17 @@ public class AlwaysRepeatPatch {
         final boolean alwaysRepeat = Settings.ALWAYS_REPEAT.get();
         final boolean alwaysRepeatPause = Settings.ALWAYS_REPEAT_PAUSE.get();
 
-        if (alwaysRepeat && alwaysRepeatPause) pauseVideo();
+        if (alwaysRepeat && alwaysRepeatPause) pauseMedia();
         return alwaysRepeat;
     }
 
     /**
-     * Pause the current video.
-     * Rest of the implementation added by patch.
+     * Pause the media by changing audio focus.
      */
-    private static void pauseVideo() {
-        // These instructions are ignored by patch.
-        Log.d("Extended: AlwaysRepeatPatch", "AlwaysRepeatAndPauseState: " + Settings.ALWAYS_REPEAT_PAUSE.get());
+    private static void pauseMedia() {
+        if (context != null && context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE) instanceof AudioManager audioManager) {
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
     }
 
 }
