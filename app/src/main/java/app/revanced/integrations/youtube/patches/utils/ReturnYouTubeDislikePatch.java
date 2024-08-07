@@ -135,7 +135,7 @@ public class ReturnYouTubeDislikePatch {
             String conversionContextString = conversionContext.toString();
 
             final CharSequence replacement;
-            if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
+            if (conversionContextString.contains("segmented_like_dislike_button.eml")) {
                 // Regular video.
                 ReturnYouTubeDislike videoData = currentVideoData;
                 if (videoData == null) {
@@ -247,7 +247,7 @@ public class ReturnYouTubeDislikePatch {
     public static String onRollingNumberLoaded(@NonNull Object conversionContext,
                                                @NonNull String original) {
         try {
-            if (!conversionContext.toString().contains("video_action_bar.eml|")) {
+            if (!conversionContext.toString().contains("video_action_bar.eml")) {
                 return original;
             }
             CharSequence replacement = onLithoTextLoaded(conversionContext, original, true);
