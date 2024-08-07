@@ -129,7 +129,7 @@ public class SpoofClientPatch {
         }
         LiveStreamRenderer renderer = getLiveStreamRenderer(false);
         if (renderer != null) {
-            if (renderer.isLiveContent) {
+            if (renderer.isLiveStream) {
                 lastSpoofedClientType = Settings.SPOOF_CLIENT_LIVESTREAM.get();
                 return lastSpoofedClientType;
             }
@@ -231,14 +231,12 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     * This fix only works if {@link BackgroundPlaybackPatch} is included.
+     * When spoofing the client to iOS, background audio only playback of livestreams fails.
+     * Return true to force enable audio background play.
      */
-    public static boolean forceEnableBackgroundPlayback() {
-        if (SPOOF_CLIENT_ENABLED && getSpoofClientType() == ClientType.IOS) {
-            return BackgroundPlaybackPatch.playbackIsNotShort();
-        }
-
-        return false;
+    public static boolean overrideBackgroundAudioPlayback() {
+        return SPOOF_CLIENT_ENABLED &&
+                BackgroundPlaybackPatch.playbackIsNotShort();
     }
 
     /**

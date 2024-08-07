@@ -71,7 +71,17 @@ public class LiveStreamRendererRequester {
         return false;
     }
 
-    private static boolean isLiveStream(@NonNull JSONObject playerResponse) {
+    private static boolean isLive(@NonNull JSONObject playerResponse) {
+        try {
+            return playerResponse.getJSONObject("videoDetails").getBoolean("isLive");
+        } catch (JSONException e) {
+            Logger.printDebug(() -> "Failed to get videoDetails for response: " + playerResponse);
+        }
+
+        return false;
+    }
+
+    private static boolean isLiveContent(@NonNull JSONObject playerResponse) {
         try {
             return playerResponse.getJSONObject("videoDetails").getBoolean("isLiveContent");
         } catch (JSONException e) {
@@ -108,7 +118,7 @@ public class LiveStreamRendererRequester {
 
             final String clientName = clientType.name();
             final boolean isPlayabilityOk = isPlayabilityStatusOk(playerResponse);
-            final boolean isLiveStream = isLiveStream(playerResponse);
+            final boolean isLiveStream = isLive(playerResponse) || isLiveContent(playerResponse);
 
             LiveStreamRenderer renderer = new LiveStreamRenderer(
                     videoId,

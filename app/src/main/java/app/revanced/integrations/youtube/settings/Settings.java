@@ -457,7 +457,7 @@ public class Settings extends BaseSettings {
     public static final EnumSetting<ClientType> SPOOF_CLIENT_GENERAL = new EnumSetting<>("revanced_spoof_client_general",
             ClientType.IOS);
     public static final EnumSetting<ClientType> SPOOF_CLIENT_LIVESTREAM = new EnumSetting<>("revanced_spoof_client_livestream",
-            ClientType.ANDROID_VR);
+            ClientType.IOS);
     public static final EnumSetting<ClientType> SPOOF_CLIENT_SHORTS = new EnumSetting<>("revanced_spoof_client_shorts",
             ClientType.IOS);
     public static final EnumSetting<ClientType> SPOOF_CLIENT_FALLBACK = new EnumSetting<>("revanced_spoof_client_fallback",

@@ -9,13 +9,13 @@ public final class LiveStreamRenderer {
     public final String videoId;
     public final String client;
     public final boolean playabilityOk;
-    public final boolean isLiveContent;
+    public final boolean isLiveStream;
 
-    public LiveStreamRenderer(String videoId, String client, boolean playabilityOk, boolean isLiveContent) {
+    public LiveStreamRenderer(String videoId, String client, boolean playabilityOk, boolean isLiveStream) {
         this.videoId = videoId;
         this.client = client;
         this.playabilityOk = playabilityOk;
-        this.isLiveContent = isLiveContent;
+        this.isLiveStream = isLiveStream;
     }
 
     @NotNull
@@ -25,7 +25,7 @@ public final class LiveStreamRenderer {
                 "videoId=" + videoId +
                 ", client=" + client +
                 ", playabilityOk=" + playabilityOk +
-                ", isLiveContent=" + isLiveContent +
+                ", isLiveStream=" + isLiveStream +
                 '}';
     }
 }

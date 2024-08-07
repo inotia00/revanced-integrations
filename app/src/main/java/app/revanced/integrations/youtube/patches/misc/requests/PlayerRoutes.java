@@ -31,6 +31,7 @@ public final class PlayerRoutes {
             Route.Method.POST,
             "player" +
                     "?fields=playabilityStatus.status," +
+                    "videoDetails.isLive," +
                     "videoDetails.isLiveContent"
     ).compile();
 
