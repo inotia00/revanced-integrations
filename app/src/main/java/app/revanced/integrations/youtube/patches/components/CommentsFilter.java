@@ -2,6 +2,8 @@ package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.regex.Pattern;
 
 import app.revanced.integrations.shared.patches.components.Filter;
@@ -105,7 +107,7 @@ public final class CommentsFilter extends Filter {
             }
             return false;
         } else if (matchedGroup == comments) {
-            if (path.startsWith("home_video_with_context.eml")) {
+            if (StringUtils.startsWithAny(path, "home_video_with_context", "video_lockup_with_attachment")) {
                 if (Settings.HIDE_COMMENTS_SECTION_IN_HOME_FEED.get()) {
                     return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
