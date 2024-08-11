@@ -17,6 +17,6 @@ jobs:
           nodetail: true
           notimestamp: true
           content: "<@&1271198160613539872>"
-          title: "Integrations ${{ github.event.release.tag_name }} has been released!"
+          title: "Integrations `${{ github.event.release.tag_name }}` has been released!"
           description: |
-            Read the changelog on the [releases page]( ${{github.event.repository.html_url }}/releases/tag/${{ github.event.release.tag_name }}).
+            Click [here]( ${{github.event.repository.html_url }}/releases/tag/${{ github.event.release.tag_name }}) to read the changelog.
