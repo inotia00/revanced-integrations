@@ -19,4 +19,4 @@ jobs:
           content: "<@&1271198160613539872>"
           title: "Integrations `${{ github.event.release.tag_name }}` has been released!"
           description: |
-            Click [here]( ${{github.event.repository.html_url }}/releases/tag/${{ github.event.release.tag_name }}) to read the changelog.
+            Click [here](${{ github.event.release.html_url }}) to read the changelog.
