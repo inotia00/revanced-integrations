@@ -1,12 +1,10 @@
-package app.revanced.integrations.youtube.patches.misc;
+package app.revanced.integrations.shared.patches;
 
 import android.content.Intent;
 
-import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.shared.settings.BaseSettings;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("all")
 public final class SanitizeUrlQueryPatch {
     /**
      * This tracking parameter is mainly used.
@@ -37,7 +35,7 @@ public final class SanitizeUrlQueryPatch {
      * @return URL string without query parameters if possible, otherwise the original string.
      */
     public static String stripQueryParameters(final String urlString) {
-        if (!Settings.SANITIZE_SHARING_LINKS.get())
+        if (!BaseSettings.SANITIZE_SHARING_LINKS.get())
             return urlString;
 
         return urlString.replaceAll(NEW_TRACKING_REGEX, "").replaceAll(OLD_TRACKING_REGEX, "");
