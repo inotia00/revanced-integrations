@@ -14,8 +14,10 @@ import java.net.HttpURLConnection;
 
 import app.revanced.integrations.shared.requests.Requester;
 import app.revanced.integrations.shared.requests.Route;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.PackageUtils;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public final class PlayerRoutes {
     public static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
@@ -115,9 +117,9 @@ public final class PlayerRoutes {
      * Store page of the YouTube app</a>, in the {@code What’s New} section.
      * </p>
      */
-    private static final String IOS_CLIENT_VERSION = "19.30.2";
+    private static final String IOS_CLIENT_VERSION = "19.16.3";
     /**
-     * The device machine id for the iPhone 14 Pro Max (iPhone15,3), used to get 60fps.
+     * The device machine id for the iPhone XS Max (iPhone11,4), used to get 60fps.
      * The device machine id for the iPhone 15 Pro Max (iPhone16,2), used to get HDR with AV1 hardware decoding.
      *
      * <p>
@@ -125,9 +127,20 @@ public final class PlayerRoutes {
      * information.
      * </p>
      */
-    private static final String IOS_DEVICE_MODEL = deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone15,3";
-    private static final String IOS_OS_VERSION = "17.6.21G80";
-    private static final String IOS_USER_AGENT_VERSION = "17_6";
+    private static final String IOS_DEVICE_MODEL = DeviceHardwareSupport.allowAV1()
+            ? "iPhone16,2"
+            : "iPhone11,4";
+
+    /**
+     * The minimum supported OS version for the iOS YouTube client is iOS 14.0.
+     * Using an invalid OS version will use the AVC codec.
+     */
+    private static final String IOS_OS_VERSION = DeviceHardwareSupport.allowVP9()
+            ? "17.6.1.21G101"
+            : "13.7.17H35";
+    private static final String IOS_USER_AGENT_VERSION = DeviceHardwareSupport.allowVP9()
+            ? "17_6_1"
+            : "13_7";
     private static final String IOS_USER_AGENT = "com.google.ios.youtube/" +
             IOS_CLIENT_VERSION +
             "(" +
@@ -346,17 +359,42 @@ public final class PlayerRoutes {
         WEB_INNER_TUBE_BODY = webInnerTubeBody.toString();
     }
 
-    private static boolean deviceHasAV1HardwareDecoding() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    // Must check for device features in a separate class and cannot place this code inside
+    // the Patch or ClientType enum due to cyclic Setting references.
+    static class DeviceHardwareSupport {
+        private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
+        private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
+
+        private static boolean deviceHasVP9HardwareDecoding() {
             MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
 
             for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                    String[] supportedTypes = codecInfo.getSupportedTypes();
-                    for (String type : supportedTypes) {
-                        if (type.equalsIgnoreCase("video/av01")) {
-                            MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(type);
-                            if (capabilities != null) {
+                final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                        ? codecInfo.isHardwareAccelerated()
+                        : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
+                if (isHardwareAccelerated && !codecInfo.isEncoder()) {
+                    for (String type : codecInfo.getSupportedTypes()) {
+                        if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
+                            Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
+            return false;
+        }
+
+        private static boolean deviceHasAV1HardwareDecoding() {
+            // It appears all devices with hardware AV1 are also Android 10 or newer.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+                for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+                    if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
+                        for (String type : codecInfo.getSupportedTypes()) {
+                            if (type.equalsIgnoreCase("video/av01")) {
                                 Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
                                 return true;
                             }
@@ -364,10 +402,18 @@ public final class PlayerRoutes {
                     }
                 }
             }
+
+            Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
+            return false;
         }
 
-        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-        return false;
+        static boolean allowVP9() {
+            return DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_CLIENT_IOS_FORCE_AVC.get();
+        }
+
+        static boolean allowAV1() {
+            return allowVP9() && DEVICE_HAS_HARDWARE_DECODING_AV1;
+        }
     }
 
     private PlayerRoutes() {
@@ -391,6 +437,21 @@ public final class PlayerRoutes {
         return connection;
     }
 
+    public static final class SpoofingToIOSAvailability implements Setting.Availability {
+        public static boolean clientTypeIOSEnabled() {
+            final ClientType clientTypeIOS = ClientType.IOS;
+            return Settings.SPOOF_CLIENT_GENERAL.get() == clientTypeIOS ||
+                    Settings.SPOOF_CLIENT_LIVESTREAM.get() == clientTypeIOS ||
+                    Settings.SPOOF_CLIENT_SHORTS.get() == clientTypeIOS ||
+                    Settings.SPOOF_CLIENT_FALLBACK.get() == clientTypeIOS;
+        }
+
+        @Override
+        public boolean isAvailable() {
+            return clientTypeIOSEnabled();
+        }
+    }
+
     public enum ClientType {
         ANDROID(3, ANDROID_DEVICE_MODEL, ANDROID_CLIENT_VERSION, ANDROID_INNER_TUBE_BODY, ANDROID_OS_RELEASE_VERSION, ANDROID_USER_AGENT),
         ANDROID_EMBEDDED_PLAYER(55, ANDROID_DEVICE_MODEL, ANDROID_CLIENT_VERSION, ANDROID_EMBED_INNER_TUBE_BODY, ANDROID_OS_RELEASE_VERSION, ANDROID_USER_AGENT),
@@ -406,17 +467,17 @@ public final class PlayerRoutes {
         public final String friendlyName;
         public final int id;
         public final String model;
-        public final String version;
+        public final String appVersion;
         public final String innerTubeBody;
         public final String osVersion;
         public final String userAgent;
 
-        ClientType(int id, String model, String version, String innerTubeBody,
+        ClientType(int id, String model, String appVersion, String innerTubeBody,
                    String osVersion, String userAgent) {
             this.friendlyName = str("revanced_spoof_client_options_entry_" + name().toLowerCase());
             this.id = id;
             this.model = model;
-            this.version = version;
+            this.appVersion = appVersion;
             this.innerTubeBody = innerTubeBody;
             this.osVersion = osVersion;
             this.userAgent = userAgent;

@@ -158,7 +158,7 @@ public class SpoofClientPatch {
      */
     public static String getClientVersion(String originalClientVersion) {
         if (SPOOF_CLIENT_ENABLED) {
-            return getSpoofClientType().version;
+            return getSpoofClientType().appVersion;
         }
 
         return originalClientVersion;

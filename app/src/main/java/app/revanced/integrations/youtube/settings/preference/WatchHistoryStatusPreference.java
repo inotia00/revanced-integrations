@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.WatchHistoryPatch.WatchHistoryType;
-import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
+import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.SpoofingToIOSAvailability;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -65,13 +65,8 @@ public class WatchHistoryStatusPreference extends Preference {
     }
 
     private void updateUI() {
-        final ClientType clientTypeIOS = ClientType.IOS;
         final boolean spoofClientEnabled = SpoofClient() && Settings.SPOOF_CLIENT.get();
-        final boolean containsClientTypeIOS =
-                Settings.SPOOF_CLIENT_GENERAL.get() == clientTypeIOS ||
-                        Settings.SPOOF_CLIENT_LIVESTREAM.get() == clientTypeIOS ||
-                        Settings.SPOOF_CLIENT_SHORTS.get() == clientTypeIOS ||
-                        Settings.SPOOF_CLIENT_FALLBACK.get() == clientTypeIOS;
+        final boolean containsClientTypeIOS = SpoofingToIOSAvailability.clientTypeIOSEnabled();
 
         final WatchHistoryType watchHistoryType = Settings.WATCH_HISTORY_TYPE.get();
         final boolean blockWatchHistory = watchHistoryType == WatchHistoryType.BLOCK;
