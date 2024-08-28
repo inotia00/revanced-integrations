@@ -188,10 +188,10 @@ public final class AlternativeThumbnailsPatch {
             // Unknown tab, treat as the home tab;
             return homeOption;
         }
-        if (selectedNavButton == NavigationButton.HOME) {
+        if (selectedNavButton.isHomeTab()) {
             return homeOption;
         }
-        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS || selectedNavButton == NavigationButton.NOTIFICATIONS) {
+        if (selectedNavButton.isSubscriptionsTab() || selectedNavButton.isNotificationTab()) {
             return subscriptionsOption;
         }
         // A library tab variant is active.

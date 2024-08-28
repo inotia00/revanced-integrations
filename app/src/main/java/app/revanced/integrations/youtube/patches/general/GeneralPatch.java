@@ -256,10 +256,15 @@ public class GeneralPatch {
     private static final Map<NavigationButton, Boolean> shouldHideMap = new EnumMap<>(NavigationButton.class) {
         {
             put(NavigationButton.HOME, Settings.HIDE_NAVIGATION_HOME_BUTTON.get());
+            put(NavigationButton.HOME_CAIRO, Settings.HIDE_NAVIGATION_HOME_BUTTON.get());
             put(NavigationButton.SHORTS, Settings.HIDE_NAVIGATION_SHORTS_BUTTON.get());
+            put(NavigationButton.SHORTS_CAIRO, Settings.HIDE_NAVIGATION_SHORTS_BUTTON.get());
             put(NavigationButton.SUBSCRIPTIONS, Settings.HIDE_NAVIGATION_SUBSCRIPTIONS_BUTTON.get());
+            put(NavigationButton.SUBSCRIPTIONS_CAIRO, Settings.HIDE_NAVIGATION_SUBSCRIPTIONS_BUTTON.get());
             put(NavigationButton.CREATE, Settings.HIDE_NAVIGATION_CREATE_BUTTON.get());
+            put(NavigationButton.CREATE_CAIRO, Settings.HIDE_NAVIGATION_CREATE_BUTTON.get());
             put(NavigationButton.NOTIFICATIONS, Settings.HIDE_NAVIGATION_NOTIFICATIONS_BUTTON.get());
+            put(NavigationButton.NOTIFICATIONS_CAIRO, Settings.HIDE_NAVIGATION_NOTIFICATIONS_BUTTON.get());
 
             put(NavigationButton.LIBRARY_LOGGED_OUT, Settings.HIDE_NAVIGATION_LIBRARY_BUTTON.get());
             put(NavigationButton.LIBRARY_INCOGNITO, Settings.HIDE_NAVIGATION_LIBRARY_BUTTON.get());
