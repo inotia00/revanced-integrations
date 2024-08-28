@@ -276,13 +276,19 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         newSegmentStep.setKey(Settings.SB_CREATE_NEW_SEGMENT_STEP.key);
         newSegmentStep.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
         newSegmentStep.setOnPreferenceChangeListener((preference1, newValue) -> {
-            final int newAdjustmentValue = Integer.parseInt(newValue.toString());
-            if (newAdjustmentValue == 0) {
-                Utils.showToastLong(str("revanced_sb_general_adjusting_invalid"));
-                return false;
+            try {
+                final int newAdjustmentValue = Integer.parseInt(newValue.toString());
+                if (newAdjustmentValue != 0) {
+                    Settings.SB_CREATE_NEW_SEGMENT_STEP.save(newAdjustmentValue);
+                    return true;
+                }
+            } catch (NumberFormatException ex) {
+                Logger.printInfo(() -> "Invalid new segment step", ex);
             }
-            Settings.SB_CREATE_NEW_SEGMENT_STEP.save(newAdjustmentValue);
-            return true;
+
+            Utils.showToastLong(str("revanced_sb_general_adjusting_invalid"));
+            updateUI();
+            return false;
         });
         Utils.setPreferenceIcon(newSegmentStep, "empty_icon");
         category.addPreference(newSegmentStep);
@@ -345,8 +351,17 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
         minSegmentDuration.setKey(Settings.SB_SEGMENT_MIN_DURATION.key);
         minSegmentDuration.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         minSegmentDuration.setOnPreferenceChangeListener((preference1, newValue) -> {
-            Settings.SB_SEGMENT_MIN_DURATION.save(Float.valueOf(newValue.toString()));
-            return true;
+            try {
+                Float minTimeDuration = Float.valueOf(newValue.toString());
+                Settings.SB_SEGMENT_MIN_DURATION.save(minTimeDuration);
+                return true;
+            } catch (NumberFormatException ex) {
+                Logger.printInfo(() -> "Invalid minimum segment duration", ex);
+            }
+
+            Utils.showToastLong(str("revanced_sb_general_min_duration_invalid"));
+            updateUI();
+            return false;
         });
         category.addPreference(minSegmentDuration);
 
@@ -360,6 +375,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
                 Utils.showToastLong(str("revanced_sb_general_uuid_invalid"));
                 return false;
             }
+
             Settings.SB_PRIVATE_USER_ID.save(newUUID);
             updateUI();
             fetchAndDisplayStats();
