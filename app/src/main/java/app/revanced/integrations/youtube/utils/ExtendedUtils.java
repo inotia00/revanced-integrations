@@ -67,7 +67,6 @@ public class ExtendedUtils extends PackageUtils {
     }
 
     private static final Setting<?>[] additionalSettings = {
-            Settings.HIDE_PLAYER_FLYOUT_MENU_AMBIENT,
             Settings.HIDE_PLAYER_FLYOUT_MENU_HELP,
             Settings.HIDE_PLAYER_FLYOUT_MENU_LOOP,
             Settings.HIDE_PLAYER_FLYOUT_MENU_PIP,
@@ -99,7 +98,6 @@ public class ExtendedUtils extends PackageUtils {
 
         boolean additionalSettingsEnabled = true;
         final BooleanSetting[] additionalSettings = {
-                Settings.HIDE_PLAYER_FLYOUT_MENU_AMBIENT,
                 Settings.HIDE_PLAYER_FLYOUT_MENU_HELP,
                 Settings.HIDE_PLAYER_FLYOUT_MENU_LOOP,
                 Settings.HIDE_PLAYER_FLYOUT_MENU_PIP,
