@@ -32,8 +32,6 @@ import app.revanced.integrations.youtube.patches.alternativethumbnails.Alternati
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailOption;
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.misc.WatchHistoryPatch.WatchHistoryType;
-import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.ClientType;
-import app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.SpoofingToIOSAvailability;
 import app.revanced.integrations.youtube.patches.shorts.AnimationFeedbackPatch.AnimationType;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
@@ -454,31 +452,12 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ENABLE_EXTERNAL_BROWSER = new BooleanSetting("revanced_enable_external_browser", TRUE, true);
     public static final BooleanSetting ENABLE_OPEN_LINKS_DIRECTLY = new BooleanSetting("revanced_enable_open_links_directly", TRUE);
     public static final BooleanSetting DISABLE_QUIC_PROTOCOL = new BooleanSetting("revanced_disable_quic_protocol", FALSE, true);
-    public static final BooleanSetting SPOOF_CLIENT = new BooleanSetting("revanced_spoof_client", TRUE, true, "revanced_spoof_client_user_dialog_message");
-    public static final BooleanSetting SPOOF_CLIENT_IOS_FORCE_AVC = new BooleanSetting("revanced_spoof_client_ios_force_avc", FALSE, true,
-            "revanced_spoof_client_ios_force_avc_user_dialog_message", new SpoofingToIOSAvailability());
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_TYPE = new EnumSetting<>("revanced_spoof_client_type", ClientType.IOS, true, parent(SPOOF_CLIENT));
-    public static final BooleanSetting SPOOF_CLIENT_STATS_FOR_NERDS = new BooleanSetting("revanced_spoof_client_stats_for_nerds", TRUE, parent(SPOOF_CLIENT));
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_GENERAL = new EnumSetting<>("revanced_spoof_client_general",
-            ClientType.IOS);
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_LIVESTREAM = new EnumSetting<>("revanced_spoof_client_livestream",
-            ClientType.IOS);
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_SHORTS = new EnumSetting<>("revanced_spoof_client_shorts",
-            ClientType.IOS);
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_FALLBACK = new EnumSetting<>("revanced_spoof_client_fallback",
-            // Some private videos cannot be played with {@code ClientType.IOS}.
-            // Use {@code ClientType.ANDROID_TESTSUITE}.
-            ClientType.ANDROID_TESTSUITE);
 
     public static final EnumSetting<WatchHistoryType> WATCH_HISTORY_TYPE = new EnumSetting<>("revanced_watch_history_type", WatchHistoryType.REPLACE);
 
     public static final BooleanSetting CHANGE_SHARE_SHEET = new BooleanSetting("revanced_change_share_sheet", FALSE, true);
     public static final BooleanSetting ENABLE_OPUS_CODEC = new BooleanSetting("revanced_enable_opus_codec", FALSE, true);
 
-    @Deprecated
-    public static final BooleanSetting SPOOF_PLAYER_PARAMETER = new BooleanSetting("revanced_spoof_player_parameter", FALSE, true);
-    @Deprecated
-    public static final BooleanSetting SPOOF_PLAYER_PARAMETER_IN_FEED = new BooleanSetting("revanced_spoof_player_parameter_in_feed", FALSE, true);
     /**
      * @noinspection DeprecatedIsStillUsed
      */
