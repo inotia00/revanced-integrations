@@ -151,8 +151,6 @@ public class ReturnYouTubeDislike {
     @NonNull
     private static SpannableString createDislikeSpan(@NonNull Spanned oldSpannable,
                                                      @NonNull RYDVoteData voteData) {
-        // Note: Some locales use right to left layout (Arabic, Hebrew, etc).
-        // If making changes to this code, change device settings to a RTL language and verify layout is correct.
         String oldLikesString = oldSpannable.toString();
 
         // YouTube creators can hide the like count on a video,
@@ -191,8 +189,8 @@ public class ReturnYouTubeDislike {
 
         // middle separator
         String middleSeparatorString = compactLayout
-                ? "  " + MIDDLE_SEPARATOR_CHARACTER + "  "
-                : "  \u2009" + MIDDLE_SEPARATOR_CHARACTER + "\u2009  "; // u2009 = 'narrow space' character
+                ? "\u200E  " + MIDDLE_SEPARATOR_CHARACTER + "  "
+                : "\u200E  \u2009" + MIDDLE_SEPARATOR_CHARACTER + "\u2009  "; // u2009 = 'narrow space' character
         final int shapeInsertionIndex = middleSeparatorString.length() / 2;
         Spannable middleSeparatorSpan = new SpannableString(middleSeparatorString);
         ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
