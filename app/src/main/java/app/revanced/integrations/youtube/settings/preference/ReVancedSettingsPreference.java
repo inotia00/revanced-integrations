@@ -4,11 +4,8 @@ import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
-import android.app.Activity;
 import android.os.Build;
 import android.preference.Preference;
-
-import androidx.annotation.NonNull;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.general.MiniplayerPatch;
@@ -16,9 +13,7 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("deprecation")
 public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
 
     private static void enableDisablePreferences() {
@@ -42,7 +37,7 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
         }
     }
 
-    public static void initializeReVancedSettings(@NonNull Activity activity) {
+    public static void initializeReVancedSettings() {
         enableDisablePreferences();
 
         AmbientModePreferenceLinks();

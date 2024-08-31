@@ -25,7 +25,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "deprecation"})
 public class ExternalDownloaderVideoPreference extends Preference implements Preference.OnPreferenceClickListener {
 
     private static final StringSetting settings = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME_VIDEO;

@@ -175,7 +175,7 @@ public class SpoofStreamingDataPatch {
                         return null;
                     }
                 }
-            }  catch (Exception ex) {
+            } catch (Exception ex) {
                 Logger.printException(() -> "removeVideoPlaybackPostBody failure", ex);
             }
         }

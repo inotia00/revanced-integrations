@@ -22,9 +22,7 @@ import app.revanced.integrations.youtube.whitelist.VideoChannel;
 import app.revanced.integrations.youtube.whitelist.Whitelist;
 import app.revanced.integrations.youtube.whitelist.Whitelist.WhitelistType;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings({"unused", "deprecation"})
 public class WhitelistedChannelsPreference extends Preference implements Preference.OnPreferenceClickListener {
 
     private static final WhitelistType whitelistTypePlaybackSpeed = WhitelistType.PLAYBACK_SPEED;
@@ -38,7 +36,7 @@ public class WhitelistedChannelsPreference extends Preference implements Prefere
         final int entrySize = BooleanUtils.toInteger(playbackSpeedIncluded)
                 + BooleanUtils.toInteger(sponsorBlockIncluded);
 
-        if (entrySize != 0 && mEntries == null && mEntryValues == null) {
+        if (entrySize != 0) {
             mEntries = new String[entrySize];
             mEntryValues = new WhitelistType[entrySize];
 
@@ -112,16 +110,14 @@ public class WhitelistedChannelsPreference extends Preference implements Prefere
             entriesContainer.setOrientation(LinearLayout.VERTICAL);
             for (final VideoChannel entry : mEntries) {
                 String author = entry.getChannelName();
-                View entryView = getEntryView(context, author, v -> {
-                    new AlertDialog.Builder(context)
-                            .setMessage(str("revanced_whitelist_remove_dialog_message", author, whitelistType.getFriendlyName()))
-                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                Whitelist.removeFromWhitelist(whitelistType, entry.getChannelId());
-                                entriesContainer.removeView(entriesContainer.findViewWithTag(author));
-                            })
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .show();
-                });
+                View entryView = getEntryView(context, author, v -> new AlertDialog.Builder(context)
+                        .setMessage(str("revanced_whitelist_remove_dialog_message", author, whitelistType.getFriendlyName()))
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Whitelist.removeFromWhitelist(whitelistType, entry.getChannelId());
+                            entriesContainer.removeView(entriesContainer.findViewWithTag(author));
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show());
                 entryView.setTag(author);
                 entriesContainer.addView(entryView);
             }

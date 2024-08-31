@@ -116,8 +116,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 return;
             }
 
-            final Activity mActivity = getActivity();
-            ReVancedSettingsPreference.initializeReVancedSettings(mActivity);
+            ReVancedSettingsPreference.initializeReVancedSettings();
 
             if (settingImportInProgress) {
                 return;
@@ -293,7 +292,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             setPreferenceScreenToolbar();
 
             // Initialize ReVanced settings
-            ReVancedSettingsPreference.initializeReVancedSettings(getActivity());
+            ReVancedSettingsPreference.initializeReVancedSettings();
 
             // Import/export
             setBackupRestorePreference();

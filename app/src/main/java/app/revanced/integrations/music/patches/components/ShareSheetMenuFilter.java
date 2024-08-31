@@ -2,10 +2,10 @@ package app.revanced.integrations.music.patches.components;
 
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.shared.patches.components.Filter;
-import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.music.patches.misc.ShareSheetPatch;
 import app.revanced.integrations.music.settings.Settings;
+import app.revanced.integrations.shared.patches.components.Filter;
+import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 
 /**
  * Abuse LithoFilter for {@link ShareSheetPatch}.

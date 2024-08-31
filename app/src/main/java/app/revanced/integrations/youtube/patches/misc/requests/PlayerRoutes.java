@@ -33,7 +33,7 @@ public final class PlayerRoutes {
     }
 
     static String createInnertubeBody(ClientType clientType) {
-    	JSONObject innerTubeBody = new JSONObject();
+        JSONObject innerTubeBody = new JSONObject();
 
         try {
             JSONObject context = new JSONObject();
@@ -66,7 +66,9 @@ public final class PlayerRoutes {
         return innerTubeBody.toString();
     }
 
-    /** @noinspection SameParameterValue*/
+    /**
+     * @noinspection SameParameterValue
+     */
     static HttpURLConnection getPlayerResponseConnectionFromRoute(Route.CompiledRoute route, ClientType clientType) throws IOException {
         var connection = Requester.getConnectionFromCompiledRoute(YOUTUBEI_V1_GAPIS_URL, route);
 

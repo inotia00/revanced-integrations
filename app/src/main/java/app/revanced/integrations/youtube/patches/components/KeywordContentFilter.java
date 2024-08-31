@@ -244,7 +244,7 @@ public final class KeywordContentFilter extends Filter {
      * @return If the string contains any characters from languages that do not use spaces between words.
      */
     private static boolean isLanguageWithNoSpaces(String text) {
-        for (int i = 0, length = text.length(); i < length;) {
+        for (int i = 0, length = text.length(); i < length; ) {
             final int codePoint = text.codePointAt(i);
 
             Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
@@ -296,7 +296,7 @@ public final class KeywordContentFilter extends Filter {
 
     /**
      * @return If the start and end indexes are not surrounded by other letters.
-     *         If the indexes are surrounded by numbers/symbols/punctuation it is considered a whole word.
+     * If the indexes are surrounded by numbers/symbols/punctuation it is considered a whole word.
      */
     private static boolean keywordMatchIsWholeWord(byte[] text, int keywordStartIndex, int keywordLength) {
         final Integer codePointBefore = getUtf8CodePointBefore(text, keywordStartIndex);
@@ -315,7 +315,7 @@ public final class KeywordContentFilter extends Filter {
 
     /**
      * @return The UTF8 character point immediately before the index,
-     *         or null if the bytes before the index is not a valid UTF8 character.
+     * or null if the bytes before the index is not a valid UTF8 character.
      */
     @Nullable
     private static Integer getUtf8CodePointBefore(byte[] data, int index) {
@@ -331,7 +331,7 @@ public final class KeywordContentFilter extends Filter {
 
     /**
      * @return The UTF8 character point at the index,
-     *         or null if the index holds no valid UTF8 character.
+     * or null if the index holds no valid UTF8 character.
      */
     @Nullable
     private static Integer getUtf8CodePointAt(byte[] data, int index) {
