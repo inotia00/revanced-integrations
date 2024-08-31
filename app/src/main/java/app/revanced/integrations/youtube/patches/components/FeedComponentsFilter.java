@@ -18,6 +18,13 @@ public final class FeedComponentsFilter extends Filter {
             "horizontalCollectionSwipeProtector=null";
     private static final String CONVERSATION_CONTEXT_SUBSCRIPTIONS_IDENTIFIER =
             "heightConstraint=null";
+
+    private static final ByteArrayFilterGroup expansion =
+            new ByteArrayFilterGroup(
+                    null,
+                    "inline_expansion"
+            );
+
     private static final ByteArrayFilterGroup mixPlaylists =
             new ByteArrayFilterGroup(
                     Settings.HIDE_MIX_PLAYLISTS,
@@ -35,6 +42,7 @@ public final class FeedComponentsFilter extends Filter {
     private final StringFilterGroup channelProfile;
     private final StringFilterGroup communityPosts;
     private final StringFilterGroup libraryShelf;
+    private final StringFilterGroup newExpansion;
     private final ByteArrayFilterGroup visitStoreButton;
 
     private static final StringTrieSearch communityPostsFeedGroupSearch = new StringTrieSearch();
@@ -103,6 +111,19 @@ public final class FeedComponentsFilter extends Filter {
                 Settings.HIDE_BROWSE_STORE_BUTTON,
                 "channel_profile.eml",
                 "page_header.eml" // new layout
+        );
+
+        // The path for the new type of 'Expandable chip under videos' is as follows:
+        //
+        // CellType|CellType|ContainerType|ContainerType|ContainerType|ContainerType|ContainerType|ContainerType|ContainerType|ContainerType|CellType|CellType|ContainerType|ContainerType|CollectionType|CellType|CellType|ContainerType|
+        //
+        // Unlike other litho elements, this one does not contain any words that can identify this layout.
+        // Since 'CellType' and 'ContainerType' are already used in several layouts, this filter alone has some limitations in identifying the layout.
+        //
+        // Related issues: https://github.com/inotia00/ReVanced_Extended/issues/2173
+        newExpansion = new StringFilterGroup(
+                Settings.HIDE_EXPANDABLE_CHIP,
+                "CellType|CellType|ContainerType|ContainerType|ContainerType|"
         );
 
         visitStoreButton = new ByteArrayFilterGroup(
@@ -188,6 +209,7 @@ public final class FeedComponentsFilter extends Filter {
                 imageShelf,
                 latestPosts,
                 movieShelf,
+                newExpansion,
                 notifyMe,
                 playables,
                 subscriptionsChannelBar,
@@ -262,6 +284,11 @@ public final class FeedComponentsFilter extends Filter {
             return false;
         } else if (matchedGroup == carouselShelf) {
             if (hideShelves()) {
+                return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            return false;
+        } else if (matchedGroup == newExpansion) {
+            if (contentIndex == 0 && expansion.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
