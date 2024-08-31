@@ -111,6 +111,10 @@ public final class PlayerFlyoutMenuFilter extends Filter {
                         "volume_stable"
                 ),
                 new ByteArrayFilterGroup(
+                        Settings.HIDE_PLAYER_FLYOUT_MENU_SLEEP_TIMER,
+                        "yt_outline_moon_z_"
+                ),
+                new ByteArrayFilterGroup(
                         Settings.HIDE_PLAYER_FLYOUT_MENU_STATS_FOR_NERDS,
                         "yt_outline_statistics_graph"
                 ),
