@@ -39,6 +39,13 @@ public final class ShortsButtonFilter extends Filter {
     );
 
     public ShortsButtonFilter() {
+        StringFilterGroup floatingButton = new StringFilterGroup(
+                Settings.HIDE_SHORTS_FLOATING_BUTTON,
+                "floating_action_button"
+        );
+
+        addIdentifierCallbacks(floatingButton);
+
         pausedOverlayButtons = new StringFilterGroup(
                 null,
                 "shorts_paused_state"
@@ -145,6 +152,10 @@ public final class ShortsButtonFilter extends Filter {
         //
         pausedOverlayButtonsGroupList.addAll(
                 new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_TRENDS_BUTTON,
+                        "yt_outline_fire_"
+                ),
+                new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SHOPPING_BUTTON,
                         "yt_outline_bag_"
                 )
@@ -179,6 +190,10 @@ public final class ShortsButtonFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SUPER_THANKS_BUTTON,
                         "yt_outline_dollar_sign_heart_"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_USE_TEMPLATE_BUTTON,
+                        "yt_outline_template_add"
                 ),
                 useThisSoundButton
         );
