@@ -3,24 +3,19 @@ package app.revanced.integrations.youtube.patches.misc;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.chromium.net.UrlRequest;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
-import app.revanced.integrations.youtube.patches.misc.requests.StreamingDataRequester;
+import app.revanced.integrations.youtube.patches.misc.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
 public class SpoofStreamingDataPatch {
@@ -30,37 +25,8 @@ public class SpoofStreamingDataPatch {
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
-    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
-    private static volatile Future<ByteBuffer> currentVideoStream;
-
-    private static String url;
-    private static Map<String, String> playerHeaders;
-
-    /**
-     * Injection point.
-     * Blocks /get_watch requests by returning an unreachable URI.
-     *
-     * @param playerRequestUri The URI of the player request.
-     * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
-     */
-    public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_STREAMING_DATA) {
-            try {
-                String path = playerRequestUri.getPath();
-
-                if (path != null && path.contains("get_watch")) {
-                    Logger.printDebug(() -> "Blocking 'get_watch' by returning unreachable uri");
-
-                    return UNREACHABLE_HOST_URI;
-                }
-            } catch (Exception ex) {
-                Logger.printException(() -> "blockGetWatchRequest failure", ex);
-            }
-        }
-
-        return playerRequestUri;
-    }
+    private static volatile Map<String, String> fetchHeaders;
 
     /**
      * Injection point.
@@ -96,37 +62,45 @@ public class SpoofStreamingDataPatch {
     /**
      * Injection point.
      */
-    public static void setHeader(String url, Map<String, String> playerHeaders) {
+    public static void setFetchHeaders(String url, Map<String, String> headers) {
         if (SPOOF_STREAMING_DATA) {
-            SpoofStreamingDataPatch.url = url;
-            SpoofStreamingDataPatch.playerHeaders = playerHeaders;
+            try {
+                Uri uri = Uri.parse(url);
+                String path = uri.getPath();
+                if (path != null && path.contains("browse")) {
+                    fetchHeaders = headers;
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "setFetchHeaders failure", ex);
+            }
         }
     }
 
     /**
      * Injection point.
      */
-    public static UrlRequest buildRequest(UrlRequest.Builder builder) {
+    public static void fetchStreamingData(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
         if (SPOOF_STREAMING_DATA) {
             try {
-                Uri uri = Uri.parse(url);
-                String path = uri.getPath();
-                if (path != null && path.contains("player") && !path.contains("heartbeat")) {
-                    String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
-                    currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
+                final boolean videoIdIsShort = VideoInformation.lastPlayerResponseIsShort();
+                // Shorts shelf in home and subscription feed causes player response hook to be called,
+                // and the 'is opening/playing' parameter will be false.
+                // This hook will be called again when the Short is actually opened.
+                if (videoIdIsShort && !isShortAndOpeningOrPlaying) {
+                    return;
                 }
+
+                StreamingDataRequest.fetchRequestIfNeeded(videoId, fetchHeaders);
             } catch (Exception ex) {
-                Logger.printException(() -> "buildRequest failure", ex);
+                Logger.printException(() -> "fetchStreamingData failure", ex);
             }
         }
-
-        return builder.build();
     }
 
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #buildRequest(UrlRequest.Builder)}.
+     * Called after {@link #setFetchHeaders(String, Map)} .
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
@@ -134,23 +108,17 @@ public class SpoofStreamingDataPatch {
             try {
                 Utils.verifyOffMainThread();
 
-                var future = currentVideoStream;
-                if (future != null) {
-                    final long maxSecondsToWait = 20;
-                    var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
+                StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
+                if (request != null) {
+                    var stream = request.getStream();
                     if (stream != null) {
-                        Logger.printDebug(() -> "Overriding video stream");
+                        Logger.printDebug(() -> "Overriding video stream: " + videoId);
                         return stream;
                     }
-
-                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
                 }
-            } catch (TimeoutException ex) {
-                Logger.printInfo(() -> "getStreamingData timed out", ex);
-            } catch (InterruptedException ex) {
-                Logger.printException(() -> "getStreamingData interrupted", ex);
-                Thread.currentThread().interrupt(); // Restore interrupt status flag.
-            } catch (ExecutionException ex) {
+
+                Logger.printDebug(() -> "Not overriding streaming data (video stream is null): " + videoId);
+            } catch (Exception ex) {
                 Logger.printException(() -> "getStreamingData failure", ex);
             }
         }
@@ -175,7 +143,7 @@ public class SpoofStreamingDataPatch {
                         return null;
                     }
                 }
-            } catch (Exception ex) {
+            }  catch (Exception ex) {
                 Logger.printException(() -> "removeVideoPlaybackPostBody failure", ex);
             }
         }
@@ -191,7 +159,7 @@ public class SpoofStreamingDataPatch {
             if (SPOOF_STREAMING_DATA && Settings.SPOOF_STREAMING_DATA_STATS_FOR_NERDS.get()
                     && !TextUtils.isEmpty(videoFormat)) {
                 // Force LTR layout, to match the same LTR video time/length layout YouTube uses for all languages
-                return "\u202D" + videoFormat + String.format("\u2009(%s)", StreamingDataRequester.getLastSpoofedClientName()); // u202D = left to right override
+                return "\u202D" + videoFormat + String.format("\u2009(%s)", StreamingDataRequest.getLastSpoofedClientName()); // u202D = left to right override
             }
         } catch (Exception ex) {
             Logger.printException(() -> "appendSpoofedClient failure", ex);
