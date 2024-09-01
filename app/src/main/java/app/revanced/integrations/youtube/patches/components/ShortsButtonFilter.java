@@ -23,8 +23,8 @@ public final class ShortsButtonFilter extends Filter {
 
     private final StringFilterGroup subscribeButton;
     private final StringFilterGroup joinButton;
-    private final StringFilterGroup paidPromotionButton;
     private final StringFilterGroup pausedOverlayButtons;
+    private final ByteArrayFilterGroupList pausedOverlayButtonsGroupList = new ByteArrayFilterGroupList();
 
     private final StringFilterGroup suggestedAction;
     private final ByteArrayFilterGroupList suggestedActionsGroupList = new ByteArrayFilterGroupList();
@@ -32,9 +32,9 @@ public final class ShortsButtonFilter extends Filter {
     private final StringFilterGroup actionBar;
     private final ByteArrayFilterGroupList videoActionButtonGroupList = new ByteArrayFilterGroupList();
 
-    private final ByteArrayFilterGroup shopButton = new ByteArrayFilterGroup(
-            Settings.HIDE_SHORTS_SHOP_BUTTON,
-            "yt_outline_bag_"
+    private final ByteArrayFilterGroup useThisSoundButton = new ByteArrayFilterGroup(
+            Settings.HIDE_SHORTS_USE_THIS_SOUND_BUTTON,
+            "yt_outline_camera"
     );
 
     public ShortsButtonFilter() {
@@ -73,6 +73,11 @@ public final class ShortsButtonFilter extends Filter {
                 "immersive_live_header"
         );
 
+        StringFilterGroup paidPromotionButton = new StringFilterGroup(
+                Settings.HIDE_SHORTS_PAID_PROMOTION_LABEL,
+                "reel_player_disclosure.eml"
+        );
+
         joinButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
@@ -81,11 +86,6 @@ public final class ShortsButtonFilter extends Filter {
         subscribeButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON,
                 "subscribe_button"
-        );
-
-        paidPromotionButton = new StringFilterGroup(
-                Settings.HIDE_SHORTS_PAID_PROMOTION_LABEL,
-                "reel_player_disclosure.eml"
         );
 
         actionBar = new StringFilterGroup(
@@ -135,10 +135,19 @@ public final class ShortsButtonFilter extends Filter {
         );
 
         //
+        // Paused overlay buttons.
+        //
+        pausedOverlayButtonsGroupList.addAll(
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_SHOPPING_BUTTON,
+                        "yt_outline_bag_"
+                )
+        );
+
+        //
         // Suggested actions.
         //
         suggestedActionsGroupList.addAll(
-                shopButton,
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_TAGGED_PRODUCTS,
                         // Product buttons show pictures of the products, and does not have any unique icons to identify.
@@ -146,7 +155,11 @@ public final class ShortsButtonFilter extends Filter {
                         "PAproduct_listZ"
                 ),
                 new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_LOCATION_LABEL,
+                        Settings.HIDE_SHORTS_SHOP_BUTTON,
+                        "yt_outline_bag_"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_LOCATION_BUTTON,
                         "yt_outline_location_point_"
                 ),
                 new ByteArrayFilterGroup(
@@ -154,24 +167,21 @@ public final class ShortsButtonFilter extends Filter {
                         "yt_outline_list_add_"
                 ),
                 new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS,
+                        Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS_BUTTON,
                         "yt_outline_search_"
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SUPER_THANKS_BUTTON,
                         "yt_outline_dollar_sign_heart_"
                 ),
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_USE_THIS_SOUND_BUTTON,
-                        "yt_outline_camera"
-                )
+                useThisSoundButton
         );
     }
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (matchedGroup == subscribeButton || matchedGroup == joinButton || matchedGroup == paidPromotionButton) {
+        if (matchedGroup == subscribeButton || matchedGroup == joinButton) {
             // Selectively filter to avoid false positive filtering of other subscribe/join buttons.
             if (StringUtils.startsWithAny(path, REEL_CHANNEL_BAR_PATH, REEL_LIVE_HEADER_PATH, REEL_METAPANEL_PATH)) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
@@ -199,7 +209,7 @@ public final class ShortsButtonFilter extends Filter {
             if (Settings.HIDE_SHORTS_PAUSED_OVERLAY_BUTTONS.get()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             } else if (StringUtils.contains(path, SHORTS_PAUSED_STATE_BUTTON_PATH)) {
-                if (shopButton.check(protobufBufferArray).isFiltered()) {
+                if (pausedOverlayButtonsGroupList.check(protobufBufferArray).isFiltered()) {
                     return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
             }
