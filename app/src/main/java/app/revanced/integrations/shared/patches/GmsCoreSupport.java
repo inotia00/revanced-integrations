@@ -23,10 +23,11 @@ import java.net.URL;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 
-/**
- * @noinspection unused
- */
+@SuppressWarnings("unused")
 public class GmsCoreSupport {
+    private static final String PACKAGE_NAME_YOUTUBE = "com.google.android.youtube";
+    private static final String PACKAGE_NAME_YOUTUBE_MUSIC = "com.google.android.apps.youtube.music";
+
     private static final String GMS_CORE_PACKAGE_NAME
             = getGmsCoreVendorGroupId() + ".android.gms";
     private static final Uri GMS_CORE_PROVIDER
@@ -76,6 +77,21 @@ public class GmsCoreSupport {
      */
     public static void checkGmsCore(Activity mActivity) {
         try {
+            // Verify the user has not included GmsCore for a root installation.
+            // GmsCore Support changes the package name, but with a mounted installation
+            // all manifest changes are ignored and the original package name is used.
+            if (StringUtils.equalsAny(mActivity.getPackageName(), PACKAGE_NAME_YOUTUBE, PACKAGE_NAME_YOUTUBE_MUSIC)) {
+                Logger.printInfo(() -> "App is mounted with root, but GmsCore patch was included");
+                // Cannot use localize text here, since the app will load
+                // resources from the unpatched app and all patch strings are missing.
+                Utils.showToastLong("The 'GmsCore support' patch breaks mount installations");
+
+                // Do not exit. If the app exits before launch completes (and without
+                // opening another activity), then on some devices such as Pixel phone Android 10
+                // no toast will be shown and the app will continually be relaunched
+                // with the appearance of a hung app.
+            }
+
             // Verify GmsCore is installed.
             try {
                 PackageManager manager = mActivity.getPackageManager();
@@ -176,8 +192,7 @@ public class GmsCoreSupport {
                 return packageName;
             }
 
-            final String logMessage = "Package name of '" + packageName + "' spoofed to '" + originalPackageName + "'";
-            Logger.printDebug(() -> logMessage);
+            Logger.printDebug(() -> "Package name of '" + packageName + "' spoofed to '" + originalPackageName + "'");
 
             return originalPackageName;
         } catch (Exception ex) {
