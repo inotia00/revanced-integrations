@@ -1,10 +1,8 @@
 [versions]
-# noinspection GradleDependency
-agp = "8.0.2"
+agp = "8.6.0"
 annotation = "1.8.2"
 lang3 = "3.17.0"
-# noinspection GradleDependency
-kotlin = "1.7.21"
+kotlin = "2.0.20"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }

@@ -6,8 +6,7 @@ plugins {
 
 android {
     namespace = "app.revanced.integrations.stub"
-    // noinspection GradleDependency
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         multiDexEnabled = false

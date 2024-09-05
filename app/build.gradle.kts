@@ -8,8 +8,7 @@ plugins {
 
 android {
     namespace = "app.revanced.integrations"
-    // noinspection GradleDependency
-    compileSdk = 33
+    compileSdk = 34
 
     applicationVariants.all {
         outputs.all {
@@ -22,8 +21,7 @@ android {
     defaultConfig {
         applicationId = "app.revanced.integrations"
         minSdk = 24
-        // noinspection EditedTargetSdkVersion, ExpiredTargetSdkVersion
-        targetSdk = 31
+        targetSdk = 34
         multiDexEnabled = false
         versionName = version as String
 
