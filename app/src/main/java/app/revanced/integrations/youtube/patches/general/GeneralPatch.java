@@ -46,12 +46,8 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
-/**
- * @noinspection ALL
- */
 @SuppressWarnings("unused")
 public class GeneralPatch {
 
@@ -95,7 +91,7 @@ public class GeneralPatch {
     private static ArrayList<Object> formatStreamModelArray;
 
     /**
-     * Find the stream format containing the parameter {@link DEFAULT_AUDIO_TRACKS_IDENTIFIER}, and save to the array.
+     * Find the stream format containing the parameter {@link GeneralPatch#DEFAULT_AUDIO_TRACKS_IDENTIFIER}, and save to the array.
      *
      * @param formatStreamModel stream format model including audio tracks.
      */
@@ -151,8 +147,7 @@ public class GeneralPatch {
 
     public static boolean disableAutoCaptions() {
         return Settings.DISABLE_AUTO_CAPTIONS.get() &&
-                !captionsButtonStatus &&
-                !PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized();
+                !captionsButtonStatus;
     }
 
     public static void setCaptionsButtonStatus(boolean status) {
@@ -327,7 +322,7 @@ public class GeneralPatch {
      * <p>
      * The {@link AlertDialog#getButton(int)} method must be used after {@link AlertDialog#show()} is called.
      * Otherwise {@link AlertDialog#getButton(int)} method will always return null.
-     * https://stackoverflow.com/a/4604145
+     * <a href="https://stackoverflow.com/a/4604145"/>
      * <p>
      * That's why {@link AlertDialog#show()} is absolutely necessary.
      * Instead, use two tricks to hide Alertdialog.
@@ -581,17 +576,19 @@ public class GeneralPatch {
         if (!isCreateButton(enumString))
             return;
         ImageView imageView = getChildView((ViewGroup) toolbarView, view -> view instanceof ImageView);
+        if (imageView == null)
+            return;
 
         // Overriding is possible only after OnClickListener is assigned to the create button.
         Utils.runOnMainThreadDelayed(() -> {
             if (Settings.REPLACE_TOOLBAR_CREATE_BUTTON_TYPE.get()) {
-                imageView.setOnClickListener(button -> openRVXSettings(button));
+                imageView.setOnClickListener(GeneralPatch::openRVXSettings);
                 imageView.setOnLongClickListener(button -> {
                     openYouTubeSettings(button);
                     return true;
                 });
             } else {
-                imageView.setOnClickListener(button -> openYouTubeSettings(button));
+                imageView.setOnClickListener(GeneralPatch::openYouTubeSettings);
                 imageView.setOnLongClickListener(button -> {
                     openRVXSettings(button);
                     return true;
@@ -631,7 +628,7 @@ public class GeneralPatch {
             return;
 
         base.setTheme(ThemeUtils.getThemeId());
-        Utils.runOnMainThreadDelayed(() -> base.finish(), 0);
+        Utils.runOnMainThreadDelayed(base::finish, 0);
     }
 
 
