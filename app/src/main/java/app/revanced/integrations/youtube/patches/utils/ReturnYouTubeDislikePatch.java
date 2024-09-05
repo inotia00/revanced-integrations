@@ -74,7 +74,7 @@ public class ReturnYouTubeDislikePatch {
     private static volatile boolean lithoShortsShouldUseCurrentData;
 
     /**
-     * Last video id prefetched. Field is prevent prefetching the same video id multiple times in a row.
+     * Last video id prefetched. Field is to prevent prefetching the same video id multiple times in a row.
      */
     @Nullable
     private static volatile String lastPrefetchedVideoId;
@@ -133,6 +133,10 @@ public class ReturnYouTubeDislikePatch {
             }
 
             String conversionContextString = conversionContext.toString();
+
+            if (isRollingNumber && !conversionContextString.contains("video_action_bar.eml")) {
+                return original;
+            }
 
             if (conversionContextString.contains("segmented_like_dislike_button.eml")) {
                 // Regular video.
@@ -263,13 +267,12 @@ public class ReturnYouTubeDislikePatch {
     public static String onRollingNumberLoaded(@NonNull Object conversionContext,
                                                @NonNull String original) {
         try {
-            if (!conversionContext.toString().contains("video_action_bar.eml")) {
-                return original;
-            }
             CharSequence replacement = onLithoTextLoaded(conversionContext, original, true);
-            if (!replacement.toString().equals(original)) {
+
+            String replacementString = replacement.toString();
+            if (!replacementString.equals(original)) {
                 rollingNumberSpan = replacement;
-                return replacement.toString();
+                return replacementString;
             } // Else, the text was not a likes count but instead the view count or something else.
         } catch (Exception ex) {
             Logger.printException(() -> "onRollingNumberLoaded failure", ex);
@@ -322,9 +325,8 @@ public class ReturnYouTubeDislikePatch {
                 view.setCompoundDrawables(separator, null, null, null);
             }
 
-            // Liking/disliking can cause the span to grow in size,
-            // which is ok and is laid out correctly,
-            // but if the user then undoes their action the layout will not remove the extra padding.
+            // Disliking can cause the span to grow in size, which is ok and is laid out correctly,
+            // but if the user then removes their dislike the layout will not adjust to the new shorter width.
             // Use a center alignment to take up any extra space.
             view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -429,7 +431,7 @@ public class ReturnYouTubeDislikePatch {
             if (!Settings.RYD_ENABLED.get()) {
                 return false;
             }
-            if (!Settings.RYD_SHORTS.get()) {
+            if (!Settings.RYD_SHORTS.get() || Settings.HIDE_SHORTS_DISLIKE_BUTTON.get()) {
                 // Must clear the data here, in case a new video was loaded while PlayerType
                 // suggested the video was not a short (can happen when spoofing to an old app version).
                 clearData();
@@ -659,6 +661,8 @@ public class ReturnYouTubeDislikePatch {
      * Injection point.
      * <p>
      * Called when the user likes or dislikes.
+     *
+     * @param vote int that matches {@link Vote#value}
      */
     public static void sendVote(int vote) {
         try {
