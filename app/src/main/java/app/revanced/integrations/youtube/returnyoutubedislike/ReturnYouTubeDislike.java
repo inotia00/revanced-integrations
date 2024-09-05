@@ -410,7 +410,7 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Should be called if the user changes settings for dislikes appearance.
+     * Should be called if the user changes dislikes appearance settings.
      */
     public static void clearAllUICaches() {
         synchronized (fetchCache) {
