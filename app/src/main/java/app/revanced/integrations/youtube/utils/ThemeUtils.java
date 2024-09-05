@@ -19,8 +19,12 @@ public class ThemeUtils {
     /**
      * Injection point.
      */
-    public static void setTheme(Enum<?> themeEnum) {
-        themeValue = themeEnum.ordinal();
+    public static void setTheme(Enum<?> value) {
+        final int newOrdinalValue = value.ordinal();
+        if (themeValue != newOrdinalValue) {
+            themeValue = newOrdinalValue;
+            Logger.printDebug(() -> "Theme value: " + newOrdinalValue);
+        }
     }
 
     public static boolean isDarkTheme() {

@@ -82,5 +82,6 @@ public class SpoofStreamingDataSideEffectsPreference extends Preference {
         }
 
         setSummary(str(summaryTextKey));
+        setEnabled(Settings.SPOOF_STREAMING_DATA.get());
     }
 }

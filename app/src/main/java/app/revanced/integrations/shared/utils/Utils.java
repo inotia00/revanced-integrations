@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -45,9 +44,7 @@ import java.util.concurrent.TimeUnit;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import kotlin.text.Regex;
 
-/**
- * @noinspection deprecation
- */
+@SuppressWarnings("deprecation")
 public class Utils {
 
     private static WeakReference<Activity> activityRef = new WeakReference<>(null);
@@ -320,9 +317,6 @@ public class Utils {
             return;
         }
 
-        if (appContext instanceof ContextWrapper contextWrapper) {
-            appContext = contextWrapper.getBaseContext();
-        }
         context = appContext;
 
         // In some apps like TikTok, the Setting classes can load in weird orders due to cyclic class dependencies.
