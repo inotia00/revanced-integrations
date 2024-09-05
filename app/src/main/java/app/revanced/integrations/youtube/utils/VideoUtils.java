@@ -4,8 +4,6 @@ import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArra
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.patches.video.PlaybackSpeedPatch.userSelectedPlaybackSpeed;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.media.AudioManager;
@@ -14,7 +12,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -166,30 +163,6 @@ public class VideoUtils extends IntentUtils {
             showVideoQualityFlyoutMenu();
         } else {
             showPlaybackSpeedFlyoutMenu();
-        }
-    }
-
-    public static String getFormattedTimeStamp(long videoTime) {
-        return "'" + videoTime +
-                "' (" +
-                getTimeStamp(videoTime) +
-                ")\n";
-    }
-
-    @TargetApi(26)
-    @SuppressLint("DefaultLocale")
-    public static String getTimeStamp(long time) {
-        final Duration duration = Duration.ofMillis(time);
-
-        final long hours = duration.toHours();
-        final long minutes = duration.toMinutes() % 60;
-        final long seconds = duration.getSeconds() % 60;
-        final long millis = duration.toMillis() % 1000;
-
-        if (hours > 0) {
-            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        } else {
-            return String.format("%02d:%02d", minutes, seconds);
         }
     }
 

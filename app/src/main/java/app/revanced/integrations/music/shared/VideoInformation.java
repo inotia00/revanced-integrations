@@ -1,6 +1,7 @@
 package app.revanced.integrations.music.shared;
 
 import static app.revanced.integrations.shared.utils.ResourceUtils.getString;
+import static app.revanced.integrations.shared.utils.Utils.getFormattedTimeStamp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +47,23 @@ public final class VideoInformation {
     private static List<Integer> videoQualities;
 
     /**
+     * Injection point.
+     */
+    public static void initialize() {
+        videoTime = -1;
+        videoLength = 0;
+        playbackSpeed = DEFAULT_YOUTUBE_MUSIC_PLAYBACK_SPEED;
+        Logger.printDebug(() -> "Initialized Player");
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void initializeMdx() {
+        Logger.printDebug(() -> "Initialized Mdx Player");
+    }
+
+    /**
      * Id of the current video playing.  Includes Shorts and YouTube Stories.
      *
      * @return The id of the video. Empty string if not set yet.
@@ -75,17 +93,49 @@ public final class VideoInformation {
      * Caution: If called from a videoTimeHook() callback,
      * this will cause a recursive call into the same videoTimeHook() callback.
      *
-     * @param millisecond The millisecond to seek the video to.
+     * @param seekTime The millisecond to seek the video to.
      * @return if the seek was successful
      */
-    public static boolean seekTo(final long millisecond) {
+    public static boolean seekTo(final long seekTime) {
         Utils.verifyOnMainThread();
         try {
-            Logger.printDebug(() -> "Seeking to " + millisecond);
-            return overrideVideoTime(millisecond);
+            final long videoLength = getVideoLength();
+            final long videoTime = getVideoTime();
+            final long adjustedSeekTime = getAdjustedSeekTime(seekTime, videoLength);
+
+            Logger.printDebug(() -> "Seeking to: " + getFormattedTimeStamp(adjustedSeekTime));
+
+            // Try regular playback controller first, and it will not succeed if casting.
+            if (overrideVideoTime(adjustedSeekTime)) return true;
+            Logger.printDebug(() -> "seekTo did not succeeded. Trying MXD.");
+            // Else the video is loading or changing videos, or video is casting to a different device.
+
+            // Try calling the seekTo method of the MDX player director (called when casting).
+            // The difference has to be a different second mark in order to avoid infinite skip loops
+            // as the Lounge API only supports seconds.
+            if (adjustedSeekTime / 1000 == videoTime / 1000) {
+                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small "
+                        + "(" + (adjustedSeekTime - videoTime) + "ms)");
+                return false;
+            }
+
+            return overrideMDXVideoTime(adjustedSeekTime);
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek", ex);
             return false;
+        }
+    }
+
+    // Prevent issues such as play/pause button or autoplay not working.
+    private static long getAdjustedSeekTime(final long seekTime, final long videoLength) {
+        // If the user skips to a section that is 500 ms before the video length,
+        // it will get stuck in a loop.
+        if (videoLength - seekTime > 500) {
+            return seekTime;
+        } else {
+            // Otherwise, just skips to a time longer than the video length.
+            // Paradoxically, if user skips to a section much longer than the video length, does not get stuck in a loop.
+            return Integer.MAX_VALUE;
         }
     }
 
@@ -247,6 +297,16 @@ public final class VideoInformation {
      * Rest of the implementation added by patch.
      */
     public static boolean overrideVideoTime(final long seekTime) {
+        // These instructions are ignored by patch.
+        Logger.printDebug(() -> "Seeking to " + seekTime);
+        return false;
+    }
+
+    /**
+     * Overrides the current video time by seeking. (MDX player)
+     * Rest of the implementation added by patch.
+     */
+    public static boolean overrideMDXVideoTime(final long seekTime) {
         // These instructions are ignored by patch.
         Logger.printDebug(() -> "Seeking to " + seekTime);
         return false;

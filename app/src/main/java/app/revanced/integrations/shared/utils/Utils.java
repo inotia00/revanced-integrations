@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.text.Bidi;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.SortedMap;
@@ -346,6 +347,40 @@ public class Utils {
         // Unfortunately this will show 2 toasts on Android 13+, but no way around this.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 && toastMessage != null) {
             showToastShort(toastMessage);
+        }
+    }
+
+    public static String getFormattedTimeStamp(long videoTime) {
+        return "'" + videoTime +
+                "' (" +
+                getTimeStamp(videoTime) +
+                ")\n";
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String getTimeStamp(long time) {
+        long hours;
+        long minutes;
+        long seconds;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            final Duration duration = Duration.ofMillis(time);
+
+            hours = duration.toHours();
+            minutes = duration.toMinutes() % 60;
+            seconds = duration.getSeconds() % 60;
+        } else {
+            final long currentVideoTimeInSeconds = time / 1000;
+
+            hours = currentVideoTimeInSeconds / (60 * 60);
+            minutes = (currentVideoTimeInSeconds / 60) % 60;
+            seconds = currentVideoTimeInSeconds % 60;
+        }
+
+        if (hours > 0) {
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            return String.format("%02d:%02d", minutes, seconds);
         }
     }
 

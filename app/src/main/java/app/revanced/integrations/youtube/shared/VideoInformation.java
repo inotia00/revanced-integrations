@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.shared;
 
 import static app.revanced.integrations.shared.utils.ResourceUtils.getString;
-import static app.revanced.integrations.youtube.utils.VideoUtils.getFormattedTimeStamp;
+import static app.revanced.integrations.shared.utils.Utils.getFormattedTimeStamp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
