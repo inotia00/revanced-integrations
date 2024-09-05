@@ -62,6 +62,10 @@ public final class PlayerFlyoutMenuFilter extends Filter {
 
         flyoutFilterGroupList.addAll(
                 new ByteArrayFilterGroup(
+                        Settings.HIDE_PLAYER_FLYOUT_MENU_AMBIENT,
+                        "yt_outline_screen_light"
+                ),
+                new ByteArrayFilterGroup(
                         Settings.HIDE_PLAYER_FLYOUT_MENU_AUDIO_TRACK,
                         "yt_outline_person_radar"
                 ),
