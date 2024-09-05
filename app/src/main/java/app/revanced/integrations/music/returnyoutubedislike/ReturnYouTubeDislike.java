@@ -1,7 +1,6 @@
 package app.revanced.integrations.music.returnyoutubedislike;
 
 import static app.revanced.integrations.shared.returnyoutubedislike.ReturnYouTubeDislike.Vote;
-import static app.revanced.integrations.shared.utils.StringRef.str;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -151,23 +150,21 @@ public class ReturnYouTubeDislike {
     @NonNull
     private static SpannableString createDislikeSpan(@NonNull Spanned oldSpannable,
                                                      @NonNull RYDVoteData voteData) {
-        String oldLikesString = oldSpannable.toString();
+        CharSequence oldLikes = oldSpannable;
 
         // YouTube creators can hide the like count on a video,
         // and the like count appears as a device language specific string that says 'Like'.
         // Check if the string contains any numbers.
-        if (!stringContainsNumber(oldLikesString)) {
-            // Likes are hidden.
-            // RYD does not provide usable data for these types of videos,
-            // and the API returns bogus data (zero likes and zero dislikes)
-            // discussion about this: https://github.com/Anarios/return-youtube-dislike/discussions/530
+        if (!Utils.containsNumber(oldLikes)) {
+            // Likes are hidden by video creator
+            //
+            // RYD does not directly provide like data, but can use an estimated likes
+            // using the same scale factor RYD applied to the raw dislikes.
             //
             // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
             // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
-            //
-            // Change the "Likes" string to show that likes and dislikes are hidden.
-            String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
-            return newSpanUsingStylingOfAnotherSpan(oldSpannable, hiddenMessageString);
+            Logger.printDebug(() -> "Using estimated likes");
+            oldLikes = formatDislikeCount(voteData.getLikeCount());
         }
 
         SpannableStringBuilder builder = new SpannableStringBuilder("\u2009\u2009");
@@ -185,7 +182,7 @@ public class ReturnYouTubeDislike {
         }
 
         // likes
-        builder.append(newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikesString));
+        builder.append(newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikes));
 
         // middle separator
         String middleSeparatorString = compactLayout
@@ -215,20 +212,6 @@ public class ReturnYouTubeDislike {
      */
     public static boolean isPreviouslyCreatedSegmentedSpan(@NonNull String text) {
         return text.indexOf(MIDDLE_SEPARATOR_CHARACTER) >= 0;
-    }
-
-    /**
-     * Correctly handles any unicode numbers (such as Arabic numbers).
-     *
-     * @return if the string contains at least 1 number.
-     */
-    private static boolean stringContainsNumber(@NonNull String text) {
-        for (int index = 0, length = text.length(); index < length; index++) {
-            if (Character.isDigit(text.codePointAt(index))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static boolean spansHaveEqualTextAndColor(@NonNull Spanned one, @NonNull Spanned two) {

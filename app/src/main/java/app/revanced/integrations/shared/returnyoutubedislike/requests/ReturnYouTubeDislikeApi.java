@@ -268,10 +268,12 @@ public class ReturnYouTubeDislikeApi {
             applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"solution\": \"" + solution + "\"}";
+            byte[] body = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            connection.setFixedLengthStreamingMode(body.length);
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
+                os.write(body);
             }
+
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect(); // disconnect, as no more connections will be made for a little while
@@ -314,9 +316,10 @@ public class ReturnYouTubeDislikeApi {
             applyCommonPostRequestSettings(connection);
 
             String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote.value + "\"}";
+            byte[] body = voteJsonString.getBytes(StandardCharsets.UTF_8);
+            connection.setFixedLengthStreamingMode(body.length);
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = voteJsonString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
+                os.write(body);
             }
 
             final int responseCode = connection.getResponseCode();
@@ -363,10 +366,12 @@ public class ReturnYouTubeDislikeApi {
             applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"solution\": \"" + solution + "\"}";
+            byte[] body = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            connection.setFixedLengthStreamingMode(body.length);
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
+                os.write(body);
             }
+
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect(); // disconnect, as no more connections will be made for a little while
