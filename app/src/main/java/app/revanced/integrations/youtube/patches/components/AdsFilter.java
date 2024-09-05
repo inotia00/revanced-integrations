@@ -9,10 +9,17 @@ public final class AdsFilter extends Filter {
 
     public AdsFilter() {
 
+        final StringFilterGroup alertBannerPromo = new StringFilterGroup(
+                Settings.HIDE_PROMOTION_ALERT_BANNER,
+                "alert_banner_promo.eml"
+        );
+
         final StringFilterGroup carouselAd = new StringFilterGroup(
                 Settings.HIDE_GENERAL_ADS,
                 "carousel_ad"
         );
+
+        addIdentifierCallbacks(alertBannerPromo, carouselAd);
 
         final StringFilterGroup merchandise = new StringFilterGroup(
                 Settings.HIDE_MERCHANDISE_SHELF,
@@ -78,7 +85,5 @@ public final class AdsFilter extends Filter {
                 viewProducts,
                 webSearchPanel
         );
-
-        addIdentifierCallbacks(carouselAd);
     }
 }
