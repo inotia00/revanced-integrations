@@ -4,8 +4,12 @@ import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.youtube.patches.misc.requests.PlaylistRequest;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.VideoInformation;
@@ -24,14 +28,31 @@ public class PlaybackSpeedPatch {
         isLiveStream = newlyLoadedLiveStreamValue;
         Logger.printDebug(() -> "newVideoStarted: " + newlyLoadedVideoId);
 
-        if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE.get() && newlyLoadedLiveStreamValue)
-            return;
-
-        float defaultPlaybackSpeed = Settings.DEFAULT_PLAYBACK_SPEED.get();
-        if (Whitelist.isChannelWhitelistedPlaybackSpeed(newlyLoadedChannelId))
-            defaultPlaybackSpeed = 1.0f;
+        final float defaultPlaybackSpeed = getDefaultPlaybackSpeed(newlyLoadedChannelId, newlyLoadedVideoId);
+        Logger.printDebug(() -> "overridePlaybackSpeed: " + defaultPlaybackSpeed);
 
         VideoInformation.overridePlaybackSpeed(defaultPlaybackSpeed);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void fetchPlaylistData(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
+        if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_MUSIC.get()) {
+            try {
+                final boolean videoIdIsShort = VideoInformation.lastPlayerResponseIsShort();
+                // Shorts shelf in home and subscription feed causes player response hook to be called,
+                // and the 'is opening/playing' parameter will be false.
+                // This hook will be called again when the Short is actually opened.
+                if (videoIdIsShort && !isShortAndOpeningOrPlaying) {
+                    return;
+                }
+
+                PlaylistRequest.fetchRequestIfNeeded(videoId);
+            } catch (Exception ex) {
+                Logger.printException(() -> "fetchPlaylistData failure", ex);
+            }
+        }
     }
 
     /**
@@ -42,14 +63,9 @@ public class PlaybackSpeedPatch {
             return playbackSpeed;
         if (!Settings.ENABLE_DEFAULT_PLAYBACK_SPEED_SHORTS.get())
             return playbackSpeed;
-        if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE.get() && isLiveStream)
-            return playbackSpeed;
 
-        float defaultPlaybackSpeed = Settings.DEFAULT_PLAYBACK_SPEED.get();
-        if (Whitelist.isChannelWhitelistedPlaybackSpeed(VideoInformation.getChannelId()))
-            defaultPlaybackSpeed = 1.0f;
-
-        Logger.printDebug(() -> "getPlaybackSpeedInShorts: " + playbackSpeed);
+        float defaultPlaybackSpeed = getDefaultPlaybackSpeed(VideoInformation.getChannelId(), null);
+        Logger.printDebug(() -> "overridePlaybackSpeed in Shorts: " + defaultPlaybackSpeed);
 
         return defaultPlaybackSpeed;
     }
@@ -73,5 +89,29 @@ public class PlaybackSpeedPatch {
             return;
 
         showToastShort(str("revanced_remember_playback_speed_toast", playbackSpeed + "x"));
+    }
+
+    private static float getDefaultPlaybackSpeed(@NonNull String channelId, @Nullable String videoId) {
+        return (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_LIVE.get() && isLiveStream) ||
+                Whitelist.isChannelWhitelistedPlaybackSpeed(channelId) ||
+                getPlaylistData(videoId)
+                ? 1.0f
+                : Settings.DEFAULT_PLAYBACK_SPEED.get();
+    }
+
+    private static boolean getPlaylistData(@Nullable String videoId) {
+        if (Settings.DISABLE_DEFAULT_PLAYBACK_SPEED_MUSIC.get() && videoId != null) {
+            try {
+                PlaylistRequest request = PlaylistRequest.getRequestForVideoId(videoId);
+                final boolean isPlaylist = request != null && BooleanUtils.toBoolean(request.getStream());
+                Logger.printInfo(() -> "isPlaylist: " + isPlaylist);
+
+                return isPlaylist;
+            } catch (Exception ex) {
+                Logger.printException(() -> "getPlaylistData failure", ex);
+            }
+        }
+
+        return false;
     }
 }

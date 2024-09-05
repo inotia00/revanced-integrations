@@ -137,7 +137,7 @@ public class StreamingDataRequest {
             connection.setRequestProperty("Authorization", authHeader);
             connection.setRequestProperty("X-Goog-Visitor-Id", visitorId);
 
-            String innerTubeBody = String.format(PlayerRoutes.createInnertubeBody(clientType), videoId);
+            String innerTubeBody = PlayerRoutes.createInnertubeBody(clientType, videoId);
             byte[] requestBody = innerTubeBody.getBytes(StandardCharsets.UTF_8);
             connection.setFixedLengthStreamingMode(requestBody.length);
             connection.getOutputStream().write(requestBody);
@@ -219,7 +219,7 @@ public class StreamingDataRequest {
     }
 
     /**
-     * @return if the RYD fetch call has completed.
+     * @return if the fetch call has completed.
      */
     public boolean fetchCompleted() {
         return future.isDone();

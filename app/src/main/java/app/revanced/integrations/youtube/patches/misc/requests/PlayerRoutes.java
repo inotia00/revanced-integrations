@@ -24,6 +24,12 @@ public final class PlayerRoutes {
                     "&alt=proto"
     ).compile();
 
+    static final Route.CompiledRoute GET_PLAYLIST_PAGE = new Route(
+            Route.Method.POST,
+            "next" +
+                    "?fields=contents.singleColumnWatchNextResults.playlist"
+    ).compile();
+
     /**
      * TCP connection and HTTP read timeout
      */
@@ -32,7 +38,11 @@ public final class PlayerRoutes {
     private PlayerRoutes() {
     }
 
-    static String createInnertubeBody(ClientType clientType) {
+    static String createInnertubeBody(ClientType clientType, String videoId) {
+        return createInnertubeBody(clientType, videoId, null);
+    }
+
+    static String createInnertubeBody(ClientType clientType, String videoId, String playlistId) {
         JSONObject innerTubeBody = new JSONObject();
 
         try {
@@ -58,7 +68,10 @@ public final class PlayerRoutes {
             innerTubeBody.put("context", context);
             innerTubeBody.put("contentCheckOk", true);
             innerTubeBody.put("racyCheckOk", true);
-            innerTubeBody.put("videoId", "%s");
+            innerTubeBody.put("videoId", videoId);
+            if (playlistId != null) {
+                innerTubeBody.put("playlistId", playlistId);
+            }
         } catch (JSONException e) {
             Logger.printException(() -> "Failed to create innerTubeBody", e);
         }
