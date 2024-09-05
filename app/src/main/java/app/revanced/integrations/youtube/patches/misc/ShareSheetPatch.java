@@ -13,6 +13,17 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ShareSheetPatch {
     private static final boolean changeShareSheetEnabled = Settings.CHANGE_SHARE_SHEET.get();
 
+    private static void clickSystemShareButton(final RecyclerView bottomSheetRecyclerView,
+                                               final RecyclerView appsContainerRecyclerView) {
+        if (appsContainerRecyclerView.getChildAt(appsContainerRecyclerView.getChildCount() - 1) instanceof ViewGroup parentView &&
+                parentView.getChildAt(0) instanceof ViewGroup shareWithOtherAppsView) {
+            ShareSheetMenuFilter.isShareSheetMenuVisible = false;
+
+            bottomSheetRecyclerView.setVisibility(View.GONE);
+            Utils.clickView(shareWithOtherAppsView);
+        }
+    }
+
     /**
      * Injection point.
      */
@@ -22,17 +33,18 @@ public class ShareSheetPatch {
 
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             try {
-                if (ShareSheetMenuFilter.isShareSheetMenuVisible &&
-                        recyclerView.getChildAt(0) instanceof ViewGroup parentView4th &&
-                        parentView4th.getChildAt(0) instanceof ViewGroup parentView3rd &&
-                        parentView3rd.getChildAt(0) instanceof ViewGroup parentView2nd &&
-                        parentView2nd.getChildAt(parentView2nd.getChildCount() - 1) instanceof ViewGroup parentView &&
-                        parentView.getChildAt(0) instanceof ViewGroup shareWithOtherAppsView
-                ) {
-                    ShareSheetMenuFilter.isShareSheetMenuVisible = false;
-
-                    recyclerView.setVisibility(View.GONE);
-                    Utils.clickView(shareWithOtherAppsView);
+                if (!ShareSheetMenuFilter.isShareSheetMenuVisible) {
+                    return;
+                }
+                if (!(recyclerView.getChildAt(0) instanceof ViewGroup parentView4th)) {
+                    return;
+                }
+                if (parentView4th.getChildAt(0) instanceof ViewGroup parentView3rd &&
+                        parentView3rd.getChildAt(0) instanceof RecyclerView appsContainerRecyclerView) {
+                    clickSystemShareButton(recyclerView, appsContainerRecyclerView);
+                } else if (parentView4th.getChildAt(1) instanceof ViewGroup parentView3rd &&
+                        parentView3rd.getChildAt(0) instanceof RecyclerView appsContainerRecyclerView) {
+                    clickSystemShareButton(recyclerView, appsContainerRecyclerView);
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "onShareSheetMenuCreate failure", ex);
