@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches.utils;
 
-import android.content.Context;
-import android.media.AudioManager;
+import static app.revanced.integrations.youtube.utils.VideoUtils.pauseMedia;
 
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -25,15 +24,6 @@ public class AlwaysRepeatPatch extends Utils {
 
         if (alwaysRepeat && alwaysRepeatPause) pauseMedia();
         return alwaysRepeat;
-    }
-
-    /**
-     * Pause the media by changing audio focus.
-     */
-    private static void pauseMedia() {
-        if (context != null && context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE) instanceof AudioManager audioManager) {
-            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        }
     }
 
 }

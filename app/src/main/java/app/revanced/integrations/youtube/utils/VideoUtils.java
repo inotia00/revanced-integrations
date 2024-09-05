@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.AudioManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -92,14 +93,30 @@ public class VideoUtils extends IntentUtils {
      * Create playlist from all channel videos from oldest to newest,
      * starting from the video where button is clicked.
      */
-    public static void playlistFromChannelVideosListener(boolean activated) {
-        final String videoId = VideoInformation.getVideoId();
-        String baseUri = "vnd.youtube://" + videoId + "?start=" + VideoInformation.getVideoTime() / 1000;
+    public static void openVideo(boolean activated) {
+        openVideo(activated, VideoInformation.getVideoId(), VideoInformation.getVideoTime());
+    }
+
+    public static void openVideo(@NonNull String videoId) {
+        openVideo(false, videoId, 0);
+    }
+
+    public static void openVideo(boolean activated, @NonNull String videoId, long videoTime) {
+        String baseUri = "vnd.youtube://" + videoId + "?start=" + videoTime / 1000;
         if (activated) {
             baseUri += "&list=UL" + videoId;
         }
 
         launchView(baseUri, getContext().getPackageName());
+    }
+
+    /**
+     * Pause the media by changing audio focus.
+     */
+    public static void pauseMedia() {
+        if (context != null && context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE) instanceof AudioManager audioManager) {
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
     }
 
     public static void showPlaybackSpeedDialog(@NonNull Context context) {
