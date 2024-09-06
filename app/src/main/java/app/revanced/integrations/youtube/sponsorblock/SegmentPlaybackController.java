@@ -210,19 +210,19 @@ public class SegmentPlaybackController {
                                        @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
                                        final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
         try {
-            if (!Settings.SB_ENABLED.get()) {
-                return;
-            }
-            if (Utils.isNetworkNotConnected()) {
-                Logger.printDebug(() -> "Network not connected, ignoring video");
-                return;
-            }
             if (Objects.equals(videoId, newlyLoadedVideoId)) {
                 return;
             }
             clearData();
+            if (!Settings.SB_ENABLED.get()) {
+                return;
+            }
             if (PlayerType.getCurrent().isNoneOrHidden()) {
                 Logger.printDebug(() -> "ignoring Short");
+                return;
+            }
+            if (Utils.isNetworkNotConnected()) {
+                Logger.printDebug(() -> "Network not connected, ignoring video");
                 return;
             }
 

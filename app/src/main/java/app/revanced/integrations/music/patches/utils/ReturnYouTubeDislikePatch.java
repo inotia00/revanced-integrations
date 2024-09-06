@@ -68,10 +68,6 @@ public class ReturnYouTubeDislikePatch {
             if (videoId == null || videoId.isEmpty()) {
                 return;
             }
-            if (Utils.isNetworkNotConnected()) {
-                Logger.printDebug(() -> "Network not connected, ignoring video");
-                return;
-            }
             if (videoIdIsSame(currentVideoData, videoId)) {
                 return;
             }

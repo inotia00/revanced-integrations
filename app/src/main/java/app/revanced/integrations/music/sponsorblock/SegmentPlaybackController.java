@@ -87,19 +87,18 @@ public class SegmentPlaybackController {
      */
     public static void setVideoId(@NonNull String videoId) {
         try {
+            if (Objects.equals(currentVideoId, videoId)) {
+                return;
+            }
+            clearData();
             if (!Settings.SB_ENABLED.get()) {
-                clearData();
                 return;
             }
             if (Utils.isNetworkNotConnected()) {
                 Logger.printDebug(() -> "Network not connected, ignoring video");
                 return;
             }
-            if (Objects.equals(currentVideoId, videoId)) {
-                return;
-            }
 
-            clearData();
             currentVideoId = videoId;
             Logger.printDebug(() -> "setCurrentVideoId: " + videoId);
 

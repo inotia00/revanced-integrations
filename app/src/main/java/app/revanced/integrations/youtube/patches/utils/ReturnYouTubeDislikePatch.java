@@ -544,10 +544,6 @@ public class ReturnYouTubeDislikePatch {
             if (!Settings.RYD_ENABLED.get()) {
                 return;
             }
-            if (Utils.isNetworkNotConnected()) {
-                Logger.printDebug(() -> "Network not connected, ignoring video");
-                return;
-            }
             if (videoId.equals(lastPrefetchedVideoId)) {
                 return;
             }
@@ -594,11 +590,6 @@ public class ReturnYouTubeDislikePatch {
                 return;
             }
             Objects.requireNonNull(videoId);
-
-            if (Utils.isNetworkNotConnected()) {
-                Logger.printDebug(() -> "Network not connected, ignoring video");
-                return;
-            }
 
             final PlayerType currentPlayerType = PlayerType.getCurrent();
             final boolean isNoneHiddenOrSlidingMinimized = currentPlayerType.isNoneHiddenOrSlidingMinimized();
