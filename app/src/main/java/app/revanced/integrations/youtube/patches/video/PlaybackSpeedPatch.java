@@ -104,7 +104,7 @@ public class PlaybackSpeedPatch {
             try {
                 PlaylistRequest request = PlaylistRequest.getRequestForVideoId(videoId);
                 final boolean isPlaylist = request != null && BooleanUtils.toBoolean(request.getStream());
-                Logger.printInfo(() -> "isPlaylist: " + isPlaylist);
+                Logger.printDebug(() -> "isPlaylist: " + isPlaylist);
 
                 return isPlaylist;
             } catch (Exception ex) {

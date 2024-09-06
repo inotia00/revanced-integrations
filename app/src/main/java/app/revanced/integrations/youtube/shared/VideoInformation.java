@@ -322,7 +322,7 @@ public final class VideoInformation {
     /**
      * Whether the user manually opened a YouTube Mix.
      */
-    private static boolean isMixPlaylistsOpenedByUser(String parameter) {
+    public static boolean isMixPlaylistsOpenedByUser(String parameter) {
         return parameter != null && (parameter.isEmpty() || parameter.startsWith(YOUTUBE_MIX_PLAYER_PARAMETERS));
     }
 

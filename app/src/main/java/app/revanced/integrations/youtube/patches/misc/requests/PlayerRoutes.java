@@ -27,7 +27,7 @@ public final class PlayerRoutes {
     static final Route.CompiledRoute GET_PLAYLIST_PAGE = new Route(
             Route.Method.POST,
             "next" +
-                    "?fields=contents.singleColumnWatchNextResults.playlist"
+                    "?fields=contents.singleColumnWatchNextResults.playlist.playlist"
     ).compile();
 
     /**

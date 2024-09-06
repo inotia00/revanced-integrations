@@ -27,13 +27,9 @@ import app.revanced.integrations.shared.requests.Requester;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
+import app.revanced.integrations.youtube.shared.VideoInformation;
 
 public class PlaylistRequest {
-    private static final ClientType[] clientTypesToUse = {
-            ClientType.ANDROID_VR,
-            ClientType.IOS
-    };
-
 
     /**
      * How long to keep fetches until they are expired.
@@ -115,22 +111,44 @@ public class PlaylistRequest {
     }
 
     private static Boolean fetch(@NonNull String videoId) {
-        // Retry with different client if empty response body is received.
-        for (ClientType clientType : clientTypesToUse) {
-            final JSONObject playlistJson = send(clientType, videoId);
-            if (playlistJson != null) {
-                try {
-                    playlistJson.getJSONObject("contents")
-                            .getJSONObject("singleColumnWatchNextResults")
-                            .getJSONObject("playlist");
-                    return true;
-                } catch (JSONException e) {
-                    Logger.printDebug(() -> "Fetch failed while processing response data for response: " + playlistJson);
+        final ClientType clientType = ClientType.ANDROID_VR;
+        final JSONObject playlistJson = send(clientType, videoId);
+        if (playlistJson != null) {
+            try {
+                final JSONObject singleColumnWatchNextResultsJsonObject = playlistJson
+                        .getJSONObject("contents")
+                        .getJSONObject("singleColumnWatchNextResults");
+
+                if (!singleColumnWatchNextResultsJsonObject.has("playlist")) {
+                    return false;
                 }
+
+                final JSONObject playlistJsonObject = singleColumnWatchNextResultsJsonObject
+                        .getJSONObject("playlist")
+                        .getJSONObject("playlist");
+
+                final Object currentStreamObject = playlistJsonObject
+                        .getJSONArray("contents")
+                        .get(0);
+
+                if (!(currentStreamObject instanceof JSONObject currentStreamJsonObject)) {
+                    return false;
+                }
+
+                final JSONObject watchEndpointJsonObject = currentStreamJsonObject
+                        .getJSONObject("playlistPanelVideoRenderer")
+                        .getJSONObject("navigationEndpoint")
+                        .getJSONObject("watchEndpoint");
+
+                Logger.printDebug(() -> "watchEndpoint: " + watchEndpointJsonObject);
+
+                return watchEndpointJsonObject.has("playerParams") &&
+                        VideoInformation.isMixPlaylistsOpenedByUser(watchEndpointJsonObject.getString("playerParams"));
+            } catch (JSONException e) {
+                Logger.printDebug(() -> "Fetch failed while processing response data for response: " + playlistJson);
             }
         }
 
-        handleConnectionError("Could not fetch any client streams", null);
         return false;
     }
 

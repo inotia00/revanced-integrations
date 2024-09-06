@@ -261,7 +261,7 @@ public final class FeedComponentsFilter extends Filter {
         // Check browseId last.
         // Only filter in home feed, search results, playlist.
         final String browseId = RootView.getBrowseId();
-        Logger.printInfo(() -> "browseId: " + browseId);
+        Logger.printDebug(() -> "browseId: " + browseId);
 
         return browseId.startsWith(BROWSE_ID_PLAYLIST);
     }
