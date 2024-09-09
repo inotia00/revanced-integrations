@@ -2,6 +2,7 @@ package app.revanced.integrations.music.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -25,7 +26,10 @@ public class ExtendedUtils extends PackageUtils {
     }
 
     public static AlertDialog.Builder getDialogBuilder(@NonNull Context context) {
-        return new AlertDialog.Builder(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        return new AlertDialog.Builder(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1
+                ? android.R.style.Theme_DeviceDefault_Dialog_Alert
+                : AlertDialog.THEME_DEVICE_DEFAULT_DARK
+        );
     }
 
     public static FrameLayout.LayoutParams getLayoutParams() {

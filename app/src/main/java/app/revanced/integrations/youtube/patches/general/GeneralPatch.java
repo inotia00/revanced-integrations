@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.google.android.apps.youtube.app.application.Shell_SettingsActivity;
 import com.google.android.apps.youtube.app.settings.SettingsActivity;
@@ -48,6 +49,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
+@RequiresApi(26)
 @SuppressWarnings("unused")
 public class GeneralPatch {
 

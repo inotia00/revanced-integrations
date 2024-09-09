@@ -1,5 +1,6 @@
 package com.google.android.apps.youtube.app.settings.videoquality;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.preference.ReVancedPreferenceFragment;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
+@TargetApi(26)
 @SuppressWarnings("deprecation")
 public class VideoQualitySettingsActivity extends Activity {
 

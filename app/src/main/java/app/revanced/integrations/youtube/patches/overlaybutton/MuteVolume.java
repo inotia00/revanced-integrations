@@ -1,5 +1,6 @@
 package app.revanced.integrations.youtube.patches.overlaybutton;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.AudioManager;
 import android.view.View;
@@ -10,7 +11,8 @@ import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
-@SuppressWarnings({"deprecation", "unused"})
+@TargetApi(26)
+@SuppressWarnings("unused")
 public class MuteVolume extends BottomControlButton {
     @Nullable
     private static MuteVolume instance;

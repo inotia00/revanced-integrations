@@ -10,6 +10,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.icu.text.CompactDecimalFormat;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -25,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -256,16 +258,21 @@ public class ReturnYouTubeDislike {
      */
     private static String formatDislikeCount(long dislikeCount) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
-            if (dislikeCountFormatter == null) {
-                // Note: Java number formatters will use the locale specific number characters.
-                // such as Arabic which formats "1.234" into "۱,۲۳٤"
-                // But YouTube disregards locale specific number characters
-                // and instead shows english number characters everywhere.
-                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
-                Logger.printDebug(() -> "Locale: " + locale);
-                dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (dislikeCountFormatter == null) {
+                    // Note: Java number formatters will use the locale specific number characters.
+                    // such as Arabic which formats "1.234" into "۱,۲۳٤"
+                    // But YouTube disregards locale specific number characters
+                    // and instead shows english number characters everywhere.
+                    Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
+                    Logger.printDebug(() -> "Locale: " + locale);
+                    dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
+                }
+                return dislikeCountFormatter.format(dislikeCount);
+            } else {
+                Logger.printDebug(() -> "Dislikes cannot be formatted on Android 6.0 or below, using the unformatted count - " + dislikeCount);
+                return String.valueOf(dislikeCount);
             }
-            return dislikeCountFormatter.format(dislikeCount);
         }
     }
 
@@ -294,12 +301,23 @@ public class ReturnYouTubeDislike {
         synchronized (fetchCache) {
             // Remove any expired entries.
             final long now = System.currentTimeMillis();
-            fetchCache.values().removeIf(value -> {
-                final boolean expired = value.isExpired(now);
-                if (expired)
-                    Logger.printDebug(() -> "Removing expired fetch: " + value.videoId);
-                return expired;
-            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                fetchCache.values().removeIf(value -> {
+                    final boolean expired = value.isExpired(now);
+                    if (expired)
+                        Logger.printDebug(() -> "Removing expired fetch: " + value.videoId);
+                    return expired;
+                });
+            } else {
+                Iterator<Map.Entry<String, ReturnYouTubeDislike>> itr = fetchCache.entrySet().iterator();
+                while (itr.hasNext()) {
+                    Map.Entry<String, ReturnYouTubeDislike> entry = itr.next();
+                    if (entry.getValue().isExpired(now)) {
+                        Logger.printDebug(() -> "Removing expired fetch: " + entry.getValue().videoId);
+                        itr.remove();
+                    }
+                }
+            }
 
             ReturnYouTubeDislike fetch = fetchCache.get(videoId);
             if (fetch == null) {

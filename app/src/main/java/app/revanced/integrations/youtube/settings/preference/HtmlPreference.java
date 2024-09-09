@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.settings.preference;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.preference.Preference;
 import android.text.Html;
@@ -10,6 +11,7 @@ import android.util.AttributeSet;
 /**
  * Allows using basic html for the summary text.
  */
+@TargetApi(26)
 @SuppressWarnings({"unused", "deprecation"})
 public class HtmlPreference extends Preference {
     {

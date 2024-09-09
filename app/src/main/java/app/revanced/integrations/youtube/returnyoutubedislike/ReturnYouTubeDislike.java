@@ -4,6 +4,7 @@ import static app.revanced.integrations.shared.returnyoutubedislike.ReturnYouTub
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -55,7 +56,7 @@ import app.revanced.integrations.youtube.utils.ThemeUtils;
  * <p>
  * Because Litho creates spans using multiple threads, this entire class supports multithreading as well.
  */
-@SuppressWarnings("deprecation")
+@TargetApi(26)
 public class ReturnYouTubeDislike {
 
     /**

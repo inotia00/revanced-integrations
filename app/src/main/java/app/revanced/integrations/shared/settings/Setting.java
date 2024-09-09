@@ -3,6 +3,7 @@ package app.revanced.integrations.shared.settings;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,7 +108,11 @@ public abstract class Setting<T> {
      */
     @NonNull
     private static List<Setting<?>> allLoadedSettingsSorted() {
-        SETTINGS.sort(Comparator.comparing((Setting<?> o) -> o.key));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            SETTINGS.sort(Comparator.comparing((Setting<?> o) -> o.key));
+        } else {
+            Collections.sort(SETTINGS, (o1, o2) -> o1.key.compareTo(o2.key));
+        }
         return allLoadedSettings();
     }
 

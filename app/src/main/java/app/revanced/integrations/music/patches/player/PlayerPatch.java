@@ -5,6 +5,7 @@ import static app.revanced.integrations.shared.utils.Utils.hideViewUnderConditio
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -136,6 +137,16 @@ public class PlayerPatch {
         }
     }
 
+    public static void hideAudioVideoSwitchToggleFor0620(View view) {
+        if (!Settings.HIDE_AUDIO_VIDEO_SWITCH_TOGGLE.get())
+            return;
+
+        if (view.getParent() instanceof ViewGroup viewGroup) {
+            // removeView causes a crash on 6.20
+            viewGroup.setVisibility(View.INVISIBLE);
+        }
+    }
+
     public static void hideDoubleTapOverlayFilter(View view) {
         hideViewByRemovingFromParentUnderCondition(Settings.HIDE_DOUBLE_TAP_OVERLAY_FILTER, view);
     }
@@ -171,6 +182,13 @@ public class PlayerPatch {
 
     public static boolean restoreOldPlayerBackground(boolean original) {
         if (!Settings.SETTINGS_INITIALIZED.get()) {
+            return original;
+        }
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            // Disable this patch on Android 5.0 / 5.1 to fix a black play button.
+            // Android 5.x have a different design for play button,
+            // and if the new background is applied forcibly, the play button turns black.
+            // 6.20.51 uses the old background from the beginning, so there is no impact.
             return original;
         }
         return !Settings.RESTORE_OLD_PLAYER_BACKGROUND.get();

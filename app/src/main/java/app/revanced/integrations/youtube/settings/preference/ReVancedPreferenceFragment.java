@@ -62,6 +62,7 @@ import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
+@TargetApi(26)
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
     private static final int READ_REQUEST_CODE = 42;

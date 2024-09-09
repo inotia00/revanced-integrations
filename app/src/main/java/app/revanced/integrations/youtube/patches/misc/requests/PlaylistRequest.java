@@ -3,6 +3,7 @@ package app.revanced.integrations.youtube.patches.misc.requests;
 import static app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.GET_PLAYLIST_PAGE;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 
+@TargetApi(26)
 public class PlaylistRequest {
 
     /**

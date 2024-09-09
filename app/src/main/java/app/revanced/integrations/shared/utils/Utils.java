@@ -286,10 +286,20 @@ public class Utils {
         }
 
         // Locale of MainActivity.
-        Locale applicationLocale = mActivity.getResources().getConfiguration().getLocales().get(0);
+        Locale applicationLocale;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            applicationLocale = mActivity.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            applicationLocale = mActivity.getResources().getConfiguration().locale;
+        }
 
         // Locale of Context.
-        Locale contextLocale = mContext.getResources().getConfiguration().getLocales().get(0);
+        Locale contextLocale;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            contextLocale = mContext.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            contextLocale = mContext.getResources().getConfiguration().locale;
+        }
 
         // If they are identical, no need to override them.
         if (applicationLocale == contextLocale) {
@@ -525,7 +535,11 @@ public class Utils {
      * @return if the calling thread is on the main thread
      */
     public static boolean isCurrentlyOnMainThread() {
-        return Looper.getMainLooper().isCurrentThread();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Looper.getMainLooper().isCurrentThread();
+        } else {
+            return Looper.getMainLooper().getThread() == Thread.currentThread();
+        }
     }
 
     /**

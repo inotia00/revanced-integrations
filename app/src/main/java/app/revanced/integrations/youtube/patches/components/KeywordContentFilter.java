@@ -11,6 +11,8 @@ import static java.lang.Character.UnicodeBlock.TIBETAN;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
+import android.annotation.TargetApi;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -48,6 +50,7 @@ import app.revanced.integrations.youtube.shared.RootView;
  *   will always be hidden.  This patch checks for some words of these words.
  * - When using whole word syntax, some keywords may need additional pluralized variations.
  */
+@TargetApi(26)
 @SuppressWarnings("unused")
 public final class KeywordContentFilter extends Filter {
 

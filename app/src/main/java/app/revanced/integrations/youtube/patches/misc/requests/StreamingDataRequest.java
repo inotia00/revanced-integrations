@@ -3,6 +3,7 @@ package app.revanced.integrations.youtube.patches.misc.requests;
 import static app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.GET_STREAMING_DATA;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.os.Build;
 
 import androidx.annotation.GuardedBy;
@@ -32,6 +33,7 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
 import app.revanced.integrations.youtube.settings.Settings;
 
+@TargetApi(26)
 public class StreamingDataRequest {
     private static final ClientType[] allClientTypes = {
             ClientType.IOS,

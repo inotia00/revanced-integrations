@@ -3,13 +3,16 @@ package app.revanced.integrations.shared.patches;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.shared.utils.Utils.hideViewGroupByMarginLayoutParams;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.utils.Logger;
@@ -21,9 +24,15 @@ public final class SettingsMenuPatch {
     static {
         settingsMenuBlockList = BaseSettings.HIDE_SETTINGS_MENU_FILTER_STRINGS.get().split("\\n");
         // Some settings should not be hidden.
-        settingsMenuBlockList = Arrays.stream(settingsMenuBlockList)
-                .filter(item -> !StringUtils.equalsAny(item, str("revanced_hide_settings_menu_title"), str("revanced_extended_settings_title")))
-                .toArray(String[]::new);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            settingsMenuBlockList = Arrays.stream(settingsMenuBlockList)
+                    .filter(item -> !StringUtils.equalsAny(item, str("revanced_hide_settings_menu_title"), str("revanced_extended_settings_title")))
+                    .toArray(String[]::new);
+        } else {
+            List<String> tmp = new ArrayList<>(Arrays.asList(settingsMenuBlockList));
+            tmp.removeAll(Arrays.asList(str("revanced_hide_settings_menu_title"), str("revanced_extended_settings_title")));
+            settingsMenuBlockList = tmp.toArray(new String[0]);
+        }
     }
 
     public static void hideSettingsMenu(RecyclerView recyclerView) {
