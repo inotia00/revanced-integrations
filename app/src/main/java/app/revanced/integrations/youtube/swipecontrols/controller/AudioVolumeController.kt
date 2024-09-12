@@ -2,8 +2,8 @@ package app.revanced.integrations.youtube.swipecontrols.controller
 
 import android.content.Context
 import android.media.AudioManager
-import android.os.Build
 import app.revanced.integrations.shared.utils.Logger.printException
+import app.revanced.integrations.shared.utils.Utils.isSDKAbove
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
 import kotlin.properties.Delegates
 
@@ -34,7 +34,7 @@ class AudioVolumeController(
             audioManager = mgr
             maximumVolumeIndex = audioManager.getStreamMaxVolume(targetStream)
             minimumVolumeIndex =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (isSDKAbove(28)) {
                     audioManager.getStreamMinVolume(
                         targetStream,
                     )

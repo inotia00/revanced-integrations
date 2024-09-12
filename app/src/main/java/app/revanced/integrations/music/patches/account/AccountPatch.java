@@ -1,8 +1,8 @@
 package app.revanced.integrations.music.patches.account;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
-import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,7 +21,7 @@ public class AccountPatch {
     static {
         accountMenuBlockList = Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS.get().split("\\n");
         // Some settings should not be hidden.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (isSDKAbove(24)) {
             accountMenuBlockList = Arrays.stream(accountMenuBlockList)
                     .filter(item -> !Objects.equals(item, str("settings")))
                     .toArray(String[]::new);

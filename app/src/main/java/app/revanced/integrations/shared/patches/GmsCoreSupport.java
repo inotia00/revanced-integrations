@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.patches;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,11 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
-
-import androidx.annotation.RequiresApi;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -119,14 +117,12 @@ public class GmsCoreSupport {
             }
 
             // Check if GmsCore is whitelisted from battery optimizations.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (batteryOptimizationsEnabled(mActivity)) {
-                    Logger.printInfo(() -> "GmsCore is not whitelisted from battery optimizations");
-                    showBatteryOptimizationDialog(mActivity,
-                            "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
-                            "gms_core_dialog_continue_text",
-                            (dialog, id) -> openGmsCoreDisableBatteryOptimizationsIntent(mActivity));
-                }
+            if (batteryOptimizationsEnabled(mActivity)) {
+                Logger.printInfo(() -> "GmsCore is not whitelisted from battery optimizations");
+                showBatteryOptimizationDialog(mActivity,
+                        "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
+                        "gms_core_dialog_continue_text",
+                        (dialog, id) -> openGmsCoreDisableBatteryOptimizationsIntent(mActivity));
             }
         } catch (Exception ex) {
             Logger.printException(() -> "checkGmsCore failure", ex);
@@ -144,9 +140,9 @@ public class GmsCoreSupport {
         }
     }
 
-    @RequiresApi(23)
     @SuppressLint("BatteryLife") // Permission is part of GmsCore
     private static void openGmsCoreDisableBatteryOptimizationsIntent(Activity mActivity) {
+        if (!isSDKAbove(23)) return;
         Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         intent.setData(Uri.fromParts("package", GMS_CORE_PACKAGE_NAME, null));
         mActivity.startActivityForResult(intent, 0);
@@ -155,9 +151,8 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not whitelisted from battery optimizations.
      */
-    @RequiresApi(23)
     private static boolean batteryOptimizationsEnabled(Context context) {
-        if (context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
+        if (isSDKAbove(23) && context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
             return !powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME);
         }
         return false;
@@ -177,6 +172,7 @@ public class GmsCoreSupport {
             String originalPackageName;
 
             try {
+                //noinspection DataFlowIssue
                 originalPackageName = packageManager
                         .getPackageInfo(packageName, PackageManager.GET_META_DATA)
                         .applicationInfo

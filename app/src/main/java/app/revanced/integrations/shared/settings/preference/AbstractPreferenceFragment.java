@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -71,7 +70,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
                     showSettingUserDialogConfirmation((SwitchPreference) pref, (BooleanSetting) setting);
                 } else if (setting.rebootApp) {
-                    showRestartDialog(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? getContext() : getActivity());
+                    showRestartDialog(getActivity());
                 }
             }
 
@@ -98,7 +97,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
         Utils.verifyOnMainThread();
 
-        final var context = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? getContext() : getActivity();
+        final var context = getActivity();
         showingUserDialogMessage = true;
         assert setting.userDialogMessage != null;
         new AlertDialog.Builder(context)

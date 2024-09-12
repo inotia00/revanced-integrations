@@ -1,9 +1,10 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
@@ -17,7 +18,7 @@ public class OpenDefaultAppSettingsPreference extends Preference {
             try {
                 Context context = Utils.getActivity();
                 final Uri uri = Uri.parse("package:" + context.getPackageName());
-                final Intent intent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                final Intent intent = isSDKAbove(31)
                         ? new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, uri)
                         : new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri);
                 context.startActivity(intent);

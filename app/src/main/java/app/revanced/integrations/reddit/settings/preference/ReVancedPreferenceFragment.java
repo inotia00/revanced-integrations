@@ -1,6 +1,5 @@
 package app.revanced.integrations.reddit.settings.preference;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
@@ -18,7 +17,6 @@ import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFr
 /**
  * Preference fragment for ReVanced settings
  */
-@TargetApi(26)
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 

@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.settings;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.content.Context;
 import android.os.Build;
@@ -108,9 +109,10 @@ public abstract class Setting<T> {
      */
     @NonNull
     private static List<Setting<?>> allLoadedSettingsSorted() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (isSDKAbove(24)) {
             SETTINGS.sort(Comparator.comparing((Setting<?> o) -> o.key));
         } else {
+            //noinspection ComparatorCombinators
             Collections.sort(SETTINGS, (o1, o2) -> o1.key.compareTo(o2.key));
         }
         return allLoadedSettings();

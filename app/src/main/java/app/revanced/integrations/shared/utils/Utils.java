@@ -287,17 +287,15 @@ public class Utils {
 
         // Locale of MainActivity.
         Locale applicationLocale;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            applicationLocale = mActivity.getResources().getConfiguration().getLocales().get(0);
-        } else {
-            applicationLocale = mActivity.getResources().getConfiguration().locale;
-        }
 
         // Locale of Context.
         Locale contextLocale;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+
+        if (isSDKAbove(24)) {
+            applicationLocale = mActivity.getResources().getConfiguration().getLocales().get(0);
             contextLocale = mContext.getResources().getConfiguration().getLocales().get(0);
         } else {
+            applicationLocale = mActivity.getResources().getConfiguration().locale;
             contextLocale = mContext.getResources().getConfiguration().locale;
         }
 
@@ -355,9 +353,8 @@ public class Utils {
         // Do not show a toast if using Android 13+ as it shows it's own toast.
         // But if the user copied with a timestamp then show a toast.
         // Unfortunately this will show 2 toasts on Android 13+, but no way around this.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 && toastMessage != null) {
-            showToastShort(toastMessage);
-        }
+        if (isSDKAbove(33) || toastMessage == null) return;
+        showToastShort(toastMessage);
     }
 
     public static String getFormattedTimeStamp(long videoTime) {
@@ -373,7 +370,7 @@ public class Utils {
         long minutes;
         long seconds;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (isSDKAbove(26)) {
             final Duration duration = Duration.ofMillis(time);
 
             hours = duration.toHours();
@@ -470,6 +467,13 @@ public class Utils {
     }
 
     /**
+     * @return whether the device's API level is higher than a specific SDK version.
+     */
+    public static boolean isSDKAbove(int sdk) {
+        return Build.VERSION.SDK_INT >= sdk;
+    }
+
+    /**
      * Safe to call from any thread
      */
     public static void showToastShort(@NonNull String messageToToast) {
@@ -535,7 +539,7 @@ public class Utils {
      * @return if the calling thread is on the main thread
      */
     public static boolean isCurrentlyOnMainThread() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (isSDKAbove(23)) {
             return Looper.getMainLooper().isCurrentThread();
         } else {
             return Looper.getMainLooper().getThread() == Thread.currentThread();

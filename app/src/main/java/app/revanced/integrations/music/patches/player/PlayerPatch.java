@@ -2,10 +2,10 @@ package app.revanced.integrations.music.patches.player;
 
 import static app.revanced.integrations.shared.utils.Utils.hideViewByRemovingFromParentUnderCondition;
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.shared.VideoType;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ResultOfMethodCallIgnored"})
 public class PlayerPatch {
     private static final int MUSIC_VIDEO_GREY_BACKGROUND_COLOR = -12566464;
     private static final int MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR = -16579837;
@@ -133,16 +133,6 @@ public class PlayerPatch {
             return;
 
         if (view.getParent() instanceof ViewGroup viewGroup) {
-            viewGroup.removeView(view);
-        }
-    }
-
-    public static void hideAudioVideoSwitchToggleFor0620(View view) {
-        if (!Settings.HIDE_AUDIO_VIDEO_SWITCH_TOGGLE.get())
-            return;
-
-        if (view.getParent() instanceof ViewGroup viewGroup) {
-            // removeView causes a crash on 6.20
             viewGroup.setVisibility(View.INVISIBLE);
         }
     }
@@ -184,7 +174,7 @@ public class PlayerPatch {
         if (!Settings.SETTINGS_INITIALIZED.get()) {
             return original;
         }
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (!isSDKAbove(23)) {
             // Disable this patch on Android 5.0 / 5.1 to fix a black play button.
             // Android 5.x have a different design for play button,
             // and if the new background is applied forcibly, the play button turns black.

@@ -3,7 +3,6 @@ package app.revanced.integrations.youtube.patches.utils;
 import static app.revanced.integrations.shared.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
-import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.text.Spannable;
@@ -47,7 +46,6 @@ import app.revanced.integrations.youtube.shared.VideoInformation;
  * also be used for the regular video player to give a better UI layout and completely remove
  * the need for the Rolling Number patches.
  */
-@TargetApi(26)
 @SuppressWarnings("unused")
 public class ReturnYouTubeDislikePatch {
 

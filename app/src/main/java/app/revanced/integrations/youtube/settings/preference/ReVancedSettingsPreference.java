@@ -1,10 +1,10 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_1;
 import static app.revanced.integrations.youtube.patches.general.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.utils.ExtendedUtils.isSpoofingToLessThan;
 
-import android.os.Build;
 import android.preference.Preference;
 
 import app.revanced.integrations.shared.settings.Setting;
@@ -207,7 +207,7 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.REPLACE_TOOLBAR_CREATE_BUTTON_TYPE
         );
         enableDisablePreferences(
-                Build.VERSION.SDK_INT < 31,
+                !isSDKAbove(31),
                 Settings.ENABLE_TRANSLUCENT_NAVIGATION_BAR
         );
     }

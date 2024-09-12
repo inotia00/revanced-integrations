@@ -1,8 +1,7 @@
 package app.revanced.integrations.shared.patches.components;
 
-import android.annotation.TargetApi;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +12,6 @@ import java.util.function.Consumer;
 
 import app.revanced.integrations.shared.utils.TrieSearch;
 
-@TargetApi(26)
 @SuppressWarnings("unused")
 public abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<T> {
 
@@ -47,11 +45,13 @@ public abstract class FilterGroupList<V, T extends FilterGroup<V>> implements It
         return filterGroups.iterator();
     }
 
+    @RequiresApi(24)
     @Override
     public void forEach(@NonNull Consumer<? super T> action) {
         filterGroups.forEach(action);
     }
 
+    @RequiresApi(24)
     @NonNull
     @Override
     public Spliterator<T> spliterator() {
