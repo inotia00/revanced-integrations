@@ -25,9 +25,11 @@ public class ExtendedUtils extends PackageUtils {
     }
 
     public static AlertDialog.Builder getDialogBuilder(@NonNull Context context) {
-        return isSDKAbove(22)
-                ? new AlertDialog.Builder(context, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                : new AlertDialog.Builder(context);
+        //noinspection deprecation
+        return new AlertDialog.Builder(context, isSDKAbove(22)
+                ? android.R.style.Theme_DeviceDefault_Dialog_Alert
+                : AlertDialog.THEME_DEVICE_DEFAULT_DARK
+        );
     }
 
     public static FrameLayout.LayoutParams getLayoutParams() {
