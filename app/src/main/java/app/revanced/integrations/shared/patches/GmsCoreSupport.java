@@ -132,11 +132,23 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not running in the background.
      */
+    @SuppressWarnings("deprecation")
     private static boolean contentProviderClientUnAvailable(Context context) {
         // Check if GmsCore is running in the background.
         // Do this check before the battery optimization check.
-        try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
-            return client == null;
+        if (isSDKAbove(24)) {
+            try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+                return client == null;
+            }
+        } else {
+            ContentProviderClient client = null;
+            try {
+                //noinspection All
+                client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER);
+                return client == null;
+            } finally {
+                if (client != null) client.release();
+            }
         }
     }
 
@@ -172,7 +184,6 @@ public class GmsCoreSupport {
             String originalPackageName;
 
             try {
-                //noinspection DataFlowIssue
                 originalPackageName = packageManager
                         .getPackageInfo(packageName, PackageManager.GET_META_DATA)
                         .applicationInfo
