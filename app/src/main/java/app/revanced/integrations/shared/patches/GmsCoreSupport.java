@@ -143,7 +143,7 @@ public class GmsCoreSupport {
         } else {
             ContentProviderClient client = null;
             try {
-                //noinspection All
+                //noinspection resource
                 client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER);
                 return client == null;
             } finally {
