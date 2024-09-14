@@ -52,7 +52,6 @@ public final class VideoInformation {
     public static void initialize() {
         videoTime = -1;
         videoLength = 0;
-        playbackSpeed = DEFAULT_YOUTUBE_MUSIC_PLAYBACK_SPEED;
         Logger.printDebug(() -> "Initialized Player");
     }
 
@@ -102,6 +101,11 @@ public final class VideoInformation {
             final long videoLength = getVideoLength();
             final long videoTime = getVideoTime();
             final long adjustedSeekTime = getAdjustedSeekTime(seekTime, videoLength);
+
+            if (videoTime <= 0 || videoLength <= 0) {
+                Logger.printDebug(() -> "Skipping seekTo as the video is not initialized");
+                return false;
+            }
 
             Logger.printDebug(() -> "Seeking to: " + getFormattedTimeStamp(adjustedSeekTime));
 
