@@ -560,10 +560,10 @@ public final class KeywordContentFilter extends Filter {
         if (selectedNavButton == null) {
             return hideHome; // Unknown tab, treat the same as home.
         }
-        if (selectedNavButton.isHomeTab()) {
+        if (selectedNavButton == NavigationButton.HOME) {
             return hideHome;
         }
-        if (selectedNavButton.isSubscriptionsTab()) {
+        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS) {
             return hideSubscriptions;
         }
         // User is in the Library or Notifications tab.
