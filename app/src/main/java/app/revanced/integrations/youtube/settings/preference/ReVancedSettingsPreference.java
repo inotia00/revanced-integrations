@@ -103,22 +103,10 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
         enableDisablePreferences(
                 isTablet,
                 Settings.DISABLE_ENGAGEMENT_PANEL,
-                Settings.HIDE_COMMUNITY_POSTS_CHANNEL,
                 Settings.HIDE_COMMUNITY_POSTS_HOME_RELATED_VIDEOS,
                 Settings.HIDE_COMMUNITY_POSTS_SUBSCRIPTIONS,
                 Settings.HIDE_LATEST_VIDEOS_BUTTON,
                 Settings.HIDE_MIX_PLAYLISTS,
-                Settings.HIDE_QUICK_ACTIONS,
-                Settings.HIDE_QUICK_ACTIONS_COMMENT_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_DISLIKE_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_LIKE_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_LIVE_CHAT_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_MORE_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_OPEN_MIX_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_OPEN_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_SAVE_TO_PLAYLIST_BUTTON,
-                Settings.HIDE_QUICK_ACTIONS_SHARE_BUTTON,
-                Settings.QUICK_ACTIONS_TOP_MARGIN,
                 Settings.HIDE_RELATED_VIDEO_OVERLAY,
                 Settings.SHOW_VIDEO_TITLE_SECTION
         );
