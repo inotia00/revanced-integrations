@@ -10,13 +10,6 @@ import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.StringTrieSearch;
 
-
-/**
- * Placeholder for actual filters.
- */
-final class DummyFilter extends Filter {
-}
-
 @SuppressWarnings("unused")
 public final class LithoFilterPatch {
     /**
@@ -150,9 +143,9 @@ public final class LithoFilterPatch {
      */
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String identifier, @NonNull Object object) {
         try {
-            // It is assumed that protobufBuffer is empty as well in this case.
-            if (pathBuilder.length() == 0)
+            if (pathBuilder.length() == 0) {
                 return false;
+            }
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
             final byte[] bufferArray;
@@ -172,15 +165,27 @@ public final class LithoFilterPatch {
                     object.toString(), bufferArray);
             Logger.printDebug(() -> "Searching " + parameter);
 
-            if (parameter.identifier != null) {
-                if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
+            if (parameter.identifier != null && identifierSearchTree.matches(parameter.identifier, parameter)) {
+                return true;
             }
-            if (pathSearchTree.matches(parameter.path, parameter)) return true;
-            if (allValueSearchTree.matches(parameter.allValue, parameter)) return true;
+
+            if (pathSearchTree.matches(parameter.path, parameter)) {
+                return true;
+            }
+
+            if (allValueSearchTree.matches(parameter.allValue, parameter)) {
+                return true;
+            }
         } catch (Exception ex) {
             Logger.printException(() -> "Litho filter failure", ex);
         }
 
         return false;
     }
+}
+
+/**
+ * Placeholder for actual filters.
+ */
+final class DummyFilter extends Filter {
 }
