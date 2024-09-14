@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.patches.misc.client;
 
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
+
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.os.Build;
@@ -15,10 +17,9 @@ public class DeviceHardwareSupport {
         boolean vp9found = false;
         boolean av1found = false;
         MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-        final boolean deviceIsAndroidTenOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
         for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-            final boolean isHardwareAccelerated = deviceIsAndroidTenOrLater
+            final boolean isHardwareAccelerated = isSDKAbove(29)
                     ? codecInfo.isHardwareAccelerated()
                     : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
             if (isHardwareAccelerated && !codecInfo.isEncoder()) {

@@ -144,7 +144,8 @@ public class GmsCoreSupport {
             ContentProviderClient client = null;
             try {
                 //noinspection resource
-                client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER);
+                client = context.getContentResolver()
+                        .acquireContentProviderClient(GMS_CORE_PROVIDER);
                 return client == null;
             } finally {
                 if (client != null) client.release();
