@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.patches.misc.requests;
 
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import static app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.GET_STREAMING_DATA;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,10 +55,12 @@ public class StreamingDataRequest {
             clientTypeArray[i] = c;
             i++;
         }
-        clientTypeArray = Arrays.stream(clientTypeArray)
-                .distinct()
-                .toArray(ClientType[]::new);
-        clientTypesToUse = Arrays.copyOfRange(clientTypeArray, 0, 3);
+        ArrayList<ClientType> tmpArrayList = new ArrayList<>();
+        for (ClientType c : clientTypeArray){
+            if (!tmpArrayList.contains(c))
+                tmpArrayList.add(c);
+        }
+        clientTypesToUse = Arrays.copyOfRange(tmpArrayList.toArray(new ClientType[0]), 0, 3);
     }
 
     private static String lastSpoofedClientName = "Unknown";
@@ -83,20 +86,20 @@ public class StreamingDataRequest {
             final long now = System.currentTimeMillis();
 
             // Remove any expired entries.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (isSDKAbove(24)) {
                 cache.values().removeIf(request -> {
                     final boolean expired = request.isExpired(now);
                     if (expired) Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
                     return expired;
                 });
             } else {
-                for (Iterator<Map.Entry<String, StreamingDataRequest>> it = cache.entrySet().iterator(); it.hasNext();) {
-                    final Map.Entry<String, StreamingDataRequest> entry = it.next();
+                final Iterator<Map.Entry<String, StreamingDataRequest>> itr = cache.entrySet().iterator();
+                while (itr.hasNext()) {
+                    final Map.Entry<String, StreamingDataRequest> entry = itr.next();
                     final StreamingDataRequest request = entry.getValue();
-                    final boolean expired = request.isExpired(now);
-                    if (expired) {
+                    if (entry.getValue().isExpired(now)) {
                         Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
-                        it.remove();
+                        itr.remove();
                     }
                 }
             }

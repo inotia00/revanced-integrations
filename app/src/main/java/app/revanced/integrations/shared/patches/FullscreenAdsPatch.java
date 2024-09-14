@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.utils.Logger;
@@ -81,10 +80,10 @@ public class FullscreenAdsPatch {
         }
 
         private static DialogType getDialogType(int code) {
-            return Arrays.stream(values())
-                    .filter(val -> code == val.code)
-                    .findFirst()
-                    .orElse(DialogType.NULL);
+            for (DialogType val : values())
+                if (code == val.code) return val;
+
+            return DialogType.NULL;
         }
     }
 

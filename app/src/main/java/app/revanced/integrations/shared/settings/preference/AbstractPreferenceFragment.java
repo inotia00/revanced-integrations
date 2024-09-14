@@ -70,7 +70,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
                     showSettingUserDialogConfirmation((SwitchPreference) pref, (BooleanSetting) setting);
                 } else if (setting.rebootApp) {
-                    showRestartDialog(getContext());
+                    showRestartDialog(getActivity());
                 }
             }
 
@@ -97,7 +97,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
         Utils.verifyOnMainThread();
 
-        final var context = getContext();
+        final var context = getActivity();
         showingUserDialogMessage = true;
         assert setting.userDialogMessage != null;
         new AlertDialog.Builder(context)

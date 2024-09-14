@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.whitelist;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 
 import android.app.AlertDialog;
@@ -11,7 +12,6 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -39,9 +39,6 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
-/**
- * @noinspection deprecation
- */
 public class Whitelist {
     private static final String ZERO_WIDTH_SPACE_CHARACTER = "\u200B";
     private static final Map<WhitelistType, ArrayList<VideoChannel>> whitelistMap = parseWhitelist();
@@ -272,7 +269,7 @@ public class Whitelist {
     }
 
     private static String encodeBytes(byte[] bytes) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (isSDKAbove(26)) {
             return Base64.getEncoder().encodeToString(bytes);
         } else {
             return new String(bytes, StandardCharsets.UTF_8);
@@ -280,7 +277,7 @@ public class Whitelist {
     }
 
     private static byte[] decodeBytes(String str) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (isSDKAbove(26)) {
             return Base64.getDecoder().decode(str.getBytes(StandardCharsets.UTF_8));
         } else {
             return str.getBytes(StandardCharsets.UTF_8);

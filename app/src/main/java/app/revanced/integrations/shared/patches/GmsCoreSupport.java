@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.patches;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -131,16 +132,30 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not running in the background.
      */
+    @SuppressWarnings("deprecation")
     private static boolean contentProviderClientUnAvailable(Context context) {
         // Check if GmsCore is running in the background.
         // Do this check before the battery optimization check.
-        try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
-            return client == null;
+        if (isSDKAbove(24)) {
+            try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+                return client == null;
+            }
+        } else {
+            ContentProviderClient client = null;
+            try {
+                //noinspection resource
+                client = context.getContentResolver()
+                        .acquireContentProviderClient(GMS_CORE_PROVIDER);
+                return client == null;
+            } finally {
+                if (client != null) client.release();
+            }
         }
     }
 
     @SuppressLint("BatteryLife") // Permission is part of GmsCore
     private static void openGmsCoreDisableBatteryOptimizationsIntent(Activity mActivity) {
+        if (!isSDKAbove(23)) return;
         Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         intent.setData(Uri.fromParts("package", GMS_CORE_PACKAGE_NAME, null));
         mActivity.startActivityForResult(intent, 0);
@@ -150,7 +165,7 @@ public class GmsCoreSupport {
      * @return If GmsCore is not whitelisted from battery optimizations.
      */
     private static boolean batteryOptimizationsEnabled(Context context) {
-        if (context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
+        if (isSDKAbove(23) && context.getSystemService(Context.POWER_SERVICE) instanceof PowerManager powerManager) {
             return !powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME);
         }
         return false;

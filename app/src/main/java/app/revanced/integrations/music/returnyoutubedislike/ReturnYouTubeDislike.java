@@ -1,6 +1,7 @@
 package app.revanced.integrations.music.returnyoutubedislike;
 
 import static app.revanced.integrations.shared.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -25,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -251,40 +253,40 @@ public class ReturnYouTubeDislike {
         return destination;
     }
 
-    /**
-     * @noinspection deprecation
-     */
     private static String formatDislikeCount(long dislikeCount) {
-        synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
+        if (isSDKAbove(24)) {
             if (dislikeCountFormatter == null) {
                 // Note: Java number formatters will use the locale specific number characters.
                 // such as Arabic which formats "1.234" into "۱,۲۳٤"
                 // But YouTube disregards locale specific number characters
                 // and instead shows english number characters everywhere.
-                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
+                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().getLocales().get(0);
                 Logger.printDebug(() -> "Locale: " + locale);
                 dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
             }
             return dislikeCountFormatter.format(dislikeCount);
+        } else {
+            return String.valueOf(dislikeCount);
         }
     }
 
-    /**
-     * @noinspection deprecation
-     */
     private static String formatDislikePercentage(float dislikePercentage) {
-        synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
-            if (dislikePercentageFormatter == null) {
-                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
-                Logger.printDebug(() -> "Locale: " + locale);
-                dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
+        if (isSDKAbove(24)) {
+            synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
+                if (dislikePercentageFormatter == null) {
+                    Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().getLocales().get(0);
+                    Logger.printDebug(() -> "Locale: " + locale);
+                    dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
+                }
+                if (dislikePercentage >= 0.01) { // at least 1%
+                    dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
+                } else {
+                    dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
+                }
+                return dislikePercentageFormatter.format(dislikePercentage);
             }
-            if (dislikePercentage >= 0.01) { // at least 1%
-                dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
-            } else {
-                dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
-            }
-            return dislikePercentageFormatter.format(dislikePercentage);
+        } else {
+            return String.valueOf((int) (dislikePercentage * 100));
         }
     }
 
@@ -294,12 +296,23 @@ public class ReturnYouTubeDislike {
         synchronized (fetchCache) {
             // Remove any expired entries.
             final long now = System.currentTimeMillis();
-            fetchCache.values().removeIf(value -> {
-                final boolean expired = value.isExpired(now);
-                if (expired)
-                    Logger.printDebug(() -> "Removing expired fetch: " + value.videoId);
-                return expired;
-            });
+            if (isSDKAbove(24)) {
+                fetchCache.values().removeIf(value -> {
+                    final boolean expired = value.isExpired(now);
+                    if (expired)
+                        Logger.printDebug(() -> "Removing expired fetch: " + value.videoId);
+                    return expired;
+                });
+            } else {
+                final Iterator<Map.Entry<String, ReturnYouTubeDislike>> itr = fetchCache.entrySet().iterator();
+                while (itr.hasNext()) {
+                    final Map.Entry<String, ReturnYouTubeDislike> entry = itr.next();
+                    if (entry.getValue().isExpired(now)) {
+                        Logger.printDebug(() -> "Removing expired fetch: " + entry.getValue().videoId);
+                        itr.remove();
+                    }
+                }
+            }
 
             ReturnYouTubeDislike fetch = fetchCache.get(videoId);
             if (fetch == null) {

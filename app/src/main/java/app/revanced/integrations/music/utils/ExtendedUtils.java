@@ -24,8 +24,12 @@ public class ExtendedUtils extends PackageUtils {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
+    @SuppressWarnings("deprecation")
     public static AlertDialog.Builder getDialogBuilder(@NonNull Context context) {
-        return new AlertDialog.Builder(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        return new AlertDialog.Builder(context, isSDKAbove(22)
+                ? android.R.style.Theme_DeviceDefault_Dialog_Alert
+                : AlertDialog.THEME_DEVICE_DEFAULT_DARK
+        );
     }
 
     public static FrameLayout.LayoutParams getLayoutParams() {

@@ -2,6 +2,7 @@ package app.revanced.integrations.music.patches.player;
 
 import static app.revanced.integrations.shared.utils.Utils.hideViewByRemovingFromParentUnderCondition;
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.shared.VideoType;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ResultOfMethodCallIgnored"})
 public class PlayerPatch {
     private static final int MUSIC_VIDEO_GREY_BACKGROUND_COLOR = -12566464;
     private static final int MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR = -16579837;
@@ -132,7 +133,7 @@ public class PlayerPatch {
             return;
 
         if (view.getParent() instanceof ViewGroup viewGroup) {
-            viewGroup.removeView(view);
+            viewGroup.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -171,6 +172,13 @@ public class PlayerPatch {
 
     public static boolean restoreOldPlayerBackground(boolean original) {
         if (!Settings.SETTINGS_INITIALIZED.get()) {
+            return original;
+        }
+        if (!isSDKAbove(23)) {
+            // Disable this patch on Android 5.0 / 5.1 to fix a black play button.
+            // Android 5.x have a different design for play button,
+            // and if the new background is applied forcibly, the play button turns black.
+            // 6.20.51 uses the old background from the beginning, so there is no impact.
             return original;
         }
         return !Settings.RESTORE_OLD_PLAYER_BACKGROUND.get();

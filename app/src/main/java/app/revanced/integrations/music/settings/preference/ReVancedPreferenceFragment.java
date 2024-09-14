@@ -17,6 +17,7 @@ import static app.revanced.integrations.music.utils.RestartUtils.showRestartDial
 import static app.revanced.integrations.shared.settings.Setting.getSettingFromPath;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 
 import android.annotation.SuppressLint;
@@ -25,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.text.InputType;
@@ -239,7 +239,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     private void importActivity() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType(Build.VERSION.SDK_INT <= 28 ? "*/*" : "text/plain");
+        intent.setType(isSDKAbove(29) ? "text/plain" : "*/*");
         startActivityForResult(intent, READ_REQUEST_CODE);
     }
 

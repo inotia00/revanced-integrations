@@ -1,11 +1,14 @@
 package app.revanced.integrations.music.patches.account;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
+import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import app.revanced.integrations.music.settings.Settings;
@@ -18,9 +21,15 @@ public class AccountPatch {
     static {
         accountMenuBlockList = Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS.get().split("\\n");
         // Some settings should not be hidden.
-        accountMenuBlockList = Arrays.stream(accountMenuBlockList)
-                .filter(item -> !Objects.equals(item, str("settings")))
-                .toArray(String[]::new);
+        if (isSDKAbove(24)) {
+            accountMenuBlockList = Arrays.stream(accountMenuBlockList)
+                    .filter(item -> !Objects.equals(item, str("settings")))
+                    .toArray(String[]::new);
+        } else {
+            List<String> tmp = new ArrayList<>(Arrays.asList(accountMenuBlockList));
+            tmp.remove(str("settings")); // "Settings" should appear only once in the account menu
+            accountMenuBlockList = tmp.toArray(new String[0]);
+        }
     }
 
     public static void hideAccountMenu(CharSequence charSequence, View view) {

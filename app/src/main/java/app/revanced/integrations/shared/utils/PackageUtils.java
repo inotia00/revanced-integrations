@@ -1,8 +1,8 @@
 package app.revanced.integrations.shared.utils;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +36,10 @@ public class PackageUtils extends Utils {
     public static void setApplicationLabel() {
         final PackageInfo packageInfo = getPackageInfo();
         if (packageInfo != null) {
-            applicationLabel = (String) packageInfo.applicationInfo.loadLabel(getPackageManager());
+            final ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            if (applicationInfo != null) {
+                applicationLabel = (String) applicationInfo.loadLabel(getPackageManager());
+            }
         }
     }
 
@@ -57,7 +60,7 @@ public class PackageUtils extends Utils {
         try {
             final PackageManager packageManager = getPackageManager();
             final String packageName = context.getPackageName();
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            return isSDKAbove(33)
                     ? packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
                     : packageManager.getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
