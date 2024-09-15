@@ -1,63 +1,47 @@
 package app.revanced.integrations.shared.patches;
 
-import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.shared.utils.Utils.hideViewBy0dpUnderCondition;
-import static app.revanced.integrations.shared.utils.Utils.showToastShort;
 
 import android.view.View;
-import android.widget.Button;
 
-import java.lang.ref.WeakReference;
-
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.utils.Logger;
-import app.revanced.integrations.shared.utils.Utils;
 
 @SuppressWarnings("unused")
 public class FullscreenAdsPatch {
     private static final boolean hideFullscreenAdsEnabled = BaseSettings.HIDE_FULLSCREEN_ADS.get();
-    private static final boolean closeFullscreenAdsEnabled = BaseSettings.HIDE_FULLSCREEN_ADS_TYPE.get();
-    private static final boolean closeDialog = hideFullscreenAdsEnabled && closeFullscreenAdsEnabled;
-    private static final boolean disableDialog = hideFullscreenAdsEnabled && !closeFullscreenAdsEnabled;
+    private static final ByteArrayFilterGroup exception =
+            new ByteArrayFilterGroup(
+                    null,
+                    "post_image_lightbox.eml" // Community post image in fullscreen
+            );
 
-    private static volatile long lastTimeClosedFullscreenAd;
+    public static boolean disableFullscreenAds(final byte[] bytes, int type) {
+        if (!hideFullscreenAdsEnabled) {
+            return false;
+        }
 
-    private static WeakReference<Button> buttonRef = new WeakReference<>(null);
-
-    public static boolean disableFullscreenAds(int code) {
-        if (!disableDialog) return false;
-
-        final DialogType dialogType = DialogType.getDialogType(code);
+        final DialogType dialogType = DialogType.getDialogType(type);
         final String dialogName = dialogType.name();
-        Logger.printDebug(() -> "DialogType: " + dialogName);
 
-        // This method is also invoked in the 'Create new playlist' dialog,
-        // in which case the DialogType is {@code DialogType.ALERT}.
-        if (dialogType == DialogType.ALERT) return false;
+        // The dialog type of a fullscreen dialog is always {@code DialogType.FULLSCREEN}
+        if (dialogType != DialogType.FULLSCREEN) {
+            Logger.printDebug(() -> "Ignoring dialogType " + dialogName);
+            return false;
+        }
 
-        showToastShort(str("revanced_hide_fullscreen_ads_blocked_success", dialogName));
-        return true;
-    }
+        // Image in community post in fullscreen is not filtered
+        final boolean isException = bytes != null &&
+                exception.check(bytes).isFiltered();
 
-    public static void setCloseButton(final Button button) {
-        if (!closeDialog) return;
-        buttonRef = new WeakReference<>(button);
-    }
+        if (isException) {
+            Logger.printDebug(() -> "Ignoring exception");
+        } else {
+            Logger.printDebug(() -> "Blocked fullscreen ads");
+        }
 
-    public static void closeFullscreenAds() {
-        if (!closeDialog) return;
-
-        Utils.runOnMainThreadDelayed(() -> {
-            final Button button = buttonRef.get();
-            if (button == null) return;
-            button.callOnClick();
-
-            final long currentTime = System.currentTimeMillis();
-            if (currentTime - lastTimeClosedFullscreenAd < 10000) return;
-            lastTimeClosedFullscreenAd = currentTime;
-
-            showToastShort(str("revanced_hide_fullscreen_ads_closed_success"));
-        }, 1000);
+        return !isException;
     }
 
     public static void hideFullscreenAds(View view) {
@@ -73,15 +57,15 @@ public class FullscreenAdsPatch {
         FULLSCREEN(2),
         LAYOUT_FULLSCREEN(3);
 
-        private final int code;
+        private final int type;
 
-        DialogType(int code) {
-            this.code = code;
+        DialogType(int type) {
+            this.type = type;
         }
 
-        private static DialogType getDialogType(int code) {
+        private static DialogType getDialogType(int type) {
             for (DialogType val : values())
-                if (code == val.code) return val;
+                if (type == val.type) return val;
 
             return DialogType.NULL;
         }
