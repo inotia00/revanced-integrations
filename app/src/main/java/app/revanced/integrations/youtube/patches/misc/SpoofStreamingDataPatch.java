@@ -3,7 +3,6 @@ package app.revanced.integrations.youtube.patches.misc;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.nio.ByteBuffer;
@@ -15,7 +14,6 @@ import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
 import app.revanced.integrations.youtube.patches.misc.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
 public class SpoofStreamingDataPatch {
@@ -25,8 +23,32 @@ public class SpoofStreamingDataPatch {
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
+    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
-    private static volatile Map<String, String> fetchHeaders;
+    /**
+     * Injection point.
+     * Blocks /get_watch requests by returning an unreachable URI.
+     *
+     * @param playerRequestUri The URI of the player request.
+     * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
+     */
+    public static Uri blockGetWatchRequest(Uri playerRequestUri) {
+        if (SPOOF_STREAMING_DATA) {
+            try {
+                String path = playerRequestUri.getPath();
+
+                if (path != null && path.contains("get_watch")) {
+                    Logger.printDebug(() -> "Blocking 'get_watch' by returning unreachable uri");
+
+                    return UNREACHABLE_HOST_URI;
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "blockGetWatchRequest failure", ex);
+            }
+        }
+
+        return playerRequestUri;
+    }
 
     /**
      * Injection point.
@@ -62,37 +84,21 @@ public class SpoofStreamingDataPatch {
     /**
      * Injection point.
      */
-    public static void setFetchHeaders(String url, Map<String, String> headers) {
+    public static void fetchStreams(String url, Map<String, String> requestHeaders) {
         if (SPOOF_STREAMING_DATA) {
             try {
                 Uri uri = Uri.parse(url);
                 String path = uri.getPath();
-                if (path != null && path.contains("browse")) {
-                    fetchHeaders = headers;
+                String videoId = uri.getQueryParameter("id");
+                // 'heartbeat' has no video id and appears to be only after playback has started.
+                if (path != null &&
+                        path.contains("player") &&
+                        !path.contains("heartbeat") &&
+                        videoId != null) {
+                    StreamingDataRequest.fetchRequest(videoId, requestHeaders);
                 }
             } catch (Exception ex) {
-                Logger.printException(() -> "setFetchHeaders failure", ex);
-            }
-        }
-    }
-
-    /**
-     * Injection point.
-     */
-    public static void fetchStreamingData(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
-        if (SPOOF_STREAMING_DATA) {
-            try {
-                final boolean videoIdIsShort = VideoInformation.lastPlayerResponseIsShort();
-                // Shorts shelf in home and subscription feed causes player response hook to be called,
-                // and the 'is opening/playing' parameter will be false.
-                // This hook will be called again when the Short is actually opened.
-                if (videoIdIsShort && !isShortAndOpeningOrPlaying) {
-                    return;
-                }
-
-                StreamingDataRequest.fetchRequestIfNeeded(videoId, fetchHeaders);
-            } catch (Exception ex) {
-                Logger.printException(() -> "fetchStreamingData failure", ex);
+                Logger.printException(() -> "buildRequest failure", ex);
             }
         }
     }
@@ -100,16 +106,22 @@ public class SpoofStreamingDataPatch {
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #setFetchHeaders(String, Map)} .
+     * Called after {@link #fetchStreams(String, Map)} .
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
         if (SPOOF_STREAMING_DATA) {
             try {
-                Utils.verifyOffMainThread();
-
                 StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
                 if (request != null) {
+                    // This hook is always called off the main thread,
+                    // but this can later be called for the same video id from the main thread.
+                    // This is not a concern, since the fetch will always be finished
+                    // and never block the main thread.
+                    // But if debugging, then still verify this is the situation.
+                    if (Settings.ENABLE_DEBUG_LOGGING.get() && !request.fetchCompleted() && Utils.isCurrentlyOnMainThread()) {
+                        Logger.printException(() -> "Error: Blocking main thread");
+                    }
                     var stream = request.getStream();
                     if (stream != null) {
                         Logger.printDebug(() -> "Overriding video stream: " + videoId);

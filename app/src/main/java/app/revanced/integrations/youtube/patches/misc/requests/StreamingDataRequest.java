@@ -1,9 +1,6 @@
 package app.revanced.integrations.youtube.patches.misc.requests;
 
-import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import static app.revanced.integrations.youtube.patches.misc.requests.PlayerRoutes.GET_STREAMING_DATA;
-
-import android.annotation.SuppressLint;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -17,10 +14,9 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -47,74 +43,66 @@ public class StreamingDataRequest {
     private static final ClientType[] clientTypesToUse;
 
     static {
-        final ClientType clientType = Settings.SPOOF_STREAMING_DATA_TYPE.get();
-        ClientType[] clientTypeArray = new ClientType[allClientTypes.length + 1];
-        clientTypeArray[0] = clientType;
+        final int numberOfClients = allClientTypes.length;
+        ClientType[] localClientTypes = new ClientType[numberOfClients];
+
+        ClientType preferredClient = Settings.SPOOF_STREAMING_DATA_TYPE.get();
+        localClientTypes[0] = preferredClient;
+
         int i = 1;
         for (ClientType c : allClientTypes) {
-            clientTypeArray[i] = c;
-            i++;
+            if (c != preferredClient) {
+                localClientTypes[i++] = c;
+            }
         }
-        ArrayList<ClientType> tmpArrayList = new ArrayList<>();
-        for (ClientType c : clientTypeArray){
-            if (!tmpArrayList.contains(c))
-                tmpArrayList.add(c);
-        }
-        clientTypesToUse = Arrays.copyOfRange(tmpArrayList.toArray(new ClientType[0]), 0, 3);
+        localClientTypes = Arrays.copyOfRange(localClientTypes, 0, 3);
+        clientTypesToUse = localClientTypes;
     }
 
-    private static String lastSpoofedClientName = "Unknown";
+    private static ClientType lastSpoofedClientType;
 
     public static String getLastSpoofedClientName() {
-        return lastSpoofedClientName;
+        return lastSpoofedClientType == null
+                ? "Unknown"
+                : lastSpoofedClientType.friendlyName;
     }
 
     /**
-     * How long to keep fetches until they are expired.
+     * TCP connection and HTTP read timeout.
      */
-    private static final long CACHE_RETENTION_TIME_MILLISECONDS = 60 * 1000; // 1 Minute
+    private static final int HTTP_TIMEOUT_MILLISECONDS = 10 * 1000;
 
-    private static final long MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000; // 20 seconds
+    /**
+     * Any arbitrarily large value, but must be at least twice {@link #HTTP_TIMEOUT_MILLISECONDS}
+     */
+    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000;
 
     @GuardedBy("itself")
-    private static final Map<String, StreamingDataRequest> cache = new HashMap<>();
+    private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
+            new LinkedHashMap<>(100) {
+                /**
+                 * Cache limit must be greater than the maximum number of videos open at once,
+                 * which theoretically is more than 4 (3 Shorts + one regular minimized video).
+                 * But instead use a much larger value, to handle if a video viewed a while ago
+                 * is somehow still referenced.  Each stream is a small array of Strings
+                 * so memory usage is not a concern.
+                 */
+                private static final int CACHE_LIMIT = 50;
 
-    @SuppressLint("ObsoleteSdkInt")
-    public static void fetchRequestIfNeeded(@Nullable String videoId, Map<String, String> fetchHeaders) {
-        Objects.requireNonNull(videoId);
-        synchronized (cache) {
-            final long now = System.currentTimeMillis();
-
-            // Remove any expired entries.
-            if (isSDKAbove(24)) {
-                cache.values().removeIf(request -> {
-                    final boolean expired = request.isExpired(now);
-                    if (expired) Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
-                    return expired;
-                });
-            } else {
-                final Iterator<Map.Entry<String, StreamingDataRequest>> itr = cache.entrySet().iterator();
-                while (itr.hasNext()) {
-                    final Map.Entry<String, StreamingDataRequest> entry = itr.next();
-                    final StreamingDataRequest request = entry.getValue();
-                    if (entry.getValue().isExpired(now)) {
-                        Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
-                        itr.remove();
-                    }
+                @Override
+                protected boolean removeEldestEntry(Entry eldest) {
+                    return size() > CACHE_LIMIT; // Evict the oldest entry if over the cache limit.
                 }
-            }
+            });
 
-            if (!cache.containsKey(videoId)) {
-                cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
-            }
-        }
+    public static void fetchRequest(String videoId, Map<String, String> fetchHeaders) {
+        // Always fetch, even if there is a existing request for the same video.
+        cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
     }
 
     @Nullable
     public static StreamingDataRequest getRequestForVideoId(@Nullable String videoId) {
-        synchronized (cache) {
-            return cache.get(videoId);
-        }
+        return cache.get(videoId);
     }
 
     private static void handleConnectionError(String toastMessage, @Nullable Exception ex) {
@@ -134,6 +122,8 @@ public class StreamingDataRequest {
 
         try {
             HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STREAMING_DATA, clientType);
+            connection.setConnectTimeout(HTTP_TIMEOUT_MILLISECONDS);
+            connection.setReadTimeout(HTTP_TIMEOUT_MILLISECONDS);
 
             String authHeader = playerHeaders.get("Authorization");
             String visitorId = playerHeaders.get("X-Goog-Visitor-Id");
@@ -165,6 +155,8 @@ public class StreamingDataRequest {
     }
 
     private static ByteBuffer fetch(@NonNull String videoId, Map<String, String> playerHeaders) {
+        lastSpoofedClientType = null;
+
         // Retry with different client if empty response body is received.
         for (ClientType clientType : clientTypesToUse) {
             HttpURLConnection connection = send(clientType, videoId, playerHeaders);
@@ -175,13 +167,12 @@ public class StreamingDataRequest {
                     if (connection.getContentLength() != 0) {
                         try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
                             try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                                byte[] buffer = new byte[8192];
+                                byte[] buffer = new byte[2048];
                                 int bytesRead;
                                 while ((bytesRead = inputStream.read(buffer)) >= 0) {
                                     baos.write(buffer, 0, bytesRead);
                                 }
-
-                                lastSpoofedClientName = clientType.friendlyName;
+                                lastSpoofedClientType = clientType;
 
                                 return ByteBuffer.wrap(baos.toByteArray());
                             }
@@ -197,33 +188,15 @@ public class StreamingDataRequest {
         return null;
     }
 
-    /**
-     * Time this instance and the fetch future was created.
-     */
-    private final long timeFetched;
     private final String videoId;
     private final Future<ByteBuffer> future;
 
     private StreamingDataRequest(String videoId, Map<String, String> playerHeaders) {
         Objects.requireNonNull(playerHeaders);
-        this.timeFetched = System.currentTimeMillis();
         this.videoId = videoId;
         this.future = Utils.submitOnBackgroundThread(() -> fetch(videoId, playerHeaders));
     }
 
-    public boolean isExpired(long now) {
-        final long timeSinceCreation = now - timeFetched;
-        if (timeSinceCreation > CACHE_RETENTION_TIME_MILLISECONDS) {
-            return true;
-        }
-
-        // Only expired if the fetch failed (API null response).
-        return (fetchCompleted() && getStream() == null);
-    }
-
-    /**
-     * @return if the fetch call has completed.
-     */
     public boolean fetchCompleted() {
         return future.isDone();
     }
@@ -242,5 +215,11 @@ public class StreamingDataRequest {
         }
 
         return null;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "StreamingDataRequest{" + "videoId='" + videoId + '\'' + '}';
     }
 }
