@@ -84,6 +84,11 @@ public final class FeedComponentsFilter extends Filter {
                 "text_post_root"
         );
 
+        final StringFilterGroup expandableShelf = new StringFilterGroup(
+                Settings.HIDE_EXPANDABLE_SHELF,
+                "expandable_section"
+        );
+
         final StringFilterGroup feedSearchBar = new StringFilterGroup(
                 Settings.HIDE_FEED_SEARCH_BAR,
                 "search_bar_entry_point"
@@ -103,6 +108,7 @@ public final class FeedComponentsFilter extends Filter {
                 carouselShelf,
                 chipsShelf,
                 communityPosts,
+                expandableShelf,
                 feedSearchBar,
                 libraryShelf,
                 videoLockup
