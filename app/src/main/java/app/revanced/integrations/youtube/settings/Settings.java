@@ -117,10 +117,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_RECOMMENDED_VIDEO = new BooleanSetting("revanced_hide_recommended_video", FALSE);
     public static final BooleanSetting HIDE_LOW_VIEWS_VIDEO = new BooleanSetting("revanced_hide_low_views_video", TRUE);
 
-    public static final BooleanSetting HIDE_VIDEO_BY_DURATION = new BooleanSetting("revanced_hide_video_by_duration", FALSE);
-    public static final StringSetting HIDE_VIDEO_BY_DURATION_SHORTER_THAN = new StringSetting("revanced_hide_video_by_duration_shorter_than", "0:10", parent(HIDE_VIDEO_BY_DURATION));
-    public static final StringSetting HIDE_VIDEO_BY_DURATION_LONGER_THAN = new StringSetting("revanced_hide_video_by_duration_longer_than", "10:10:10:10", parent(HIDE_VIDEO_BY_DURATION));
-
     public static final BooleanSetting HIDE_VIDEO_BY_VIEW_COUNTS = new BooleanSetting("revanced_hide_video_by_view_counts", FALSE);
     public static final LongSetting HIDE_VIDEO_VIEW_COUNTS_LESS_THAN = new LongSetting("revanced_hide_video_view_counts_less_than", 1000L, parent(HIDE_VIDEO_BY_VIEW_COUNTS));
     public static final LongSetting HIDE_VIDEO_VIEW_COUNTS_GREATER_THAN = new LongSetting("revanced_hide_video_view_counts_greater_than", 1_000_000_000_000L, parent(HIDE_VIDEO_BY_VIEW_COUNTS));
