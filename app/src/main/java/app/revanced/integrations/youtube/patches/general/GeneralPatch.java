@@ -139,21 +139,6 @@ public class GeneralPatch {
 
     // endregion
 
-    // region [Disable auto captions] patch
-
-    private static boolean captionsButtonStatus;
-
-    public static boolean disableAutoCaptions() {
-        return Settings.DISABLE_AUTO_CAPTIONS.get() &&
-                !captionsButtonStatus;
-    }
-
-    public static void setCaptionsButtonStatus(boolean status) {
-        captionsButtonStatus = status;
-    }
-
-    // endregion
-
     // region [Disable splash animation] patch
 
     public static boolean disableSplashAnimation(boolean original) {

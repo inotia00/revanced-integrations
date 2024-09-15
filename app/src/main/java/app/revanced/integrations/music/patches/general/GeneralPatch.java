@@ -30,15 +30,7 @@ public class GeneralPatch {
 
     // endregion
 
-    // region [Disable auto captions] patch
-
-    public static boolean disableAutoCaptions(boolean original) {
-        return Settings.DISABLE_AUTO_CAPTIONS.get() || original;
-    }
-
-    // endregion
-
-    // region [Disable auto captions] patch
+    // region [Disable dislike redirection] patch
 
     public static boolean disableDislikeRedirection() {
         return Settings.DISABLE_DISLIKE_REDIRECTION.get();
