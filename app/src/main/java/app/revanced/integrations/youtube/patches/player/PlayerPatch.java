@@ -272,21 +272,22 @@ public class PlayerPatch {
         );
     }
 
-    public static void setQuickActionMargin(FrameLayout frameLayout) {
+    public static void setQuickActionMargin(View view) {
         int topMarginPx = getQuickActionsTopMargin();
         if (topMarginPx == 0) {
             return;
         }
 
-        if (!(frameLayout.getLayoutParams() instanceof FrameLayout.MarginLayoutParams marginLayoutParams))
+        if (!(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams mlp))
             return;
-        marginLayoutParams.setMargins(
-                marginLayoutParams.leftMargin,
+
+        mlp.setMargins(
+                mlp.leftMargin,
                 topMarginPx,
-                marginLayoutParams.rightMargin,
-                marginLayoutParams.bottomMargin
+                mlp.rightMargin,
+                mlp.bottomMargin
         );
-        frameLayout.requestLayout();
+        view.requestLayout();
     }
 
     public static boolean enableCompactControlsOverlay(boolean original) {
