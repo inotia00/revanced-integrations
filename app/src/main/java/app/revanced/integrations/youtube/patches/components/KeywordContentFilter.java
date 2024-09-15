@@ -540,6 +540,12 @@ public final class KeywordContentFilter extends Filter {
         final boolean hideSearch = Settings.HIDE_KEYWORD_CONTENT_SEARCH.get();
         final boolean hideSubscriptions = Settings.HIDE_KEYWORD_CONTENT_SUBSCRIPTIONS.get();
 
+        if (!hideHome && !hideSearch && !hideSubscriptions) {
+            return false;
+        } else if (hideHome && hideSearch && hideSubscriptions) {
+            return true;
+        }
+
         // Must check player type first, as search bar can be active behind the player.
         if (RootView.isPlayerActive()) {
             // For now, consider the under video results the same as the home feed.
@@ -549,11 +555,6 @@ public final class KeywordContentFilter extends Filter {
         // Must check second, as search can be from any tab.
         if (RootView.isSearchBarActive()) {
             return hideSearch;
-        }
-
-        // Avoid checking navigation button status if all other settings are off.
-        if (!hideHome && !hideSubscriptions) {
-            return false;
         }
 
         NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();

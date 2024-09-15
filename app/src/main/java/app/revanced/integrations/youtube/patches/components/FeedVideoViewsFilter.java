@@ -10,24 +10,61 @@ import java.util.regex.Pattern;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.NavigationBar;
+import app.revanced.integrations.youtube.shared.RootView;
 
 @SuppressWarnings("all")
 public final class FeedVideoViewsFilter extends Filter {
-    public FeedVideoViewsFilter() {
-        final StringFilterGroup feedVideoFilter = new StringFilterGroup(
-                Settings.HIDE_VIDEO_BY_VIEW_COUNTS,
-                "video_with_context.eml",
-                "video_lockup_with_attachment.eml"
-        );
 
-        // Paths.
+    private final StringFilterGroup feedVideoFilter = new StringFilterGroup(
+            null,
+            "video_with_context.eml",
+            "video_lockup_with_attachment.eml"
+    );
+
+    public FeedVideoViewsFilter() {
         addPathCallbacks(feedVideoFilter);
+    }
+
+    private boolean hideFeedVideoViewsSettingIsActive() {
+        final boolean hideHome = Settings.HIDE_VIDEO_BY_VIEW_COUNTS_HOME.get();
+        final boolean hideSearch = Settings.HIDE_VIDEO_BY_VIEW_COUNTS_SEARCH.get();
+        final boolean hideSubscriptions = Settings.HIDE_VIDEO_BY_VIEW_COUNTS_SUBSCRIPTIONS.get();
+
+        if (!hideHome && !hideSearch && !hideSubscriptions) {
+            return false;
+        } else if (hideHome && hideSearch && hideSubscriptions) {
+            return true;
+        }
+
+        // Must check player type first, as search bar can be active behind the player.
+        if (RootView.isPlayerActive()) {
+            // For now, consider the under video results the same as the home feed.
+            return hideHome;
+        }
+
+        // Must check second, as search can be from any tab.
+        if (RootView.isSearchBarActive()) {
+            return hideSearch;
+        }
+
+        NavigationBar.NavigationButton selectedNavButton = NavigationBar.NavigationButton.getSelectedNavigationButton();
+        if (selectedNavButton == null) {
+            return hideHome; // Unknown tab, treat the same as home.
+        } else if (selectedNavButton == NavigationBar.NavigationButton.HOME) {
+            return hideHome;
+        } else if (selectedNavButton == NavigationBar.NavigationButton.SUBSCRIPTIONS) {
+            return hideSubscriptions;
+        }
+        // User is in the Library or Notifications tab.
+        return false;
     }
 
     @Override
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (filterByViews(protobufBufferArray)) {
+        if (hideFeedVideoViewsSettingIsActive() &&
+                filterByViews(protobufBufferArray)) {
             return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }
 

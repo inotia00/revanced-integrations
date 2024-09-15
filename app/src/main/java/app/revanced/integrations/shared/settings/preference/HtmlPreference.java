@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settings.preference;
+package app.revanced.integrations.shared.settings.preference;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 
