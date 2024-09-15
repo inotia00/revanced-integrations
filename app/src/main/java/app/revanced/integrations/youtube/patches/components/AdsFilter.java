@@ -19,24 +19,6 @@ public final class AdsFilter extends Filter {
                 "carousel_ad"
         );
 
-        addIdentifierCallbacks(alertBannerPromo, carouselAd);
-
-        final StringFilterGroup merchandise = new StringFilterGroup(
-                Settings.HIDE_MERCHANDISE_SHELF,
-                "product_carousel",
-                "shopping_carousel"
-        );
-
-        final StringFilterGroup paidContent = new StringFilterGroup(
-                Settings.HIDE_PAID_PROMOTION_LABEL,
-                "paid_content_overlay"
-        );
-
-        final StringFilterGroup selfSponsor = new StringFilterGroup(
-                Settings.HIDE_SELF_SPONSOR_CARDS,
-                "cta_shelf_card"
-        );
-
         final StringFilterGroup generalAds = new StringFilterGroup(
                 Settings.HIDE_GENERAL_ADS,
                 "ads_video_with_context",
@@ -63,6 +45,29 @@ public final class AdsFilter extends Filter {
                 "_button_group_layout",
                 "_buttoned_layout",
                 "_image_layout"
+        );
+
+        addIdentifierCallbacks(
+                alertBannerPromo,
+                carouselAd,
+                // In the new layout, filter strings are not included in the path, but instead in the identifier.
+                generalAds
+        );
+
+        final StringFilterGroup merchandise = new StringFilterGroup(
+                Settings.HIDE_MERCHANDISE_SHELF,
+                "product_carousel",
+                "shopping_carousel"
+        );
+
+        final StringFilterGroup paidContent = new StringFilterGroup(
+                Settings.HIDE_PAID_PROMOTION_LABEL,
+                "paid_content_overlay"
+        );
+
+        final StringFilterGroup selfSponsor = new StringFilterGroup(
+                Settings.HIDE_SELF_SPONSOR_CARDS,
+                "cta_shelf_card"
         );
 
         final StringFilterGroup viewProducts = new StringFilterGroup(
