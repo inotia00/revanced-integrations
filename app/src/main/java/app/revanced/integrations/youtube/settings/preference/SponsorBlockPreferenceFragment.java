@@ -267,7 +267,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return true;
         });
-        Utils.setPreferenceIcon(addNewSegment, "sb_enable_create_segment_icon");
         category.addPreference(addNewSegment);
 
         newSegmentStep = new ResettableEditTextPreference(context);
@@ -290,7 +289,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return false;
         });
-        Utils.setPreferenceIcon(newSegmentStep, "empty_icon");
         category.addPreference(newSegmentStep);
 
         Preference guidelinePreferences = new Preference(context);
@@ -300,7 +298,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             openGuidelines();
             return true;
         });
-        Utils.setPreferenceIcon(guidelinePreferences, "empty_icon");
         category.addPreference(guidelinePreferences);
 
         votingEnabled = new SwitchPreference(context);
@@ -312,7 +309,6 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             updateUI();
             return true;
         });
-        Utils.setPreferenceIcon(votingEnabled, "sb_enable_voting_icon");
         category.addPreference(votingEnabled);
     }
 
