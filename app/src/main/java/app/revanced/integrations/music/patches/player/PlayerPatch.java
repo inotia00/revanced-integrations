@@ -14,7 +14,7 @@ import java.util.Arrays;
 import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.shared.VideoType;
 
-@SuppressWarnings({"unused", "ResultOfMethodCallIgnored"})
+@SuppressWarnings({"unused"})
 public class PlayerPatch {
     private static final int MUSIC_VIDEO_GREY_BACKGROUND_COLOR = -12566464;
     private static final int MUSIC_VIDEO_ORIGINAL_BACKGROUND_COLOR = -16579837;
@@ -163,11 +163,15 @@ public class PlayerPatch {
         return Settings.REMEMBER_SHUFFLE_SATE.get();
     }
 
+    public static boolean restoreOldCommentsPopUpPanels() {
+        return restoreOldCommentsPopUpPanels(true);
+    }
+
     public static boolean restoreOldCommentsPopUpPanels(boolean original) {
         if (!Settings.SETTINGS_INITIALIZED.get()) {
             return original;
         }
-        return !Settings.RESTORE_OLD_COMMENTS_POPUP_PANELS.get();
+        return !Settings.RESTORE_OLD_COMMENTS_POPUP_PANELS.get() && original;
     }
 
     public static boolean restoreOldPlayerBackground(boolean original) {
