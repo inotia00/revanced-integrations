@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +59,7 @@ import java.util.TreeMap;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
+import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.patches.video.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
@@ -246,12 +249,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                                 TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()
                         );
 
-                        if (isSDKAbove(24)) {
-                            toolbar.setTitleMargin(margin, 0, margin, 0);
-                        } else {
-                            // Untested
-                            toolbar.setContentInsetsAbsolute(margin, margin);
-                        }
+                        toolbar.setTitleMargin(margin, 0, margin, 0);
 
                         TextView toolbarTextView = getChildView(toolbar, TextView.class::isInstance);
                         if (toolbarTextView != null) {
@@ -265,22 +263,14 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         }
     }
 
-    // TODO: SEARCH BAR
-    //  0. Add ability to search for SB and RYD settings
-    //  1. Structure settings
-    //   1.1. Add each parent PreferenceScreen as PreferenceCategory while searching.
-    //   or
-    //   1.2. Clarify prefs descriptions, because there are duplicates
-    //        (e.g. "Hide cast button" in "General" and "Player buttons").
-    //  2. Make PreferenceCategory in search clickable to open according PreferenceScreen.
-    //  3. Make search bar look more like YouTube search.
+    // TODO: Add ability to search for SB and RYD settings
 
-    // List to store all preferences
-    private final List<Preference> allPreferences = new ArrayList<>();
     // Map to store dependencies: key is the preference key, value is a list of dependent preferences
     private final Map<String, List<Preference>> dependencyMap = new HashMap<>();
     // Set to track already added preferences to avoid duplicates
     private final Set<String> addedPreferences = new HashSet<>();
+    // Map to store preferences grouped by their parent PreferenceGroup
+    private final Map<PreferenceGroup, List<Preference>> groupedPreferences = new LinkedHashMap<>();
 
     @SuppressLint("ResourceType")
     @Override
@@ -347,57 +337,61 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     }
 
     /**
-     * Recursively stores all preferences and their dependencies.
+     * Recursively stores all preferences and their dependencies grouped by their parent PreferenceGroup.
      *
      * @param preferenceGroup The preference group to scan.
      */
     private void storeAllPreferences(PreferenceGroup preferenceGroup) {
+        // Check if this is the root PreferenceScreen
+        boolean isRootScreen = preferenceGroup == getPreferenceScreen();
+
+        // Use the special top-level group only for the root PreferenceScreen
+        PreferenceGroup groupKey = isRootScreen
+                ? new PreferenceCategory(preferenceGroup.getContext())
+                : preferenceGroup;
+
+        if (isRootScreen) {
+            groupKey.setTitle(ResourceUtils.getString("revanced_extended_settings_title"));
+        }
+
+        // Initialize a list to hold preferences of the current group
+        List<Preference> currentGroupPreferences = groupedPreferences.computeIfAbsent(groupKey, k -> new ArrayList<>());
+
         for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
             Preference preference = preferenceGroup.getPreference(i);
-            allPreferences.add(preference);
-            Logger.printDebug(() -> "SearchFragment: Stored preference with key: " + preference.getKey());
+
+            // Add preference to the current group if not already added
+            if (!currentGroupPreferences.contains(preference)) {
+                currentGroupPreferences.add(preference);
+            }
 
             // Store dependencies
             if (preference.getDependency() != null) {
                 String dependencyKey = preference.getDependency();
-                if (isSDKAbove(24)) {
-                    dependencyMap.computeIfAbsent(dependencyKey, k -> new ArrayList<>()).add(preference);
-                } else {
-                    // Untested
-                    if (!dependencyMap.containsKey(dependencyKey)) {
-                        dependencyMap.put(dependencyKey, new ArrayList<>() {{
-                            add(preference);
-                        }});
-                    }
-                }
-                Logger.printDebug(() -> "SearchFragment: Added dependency for key: " + dependencyKey + " on preference: " + preference.getKey());
+                dependencyMap.computeIfAbsent(dependencyKey, k -> new ArrayList<>()).add(preference);
             }
 
-            if (preference instanceof PreferenceGroup preferenceGroup1) {
-                storeAllPreferences(preferenceGroup1);
+            // Recursively handle nested PreferenceGroups
+            if (preference instanceof PreferenceGroup nestedGroup) {
+                storeAllPreferences(nestedGroup);
             }
         }
     }
 
     /**
-     * Filters preferences based on the search query.
-     * <p>
-     * This method searches within the preference's title, summary, entries, and values.
+     * Filters preferences based on the search query, displaying grouped results with group titles.
      *
      * @param query The search query.
      */
     public void filterPreferences(String query) {
         // If the query is null or empty, reset preferences to their default state
         if (query == null || query.isEmpty()) {
-            Logger.printDebug(() -> "SearchFragment: Query is null or empty. Resetting preferences.");
             resetPreferences();
             return;
         }
 
         // Convert the query to lowercase for case-insensitive search
         query = query.toLowerCase();
-        // String finalQuery = query;
-        // Logger.printDebug(() -> "SearchFragment: Query after conversion to lowercase: " + finalQuery);
 
         // Get the preference screen to modify
         PreferenceScreen preferenceScreen = getPreferenceScreen();
@@ -406,112 +400,194 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         // Clear the list of added preferences to start fresh
         addedPreferences.clear();
 
-        // Loop through all available preferences
-        for (Preference preference : allPreferences) {
-            // Check if the title contains the query string
-            boolean matches = preference.getTitle().toString().toLowerCase().contains(query);
+        // Create a map to store matched preferences for each group
+        Map<PreferenceGroup, List<Preference>> matchedGroupPreferences = new LinkedHashMap<>();
 
-            // Debugging title match
-            if (matches) {
-                Logger.printDebug(() -> "SearchFragment: Title matched: " + preference.getTitle());
-            }
+        // Create a set to store all keys that should be included
+        Set<String> keysToInclude = new HashSet<>();
 
-            // Check if the summary contains the query string
-            CharSequence summary = preference.getSummary();
-            if (!matches && summary != null && summary.toString().toLowerCase().contains(query)) {
-                matches = true;
-                Logger.printDebug(() -> "SearchFragment: Summary matched: " + summary);
-            }
-
-            // Additional check for SwitchPreference with summaryOn and summaryOff
-            if (!matches && preference instanceof SwitchPreference switchPreference) {
-                CharSequence summaryOn = switchPreference.getSummaryOn();
-                CharSequence summaryOff = switchPreference.getSummaryOff();
-
-                if (summaryOn != null && summaryOn.toString().toLowerCase().contains(query)) {
-                    matches = true;
-                    Logger.printDebug(() -> "SearchFragment: SummaryOn matched: " + summaryOn);
+        // First pass: identify all preferences that match the query and their dependencies
+        for (Map.Entry<PreferenceGroup, List<Preference>> entry : groupedPreferences.entrySet()) {
+            List<Preference> preferences = entry.getValue();
+            for (Preference preference : preferences) {
+                if (preferenceMatches(preference, query)) {
+                    addPreferenceAndDependencies(preference, keysToInclude);
                 }
+            }
+        }
 
-                if (summaryOff != null && summaryOff.toString().toLowerCase().contains(query)) {
-                    matches = true;
-                    Logger.printDebug(() -> "SearchFragment: SummaryOff matched: " + summaryOff);
+        // Second pass: add all identified preferences to matchedGroupPreferences
+        for (Map.Entry<PreferenceGroup, List<Preference>> entry : groupedPreferences.entrySet()) {
+            PreferenceGroup group = entry.getKey();
+            List<Preference> preferences = entry.getValue();
+            List<Preference> matchedPreferences = new ArrayList<>();
+
+            for (Preference preference : preferences) {
+                if (keysToInclude.contains(preference.getKey())) {
+                    matchedPreferences.add(preference);
                 }
             }
 
-            // Check if the entries or values contain the query string (for ListPreference)
-            if (!matches && preference instanceof ListPreference listPreference) {
-                // Check entries
-                CharSequence[] entries = listPreference.getEntries();
-                if (entries != null) {
-                    for (CharSequence entry : entries) {
-                        if (entry.toString().toLowerCase().contains(query)) {
-                            matches = true;
-                            Logger.printDebug(() -> "SearchFragment: Entry matched: " + entry);
-                            break;
-                        }
+            if (!matchedPreferences.isEmpty()) {
+                matchedGroupPreferences.put(group, matchedPreferences);
+            }
+        }
+
+        // Add matched preferences to the screen, maintaining the original order
+        for (Map.Entry<PreferenceGroup, List<Preference>> entry : matchedGroupPreferences.entrySet()) {
+            PreferenceGroup group = entry.getKey();
+            List<Preference> matchedPreferences = entry.getValue();
+
+            // Add the category for this group
+            PreferenceCategory category = new PreferenceCategory(preferenceScreen.getContext());
+            category.setTitle(group.getTitle());
+            preferenceScreen.addPreference(category);
+
+            // Add matched preferences for this group
+            for (Preference preference : matchedPreferences) {
+                if (preference.isSelectable()) {
+                    addPreferenceWithDependencies(category, preference);
+                } else {
+                    // For non-selectable preferences, just add them directly
+                    category.addPreference(preference);
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a preference matches the given query.
+     *
+     * @param preference The preference to check.
+     * @param query The search query.
+     * @return True if the preference matches the query, false otherwise.
+     */
+    private boolean preferenceMatches(Preference preference, String query) {
+        // Check if the title contains the query string
+        if (preference.getTitle().toString().toLowerCase().contains(query)) {
+            return true;
+        }
+
+        // Check if the summary contains the query string
+        if (preference.getSummary() != null && preference.getSummary().toString().toLowerCase().contains(query)) {
+            return true;
+        }
+
+        // Additional checks for SwitchPreference
+        if (preference instanceof SwitchPreference switchPreference) {
+            CharSequence summaryOn = switchPreference.getSummaryOn();
+            CharSequence summaryOff = switchPreference.getSummaryOff();
+
+            if ((summaryOn != null && summaryOn.toString().toLowerCase().contains(query)) ||
+                    (summaryOff != null && summaryOff.toString().toLowerCase().contains(query))) {
+                return true;
+            }
+        }
+
+        // Additional checks for ListPreference
+        if (preference instanceof ListPreference listPreference) {
+            CharSequence[] entries = listPreference.getEntries();
+            if (entries != null) {
+                for (CharSequence entry : entries) {
+                    if (entry.toString().toLowerCase().contains(query)) {
+                        return true;
                     }
                 }
+            }
 
-                // Check entry values
-                if (!matches) {
-                    CharSequence[] entryValues = listPreference.getEntryValues();
-                    if (entryValues != null) {
-                        for (CharSequence entryValue : entryValues) {
-                            if (entryValue.toString().toLowerCase().contains(query)) {
-                                matches = true;
-                                Logger.printDebug(() -> "SearchFragment: EntryValue matched: " + entryValue);
-                                break;
-                            }
-                        }
+            CharSequence[] entryValues = listPreference.getEntryValues();
+            if (entryValues != null) {
+                for (CharSequence entryValue : entryValues) {
+                    if (entryValue.toString().toLowerCase().contains(query)) {
+                        return true;
                     }
                 }
             }
+        }
 
-            // If the preference matches the query, add it to the preference screen
-            if (matches) {
-                Logger.printDebug(() -> "SearchFragment: Adding preference with title: " + preference.getTitle());
-                addPreferenceWithDependencies(preferenceScreen, preference);
+        return false;
+    }
+
+    /**
+     * Recursively adds a preference and its dependencies to the set of keys to include.
+     *
+     * @param preference The preference to add.
+     * @param keysToInclude The set of keys to include.
+     */
+    private void addPreferenceAndDependencies(Preference preference, Set<String> keysToInclude) {
+        String key = preference.getKey();
+        if (key != null && !keysToInclude.contains(key)) {
+            keysToInclude.add(key);
+
+            // Add the preference this one depends on
+            String dependencyKey = preference.getDependency();
+            if (dependencyKey != null) {
+                Preference dependency = findPreferenceInAllGroups(dependencyKey);
+                if (dependency != null) {
+                    addPreferenceAndDependencies(dependency, keysToInclude);
+                }
+            }
+
+            // Add preferences that depend on this one
+            if (dependencyMap.containsKey(key)) {
+                for (Preference dependentPreference : Objects.requireNonNull(dependencyMap.get(key))) {
+                    addPreferenceAndDependencies(dependentPreference, keysToInclude);
+                }
             }
         }
     }
 
     /**
      * Recursively adds a preference along with its dependencies
-     * (android:dependency attibute in XML).
+     * (android:dependency attribute in XML).
      *
      * @param preferenceGroup The preference group to add to.
      * @param preference      The preference to add.
      */
     private void addPreferenceWithDependencies(PreferenceGroup preferenceGroup, Preference preference) {
         String key = preference.getKey();
-        if (key != null && !addedPreferences.contains(key)) {
+
+        // Instead of just using preference keys, we combine the category and key to ensure uniqueness
+        if (key != null && !addedPreferences.contains(preferenceGroup.getTitle() + ":" + key)) {
             // Add dependencies first
             if (preference.getDependency() != null) {
                 String dependencyKey = preference.getDependency();
-                Logger.printDebug(() -> "SearchFragment: Adding preference dependency for key: " + dependencyKey);
-                Preference dependency = mPreferenceManager.findPreference(dependencyKey);
+                Preference dependency = findPreferenceInAllGroups(dependencyKey);
                 if (dependency != null) {
                     addPreferenceWithDependencies(preferenceGroup, dependency);
                 } else {
-                    Logger.printDebug(() -> "SearchFragment: Dependency not found for key: " + dependencyKey);
-                    // Skip adding this preference as its dependency is not found
                     return;
                 }
             }
 
+            // Add the preference using a combination of the category and the key
             preferenceGroup.addPreference(preference);
-            addedPreferences.add(key);
-            Logger.printDebug(() -> "SearchFragment: Added preference with key: " + key);
+            addedPreferences.add(preferenceGroup.getTitle() + ":" + key); // Track based on both category and key
 
-            // Add dependent preferences
+            // Handle dependent preferences
             if (dependencyMap.containsKey(key)) {
-                Logger.printDebug(() -> "SearchFragment: Adding dependent preferences for key: " + key);
                 for (Preference dependentPreference : Objects.requireNonNull(dependencyMap.get(key))) {
                     addPreferenceWithDependencies(preferenceGroup, dependentPreference);
                 }
             }
         }
+    }
+
+    /**
+     * Finds a preference in all groups based on its key.
+     *
+     * @param key The key of the preference to find.
+     * @return The found preference, or null if not found.
+     */
+    private Preference findPreferenceInAllGroups(String key) {
+        for (List<Preference> preferences : groupedPreferences.values()) {
+            for (Preference preference : preferences) {
+                if (preference.getKey() != null && preference.getKey().equals(key)) {
+                    return preference;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -522,8 +598,6 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         preferenceScreen.removeAll();
         for (Preference preference : getAllPreferencesBy(originalPreferenceScreen))
             preferenceScreen.addPreference(preference);
-
-        Logger.printDebug(() -> "SearchFragment: Reset preferences completed.");
     }
 
     private List<Preference> getAllPreferencesBy(PreferenceGroup preferenceGroup) {

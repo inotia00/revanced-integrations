@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
 import java.lang.ref.WeakReference;
-import java.util.Objects;
+import java.lang.reflect.Field;
 
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
@@ -58,8 +59,11 @@ public class VideoQualitySettingsActivity extends Activity {
             // Set content
             setContentView(ResourceUtils.getLayoutIdentifier("revanced_settings_with_toolbar"));
 
-            String dataString = Objects.requireNonNull(getIntent().getDataString());
-            if (dataString.equals("revanced_extended_settings_intent")) {
+            String dataString = getIntent().getDataString();
+            if (dataString == null) {
+                Logger.printException(() -> "DataString is null");
+                return;
+            } else if (dataString.equals("revanced_extended_settings_intent")) {
                 fragment = new ReVancedPreferenceFragment();
             } else {
                 Logger.printException(() -> "Unknown setting: " + dataString);
@@ -129,11 +133,6 @@ public class VideoQualitySettingsActivity extends Activity {
         toolBarParent.addView(toolbar, 0);
     }
 
-    /**
-     * TODO: in order to match the original app's search bar, we'd need to change the searchbar cursor color
-     *       to white (#FFFFFF) if ThemeUtils.isDarkTheme(), and black (#000000) if not.
-     *       Currently it's always blue.
-     */
     private void setSearchView() {
         SearchView searchView = findViewById(ResourceUtils.getIdIdentifier("search_view"));
 
@@ -144,6 +143,24 @@ public class VideoQualitySettingsActivity extends Activity {
         String finalSearchHint = String.format(searchLabel, rvxSettingsLabel);
 
         searchView.setQueryHint(finalSearchHint);
+
+        // endregion
+
+        // region set the font size
+
+        try {
+            // 'android.widget.SearchView' has been deprecated quite a long time ago
+            // So access the SearchView's EditText via reflection
+            Field field = searchView.getClass().getDeclaredField("mSearchSrcTextView");
+            field.setAccessible(true);
+
+            // Set the font size
+            if (field.get(searchView) instanceof EditText searchEditText) {
+                searchEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            Logger.printException(() -> "Reflection error accessing mSearchSrcTextView", ex);
+        }
 
         // endregion
 
@@ -167,7 +184,10 @@ public class VideoQualitySettingsActivity extends Activity {
 
         // endregion
 
+        // Set the listener for query text changes
         searchView.setOnQueryTextListener(onQueryTextListener);
+
+        // Keep a weak reference to the SearchView
         searchViewRef = new WeakReference<>(searchView);
     }
 }
