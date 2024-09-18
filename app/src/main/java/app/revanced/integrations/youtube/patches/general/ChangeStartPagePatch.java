@@ -26,23 +26,27 @@ public final class ChangeStartPagePatch {
         /**
          * Browse id.
          */
-        SUBSCRIPTIONS("FEsubscriptions", TRUE),
-        EXPLORE("FEexplore", TRUE),
-        LIBRARY("FElibrary", TRUE),
-        LIKED_VIDEO("VLLL", TRUE),
-        WATCH_LATER("VLWL", TRUE),
-        HISTORY("FEhistory", TRUE),
-        TRENDING("FEtrending", TRUE),
-        MOVIE("FEstorefront", TRUE),
         BROWSE("FEguide_builder", TRUE),
+        EXPLORE("FEexplore", TRUE),
+        HISTORY("FEhistory", TRUE),
+        LIBRARY("FElibrary", TRUE),
+        MOVIE("FEstorefront", TRUE),
+        SUBSCRIPTIONS("FEsubscriptions", TRUE),
+        TRENDING("FEtrending", TRUE),
 
         /**
-         * Channel id.
+         * Channel id, this can be used as a browseId.
          */
         GAMING("UCOpNcN46UbXVtpKMrmU4Abg", TRUE),
         LIVE("UC4R8DWoMoI7CAwX8_LjQHig", TRUE),
         MUSIC("UC-9-kyTW8ZkZNDHQJ6FgpwQ", TRUE),
         SPORTS("UCEgdi0XIXXZ-qJOFPf4JSKw", TRUE),
+
+        /**
+         * Playlist id, this can be used as a browseId.
+         */
+        LIKED_VIDEO("VLLL", TRUE),
+        WATCH_LATER("VLWL", TRUE),
 
         /**
          * Intent action.
