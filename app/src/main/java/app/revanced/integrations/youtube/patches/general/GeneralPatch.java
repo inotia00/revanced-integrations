@@ -27,8 +27,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.apps.youtube.app.application.Shell_SettingsActivity;
 import com.google.android.apps.youtube.app.settings.SettingsActivity;
 import com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity;
@@ -42,7 +40,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
@@ -51,37 +48,6 @@ import app.revanced.integrations.youtube.utils.ThemeUtils;
 
 @SuppressWarnings("unused")
 public class GeneralPatch {
-
-    // region [Change start page] patch
-
-    private static final String CHANGE_START_PAGE;
-    private static final boolean CHANGE_START_PAGE_TO_SHORTCUTS;
-    private static final boolean CHANGE_START_PAGE_TO_URL;
-    private static final String MAIN_ACTIONS = "android.intent.action.MAIN";
-
-    public static void changeStartPageToShortcuts(@NonNull Intent intent) {
-        if (!Objects.equals(intent.getAction(), MAIN_ACTIONS)) {
-            return;
-        }
-        if (!CHANGE_START_PAGE_TO_SHORTCUTS) {
-            return;
-        }
-        intent.setAction("com.google.android.youtube.action." + CHANGE_START_PAGE);
-        Logger.printDebug(() -> "Changing start page to Shortcuts - " + CHANGE_START_PAGE);
-    }
-
-    public static void changeStartPageToUrl(@NonNull Intent intent) {
-        if (!Objects.equals(intent.getAction(), MAIN_ACTIONS)) {
-            return;
-        }
-        if (!CHANGE_START_PAGE_TO_URL) {
-            return;
-        }
-        intent.setData(Uri.parse(CHANGE_START_PAGE));
-        Logger.printDebug(() -> "Changing start page to Url - " + CHANGE_START_PAGE);
-    }
-
-    // endregion
 
     // region [Disable auto audio tracks] patch
 
@@ -170,22 +136,6 @@ public class GeneralPatch {
         accountMenuBlockList = Arrays.stream(accountMenuBlockList)
                 .filter(item -> !Objects.equals(item, str("settings")))
                 .toArray(String[]::new);
-
-
-        final StringSetting changeStartPage = Settings.CHANGE_START_PAGE;
-        String startPage = changeStartPage.get();
-        CHANGE_START_PAGE_TO_SHORTCUTS = startPage.startsWith("open.");
-        CHANGE_START_PAGE_TO_URL = startPage.startsWith("www.youtube.com");
-
-        if (!startPage.isEmpty() &&
-                !CHANGE_START_PAGE_TO_SHORTCUTS &&
-                !CHANGE_START_PAGE_TO_URL) {
-            Utils.showToastShort(str("revanced_change_start_page_invalid_toast"));
-            Settings.CHANGE_START_PAGE.resetToDefault();
-            startPage = changeStartPage.defaultValue;
-        }
-
-        CHANGE_START_PAGE = startPage;
     }
 
     /**
