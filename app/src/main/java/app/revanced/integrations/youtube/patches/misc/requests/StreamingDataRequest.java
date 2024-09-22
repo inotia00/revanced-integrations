@@ -14,7 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,30 +32,23 @@ public class StreamingDataRequest {
     private static final ClientType[] allClientTypes = {
             ClientType.IOS,
             ClientType.ANDROID_VR,
-            ClientType.ANDROID_UNPLUGGED,
-            ClientType.ANDROID_TESTSUITE,
-            ClientType.ANDROID_EMBEDDED_PLAYER,
-            ClientType.WEB,
-            ClientType.TVHTML5_SIMPLY_EMBEDDED_PLAYER
+            ClientType.ANDROID_UNPLUGGED
     };
 
     private static final ClientType[] clientTypesToUse;
 
     static {
-        final int numberOfClients = allClientTypes.length;
-        ClientType[] localClientTypes = new ClientType[numberOfClients];
-
         ClientType preferredClient = Settings.SPOOF_STREAMING_DATA_TYPE.get();
-        localClientTypes[0] = preferredClient;
+        clientTypesToUse = new ClientType[allClientTypes.length];
+
+        clientTypesToUse[0] = preferredClient;
 
         int i = 1;
         for (ClientType c : allClientTypes) {
             if (c != preferredClient) {
-                localClientTypes[i++] = c;
+                clientTypesToUse[i++] = c;
             }
         }
-        localClientTypes = Arrays.copyOfRange(localClientTypes, 0, 3);
-        clientTypesToUse = localClientTypes;
     }
 
     private static ClientType lastSpoofedClientType;

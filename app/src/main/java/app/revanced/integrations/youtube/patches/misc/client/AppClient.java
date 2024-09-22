@@ -60,10 +60,10 @@ public class AppClient {
      * Using an invalid OS version will use the AVC codec.
      */
     private static final String OS_VERSION_IOS = DeviceHardwareSupport.allowVP9()
-            ? "17.6.1.21G101"
+            ? "17.7.21H16"
             : "13.7.17H35";
     private static final String USER_AGENT_VERSION_IOS = DeviceHardwareSupport.allowVP9()
-            ? "17_6_1"
+            ? "17_7"
             : "13_7";
     private static final String USER_AGENT_IOS = "com.google.ios.youtube/" +
             CLIENT_VERSION_IOS +
