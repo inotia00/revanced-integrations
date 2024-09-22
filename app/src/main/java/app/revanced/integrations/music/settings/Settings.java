@@ -195,6 +195,8 @@ public class Settings extends BaseSettings {
     // SB settings not exported
     public static final LongSetting SB_LAST_VIP_CHECK = new LongSetting("sb_last_vip_check", 0L, false, false);
 
+    public static final String OPEN_DEFAULT_APP_SETTINGS = "revanced_default_app_settings";
+
     /**
      * If a setting path has this prefix, then remove it.
      */
@@ -214,6 +216,7 @@ public class Settings extends BaseSettings {
             SB_API_URL.key,
             SETTINGS_IMPORT_EXPORT.key,
             SPOOF_APP_VERSION_TARGET.key,
+            OPEN_DEFAULT_APP_SETTINGS,
             OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX
     };
 

@@ -7,6 +7,7 @@ import static app.revanced.integrations.music.settings.Settings.CUSTOM_PLAYBACK_
 import static app.revanced.integrations.music.settings.Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
 import static app.revanced.integrations.music.settings.Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS;
 import static app.revanced.integrations.music.settings.Settings.HIDE_SETTINGS_MENU_FILTER_STRINGS;
+import static app.revanced.integrations.music.settings.Settings.OPEN_DEFAULT_APP_SETTINGS;
 import static app.revanced.integrations.music.settings.Settings.OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX;
 import static app.revanced.integrations.music.settings.Settings.SB_API_URL;
 import static app.revanced.integrations.music.settings.Settings.SETTINGS_IMPORT_EXPORT;
@@ -120,6 +121,9 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             if (dataString.startsWith(OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX)) {
                 SponsorBlockCategoryPreference.showDialog(baseActivity, dataString.replaceAll(OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX, ""));
                 return;
+            } else if (dataString.equals(OPEN_DEFAULT_APP_SETTINGS)) {
+                openDefaultAppSetting();
+                return;
             }
 
             final Setting<?> settings = getSettingFromPath(dataString);
@@ -156,6 +160,19 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void openDefaultAppSetting() {
+        try {
+            Context context = getActivity();
+            final Uri uri = Uri.parse("package:" + context.getPackageName());
+            final Intent intent = isSDKAbove(31)
+                    ? new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, uri)
+                    : new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri);
+            context.startActivity(intent);
+        } catch (Exception exception) {
+            Logger.printException(() -> "openDefaultAppSetting failed");
+        }
     }
 
     /**
