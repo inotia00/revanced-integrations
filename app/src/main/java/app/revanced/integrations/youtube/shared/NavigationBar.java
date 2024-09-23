@@ -165,35 +165,14 @@ public final class NavigationBar {
         }
     }
 
-    private static int lastIndex = 0;
-
     /**
      * Injection point.
      */
-    public static void setNavigationTabIndex(int index) {
-        if (lastIndex == index) {
-            return;
-        }
-
-        lastIndex = index;
-        Logger.printDebug(() -> "Changed navigation index to : " + index);
-    }
-
-    public static boolean isNotLibraryTab() {
-        return lastIndex < 3;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static void navigationTabSelected(View navButtonImageView, int index, boolean isSelected) {
+    public static void navigationTabSelected(View navButtonImageView, boolean isSelected) {
         try {
-            if (!isSelected || lastIndex == index) {
+            if (!isSelected) {
                 return;
             }
-
-            lastIndex = index;
-            Logger.printDebug(() -> "Changed navigation index to : " + index);
 
             NavigationButton button = viewToButtonMap.get(navButtonImageView);
 
