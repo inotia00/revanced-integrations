@@ -94,28 +94,28 @@ public enum CategoryBehaviour {
         }
     }
 
-    static String[] getBehaviorKeyValues() {
+    public static String[] getBehaviorKeyValues() {
         if (behaviorKeyValues == null) {
             createNameAndKeyArrays();
         }
         return behaviorKeyValues;
     }
 
-    static String[] getBehaviorKeyValuesWithoutSkipOnce() {
+    public static String[] getBehaviorKeyValuesWithoutSkipOnce() {
         if (behaviorKeyValuesWithoutSkipOnce == null) {
             createNameAndKeyArrays();
         }
         return behaviorKeyValuesWithoutSkipOnce;
     }
 
-    static String[] getBehaviorDescriptions() {
+    public static String[] getBehaviorDescriptions() {
         if (behaviorDescriptions == null) {
             createNameAndKeyArrays();
         }
         return behaviorDescriptions;
     }
 
-    static String[] getBehaviorDescriptionsWithoutSkipOnce() {
+    public static String[] getBehaviorDescriptionsWithoutSkipOnce() {
         if (behaviorDescriptionsWithoutSkipOnce == null) {
             createNameAndKeyArrays();
         }

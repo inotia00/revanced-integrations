@@ -391,12 +391,6 @@ public class Utils {
         }
     }
 
-    public static void setPreferenceIcon(Preference preference, String str) {
-        final int iconResourceId = ResourceUtils.getDrawableIdentifier(str);
-        if (iconResourceId == 0) return;
-        preference.setIcon(iconResourceId);
-    }
-
     public static void setEditTextDialogTheme(final AlertDialog.Builder builder) {
         setEditTextDialogTheme(builder, false);
     }

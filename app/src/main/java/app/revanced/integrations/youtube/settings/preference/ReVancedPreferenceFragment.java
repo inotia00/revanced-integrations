@@ -1,10 +1,7 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setSearchViewVisibility;
-import static com.google.android.apps.youtube.app.settings.videoquality.VideoQualitySettingsActivity.setToolbarText;
 import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.showRestartDialog;
 import static app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment.updateListPreferenceSummary;
-import static app.revanced.integrations.shared.utils.ResourceUtils.getIdIdentifier;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getXmlIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 import static app.revanced.integrations.shared.utils.Utils.getChildView;
@@ -15,7 +12,6 @@ import static app.revanced.integrations.youtube.settings.Settings.HIDE_PREVIEW_C
 import static app.revanced.integrations.youtube.settings.Settings.HIDE_PREVIEW_COMMENT_TYPE;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -83,6 +79,10 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             Preference mPreference = findPreference(str);
 
             if (mPreference == null) return;
+
+            if (mPreference instanceof app.revanced.integrations.youtube.settings.preference.SegmentCategoryListPreference) {
+                return;
+            }
 
             if (mPreference instanceof SwitchPreference switchPreference) {
                 BooleanSetting boolSetting = (BooleanSetting) setting;
@@ -173,40 +173,6 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         // Required empty public constructor
     }
 
-    @TargetApi(26)
-    public void setPreferenceFragmentToolbar(final String key) {
-        PreferenceFragment fragment;
-        switch (key) {
-            case "revanced_preference_screen_ryd" ->
-                    fragment = new ReturnYouTubeDislikePreferenceFragment();
-            case "revanced_preference_screen_sb" -> fragment = new SponsorBlockPreferenceFragment();
-            default -> {
-                Logger.printException(() -> "Unknown key: " + key);
-                return;
-            }
-        }
-
-        final Preference mPreference = mPreferenceManager.findPreference(key);
-        if (mPreference == null) {
-            return;
-        }
-        mPreference.setOnPreferenceClickListener(pref -> {
-            // Set toolbar text
-            setToolbarText(pref.getTitle());
-
-            // Hide the search bar
-            setSearchViewVisibility(false);
-
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(getIdIdentifier("revanced_settings_fragments"), fragment)
-                    .addToBackStack(null)
-                    .setReorderingAllowed(true)
-                    .commitAllowingStateLoss();
-            return false;
-        });
-    }
-
     private void putPreferenceScreenMap(SortedMap<String, PreferenceScreen> preferenceScreenMap, PreferenceGroup preferenceGroup) {
         if (preferenceGroup instanceof PreferenceScreen mPreferenceScreen) {
             preferenceScreenMap.put(mPreferenceScreen.getKey(), mPreferenceScreen);
@@ -263,8 +229,6 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
         }
     }
 
-    // TODO: Add ability to search for SB and RYD settings
-
     // Map to store dependencies: key is the preference key, value is a list of dependent preferences
     private final Map<String, List<Preference>> dependencyMap = new HashMap<>();
     // Set to track already added preferences to avoid duplicates
@@ -283,12 +247,11 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             addPreferencesFromResource(getXmlIdentifier("revanced_prefs"));
 
             // Initialize toolbars and other UI elements
-            setPreferenceFragmentToolbar("revanced_preference_screen_ryd");
-            setPreferenceFragmentToolbar("revanced_preference_screen_sb");
             setPreferenceScreenToolbar();
 
             // Initialize ReVanced settings
             ReVancedSettingsPreference.initializeReVancedSettings();
+            SponsorBlockSettingsPreference.init(getActivity());
 
             // Import/export
             setBackupRestorePreference();

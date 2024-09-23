@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.sponsorblock.objects;
+package app.revanced.integrations.youtube.settings.preference;
 
 import static app.revanced.integrations.shared.utils.StringRef.str;
 
@@ -10,6 +10,7 @@ import android.preference.ListPreference;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -20,29 +21,49 @@ import java.util.Objects;
 
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
+import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
+import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings({"unused", "deprecation"})
 public class SegmentCategoryListPreference extends ListPreference {
-    private final SegmentCategory category;
+    private SegmentCategory mCategory;
     private EditText mEditText;
     private int mClickedDialogEntryIndex;
 
-    public SegmentCategoryListPreference(Context context, SegmentCategory category) {
-        super(context);
-        final boolean isHighlightCategory = category == SegmentCategory.HIGHLIGHT;
-        this.category = Objects.requireNonNull(category);
-        setKey(category.keyValue);
-        setDefaultValue(category.behaviour.reVancedKeyValue);
+    private void init() {
+        final SegmentCategory segmentCategory = SegmentCategory.byCategoryKey(getKey());
+        final boolean isHighlightCategory = segmentCategory == SegmentCategory.HIGHLIGHT;
+        mCategory = Objects.requireNonNull(segmentCategory);
+        setDefaultValue(segmentCategory.behaviour.reVancedKeyValue);
         setEntries(isHighlightCategory
                 ? CategoryBehaviour.getBehaviorDescriptionsWithoutSkipOnce()
                 : CategoryBehaviour.getBehaviorDescriptions());
         setEntryValues(isHighlightCategory
                 ? CategoryBehaviour.getBehaviorKeyValuesWithoutSkipOnce()
                 : CategoryBehaviour.getBehaviorKeyValues());
-        setSummary(category.description.toString());
+        setSummary(segmentCategory.description.toString());
         updateTitle();
+    }
+
+    public SegmentCategoryListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
+    public SegmentCategoryListPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public SegmentCategoryListPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public SegmentCategoryListPreference(Context context) {
+        super(context);
+        init();
     }
 
     @Override
@@ -63,13 +84,13 @@ public class SegmentCategoryListPreference extends ListPreference {
             row.addView(colorTextLabel);
 
             TextView colorDotView = new TextView(context);
-            colorDotView.setText(category.getCategoryColorDot());
+            colorDotView.setText(mCategory.getCategoryColorDot());
             colorDotView.setPadding(30, 0, 30, 0);
             row.addView(colorDotView);
 
             mEditText = new EditText(context);
             mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-            mEditText.setText(category.colorString());
+            mEditText.setText(mCategory.colorString());
             mEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -103,14 +124,12 @@ public class SegmentCategoryListPreference extends ListPreference {
 
             table.addView(row);
             builder.setView(table);
-            builder.setTitle(category.title.toString());
+            builder.setTitle(mCategory.title.toString());
 
-            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-            });
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> onClick(dialog, DialogInterface.BUTTON_POSITIVE));
             builder.setNeutralButton(str("revanced_sb_reset_color"), (dialog, which) -> {
                 try {
-                    category.resetColor();
+                    mCategory.resetColor();
                     updateTitle();
                     Utils.showToastShort(str("revanced_sb_color_reset"));
                 } catch (Exception ex) {
@@ -133,13 +152,13 @@ public class SegmentCategoryListPreference extends ListPreference {
                 String value = getEntryValues()[mClickedDialogEntryIndex].toString();
                 if (callChangeListener(value)) {
                     setValue(value);
-                    category.setBehaviour(Objects.requireNonNull(CategoryBehaviour.byReVancedKeyValue(value)));
+                    mCategory.setBehaviour(Objects.requireNonNull(CategoryBehaviour.byReVancedKeyValue(value)));
                     SegmentCategory.updateEnabledCategories();
                 }
                 String colorString = mEditText.getText().toString();
                 try {
-                    if (!colorString.equals(category.colorString())) {
-                        category.setColor(colorString);
+                    if (!colorString.equals(mCategory.colorString())) {
+                        mCategory.setColor(colorString);
                         Utils.showToastShort(str("revanced_sb_color_changed"));
                     }
                 } catch (IllegalArgumentException ex) {
@@ -153,6 +172,7 @@ public class SegmentCategoryListPreference extends ListPreference {
     }
 
     private void updateTitle() {
-        setTitle(category.getTitleWithColorDot());
+        setTitle(mCategory.getTitleWithColorDot());
+        setEnabled(Settings.SB_ENABLED.get());
     }
 }
