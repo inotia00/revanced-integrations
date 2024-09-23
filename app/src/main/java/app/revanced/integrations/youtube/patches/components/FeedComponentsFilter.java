@@ -87,12 +87,10 @@ public final class FeedComponentsFilter extends Filter {
         );
 
         addIdentifierCallbacks(
-                //carouselShelf,
                 chipsShelf,
                 communityPosts,
                 expandableShelf,
                 feedSearchBar,
-                //libraryShelf,
                 videoLockup
         );
 
