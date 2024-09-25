@@ -54,7 +54,8 @@ public final class CommentsFilter extends Filter {
 
         final StringFilterGroup membersBanner = new StringFilterGroup(
                 Settings.HIDE_COMMENTS_BY_MEMBERS,
-                "sponsorships_comments"
+                "sponsorships_comments_header.eml",
+                "sponsorships_comments_footer.eml"
         );
 
         final StringFilterGroup previewComment = new StringFilterGroup(
