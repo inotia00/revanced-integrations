@@ -4,54 +4,78 @@ import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
 
+/**
+ * If A/B testing is applied, ad components can only be filtered by identifier
+ * <p>
+ * Before A/B testing:
+ * Identifier: video_display_button_group_layout.eml
+ * Path: video_display_button_group_layout.eml|ContainerType|....
+ * (Path always starts with an Identifier)
+ * <p>
+ * After A/B testing:
+ * Identifier: video_display_button_group_layout.eml
+ * Path: video_lockup_with_attachment.eml|ContainerType|....
+ * (Path does not contain an Identifier)
+ */
 @SuppressWarnings("unused")
 public final class AdsFilter extends Filter {
 
     public AdsFilter() {
+
+        // Identifiers.
 
         final StringFilterGroup alertBannerPromo = new StringFilterGroup(
                 Settings.HIDE_PROMOTION_ALERT_BANNER,
                 "alert_banner_promo.eml"
         );
 
-        final StringFilterGroup carouselAd = new StringFilterGroup(
+        // Keywords checked in 2024:
+        final StringFilterGroup generalAdsIdentifier = new StringFilterGroup(
                 Settings.HIDE_GENERAL_ADS,
-                "carousel_ad"
-        );
-
-        final StringFilterGroup generalAds = new StringFilterGroup(
-                Settings.HIDE_GENERAL_ADS,
-                "ads_video_with_context",
-                "banner_text_icon",
+                // "brand_video_shelf.eml"
                 "brand_video",
-                "button_banner",
+
+                // "carousel_footered_layout.eml"
                 "carousel_footered_layout",
-                "carousel_headered_layout",
-                "full_width_portrait_image_layout",
-                "full_width_square_image_layout",
-                "hero_promo_image",
+
+                // "landscape_image_wide_button_layout.eml"
                 "landscape_image_wide_button_layout",
-                "legal_disclosure",
-                "lumiere_promo_carousel",
-                "primetime_promo",
-                "product_details",
+
+                // "square_image_layout.eml"
                 "square_image_layout",
+
+                // "statement_banner.eml"
                 "statement_banner",
-                "text_image_button_layout",
-                "video_display_carousel_button",
+
+                // "video_display_full_layout.eml"
                 "video_display_full_layout",
-                "watch_metadata_app_promo",
-                "_ad_with",
+
+                // "text_image_button_group_layout.eml"
+                // "video_display_button_group_layout.eml"
                 "_button_group_layout",
+
+                // "banner_text_icon_buttoned_layout.eml"
+                // "video_display_compact_buttoned_layout.eml"
+                // "video_display_full_buttoned_layout.eml"
                 "_buttoned_layout",
+
+                // "compact_landscape_image_layout.eml"
+                // "full_width_portrait_image_layout.eml"
+                // "full_width_square_image_layout.eml"
                 "_image_layout"
         );
 
-        addIdentifierCallbacks(
-                alertBannerPromo,
-                carouselAd,
-                // In the new layout, filter strings are not included in the path, but instead in the identifier.
-                generalAds
+        // Unchecked keywords:
+        final StringFilterGroup generalAdsLegacyIdentifier = new StringFilterGroup(
+                Settings.HIDE_GENERAL_ADS,
+                "carousel_headered_layout",
+                "hero_promo_image",
+                "lumiere_promo_carousel",
+                "primetime_promo",
+                "product_details",
+                "text_image_button_layout",
+                "video_display_carousel_button",
+                "watch_metadata_app_promo"
         );
 
         final StringFilterGroup merchandise = new StringFilterGroup(
@@ -82,13 +106,25 @@ public final class AdsFilter extends Filter {
                 "web_result_panel"
         );
 
-        addPathCallbacks(
-                generalAds,
+        addIdentifierCallbacks(
+                alertBannerPromo,
+                generalAdsIdentifier,
+                generalAdsLegacyIdentifier,
                 merchandise,
                 paidContent,
                 selfSponsor,
                 viewProducts,
                 webSearchPanel
         );
+
+        // Path.
+
+        final StringFilterGroup generalAdsPath = new StringFilterGroup(
+                Settings.HIDE_GENERAL_ADS,
+                "carousel_ad",
+                "legal_disclosure"
+        );
+
+        addPathCallbacks(generalAdsPath);
     }
 }
