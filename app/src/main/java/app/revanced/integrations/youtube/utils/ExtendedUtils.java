@@ -18,6 +18,7 @@ public class ExtendedUtils extends PackageUtils {
 
         if (value < min || value > max) {
             showToastShort(str(message));
+            showToastShort(str("revanced_extended_reset_to_default_toast"));
             settings.resetToDefault();
             value = settings.defaultValue;
         }
@@ -30,6 +31,7 @@ public class ExtendedUtils extends PackageUtils {
 
         if (value < min || value > max) {
             showToastShort(str(message));
+            showToastShort(str("revanced_extended_reset_to_default_toast"));
             settings.resetToDefault();
             value = settings.defaultValue;
         }

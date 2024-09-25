@@ -4,9 +4,7 @@ import android.view.View;
 
 import java.lang.ref.WeakReference;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("unused")
 public final class RootView {
     private static volatile WeakReference<View> searchBarResultsRef = new WeakReference<>(null);
 
