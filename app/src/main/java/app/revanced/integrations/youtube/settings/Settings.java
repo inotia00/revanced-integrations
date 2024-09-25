@@ -167,7 +167,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1));
     public static final IntegerSetting MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, MINIPLAYER_TYPE.availability(MODERN_1));
 
-    // PreferenceScreen: General - Navigation buttons
+    // PreferenceScreen: General - Navigation bar
     public static final BooleanSetting ENABLE_NARROW_NAVIGATION_BUTTONS = new BooleanSetting("revanced_enable_narrow_navigation_buttons", FALSE, true);
     public static final BooleanSetting HIDE_NAVIGATION_CREATE_BUTTON = new BooleanSetting("revanced_hide_navigation_create_button", TRUE, true);
     public static final BooleanSetting HIDE_NAVIGATION_HOME_BUTTON = new BooleanSetting("revanced_hide_navigation_home_button", FALSE, true);
@@ -178,6 +178,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_NAVIGATION_LABEL = new BooleanSetting("revanced_hide_navigation_label", FALSE, true);
     public static final BooleanSetting SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_switch_create_with_notifications_button", TRUE, true, "revanced_switch_create_with_notifications_button_user_dialog_message");
     public static final BooleanSetting ENABLE_TRANSLUCENT_NAVIGATION_BAR = new BooleanSetting("revanced_enable_translucent_navigation_bar", FALSE, true);
+    public static final BooleanSetting HIDE_NAVIGATION_BAR = new BooleanSetting("revanced_hide_navigation_bar", FALSE, true);
 
     // PreferenceScreen: General - Override buttons
     public static final BooleanSetting OVERRIDE_VIDEO_DOWNLOAD_BUTTON = new BooleanSetting("revanced_override_video_download_button", FALSE);

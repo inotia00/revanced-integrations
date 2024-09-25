@@ -230,6 +230,10 @@ public class GeneralPatch {
         hideViewUnderCondition(Settings.HIDE_NAVIGATION_LABEL.get(), view);
     }
 
+    public static void hideNavigationBar(View view) {
+        hideViewUnderCondition(Settings.HIDE_NAVIGATION_BAR.get(), view);
+    }
+
     // endregion
 
     // region [Layout switch] patch
