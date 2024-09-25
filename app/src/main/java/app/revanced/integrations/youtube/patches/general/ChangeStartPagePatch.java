@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -86,6 +87,7 @@ public final class ChangeStartPagePatch {
     private static final String ACTION_MAIN = "android.intent.action.MAIN";
 
     private static final StartPage START_PAGE = Settings.CHANGE_START_PAGE.get();
+    private static final boolean ALWAYS_CHANGE_START_PAGE = Settings.CHANGE_START_PAGE_TYPE.get();
 
     /**
      * There is an issue where the back button on the toolbar doesn't work properly.
@@ -97,7 +99,7 @@ public final class ChangeStartPagePatch {
         if (!START_PAGE.isBrowseId()) {
             return original;
         }
-        if (appLaunched) {
+        if (!ALWAYS_CHANGE_START_PAGE && appLaunched) {
             Logger.printDebug(() -> "Ignore override browseId as the app already launched");
             return original;
         }
@@ -117,14 +119,16 @@ public final class ChangeStartPagePatch {
                     " as the current activity is not the entry point of the application");
             return;
         }
-        if (appLaunched) {
-            Logger.printDebug(() -> "Ignore override intent action as the app already launched");
-            return;
-        }
-        appLaunched = true;
 
         final String intentAction = START_PAGE.id;
         Logger.printDebug(() -> "Changing intent action to " + intentAction);
         intent.setAction(intentAction);
+    }
+
+    public static final class ChangeStartPageTypeAvailability implements Setting.Availability {
+        @Override
+        public boolean isAvailable() {
+            return Settings.CHANGE_START_PAGE.get() != StartPage.ORIGINAL;
+        }
     }
 }
