@@ -6,41 +6,36 @@ import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
 import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroupList;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
+import app.revanced.integrations.shared.patches.components.StringFilterGroupList;
 import app.revanced.integrations.shared.utils.StringTrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.RootView;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("unused")
 public final class FeedVideoFilter extends Filter {
     private static final String CONVERSATION_CONTEXT_FEED_IDENTIFIER =
             "horizontalCollectionSwipeProtector=null";
+    private static final String ENDORSEMENT_FOOTER_PATH = "endorsement_header_footer";
+    private static final String REMINDER_BUTTON_PATH = "set_reminder_button";
 
-    private static final StringTrieSearch feedVideoPattern = new StringTrieSearch();
-
+    private static final StringTrieSearch feedOnlyVideoPattern = new StringTrieSearch();
     // In search results, vertical video with shorts labels mostly include videos with gray descriptions.
     // Filters without check process.
     private final StringFilterGroup inlineShorts;
     private final StringFilterGroup videoLockup;
-    private final ByteArrayFilterGroupList bufferGroupList = new ByteArrayFilterGroupList();
+    private final ByteArrayFilterGroupList feedAndDrawerGroupList = new ByteArrayFilterGroupList();
+    private final ByteArrayFilterGroupList feedOnlyGroupList = new ByteArrayFilterGroupList();
+    private final StringFilterGroupList videoLockupFilterGroup = new StringFilterGroupList();
 
     public FeedVideoFilter() {
-        feedVideoPattern.addPattern(CONVERSATION_CONTEXT_FEED_IDENTIFIER);
+        feedOnlyVideoPattern.addPattern(CONVERSATION_CONTEXT_FEED_IDENTIFIER);
 
-        final StringFilterGroup homeFeedVideo = new StringFilterGroup(
-                null,
-                "home_video_with_context.eml"
-        );
-        final StringFilterGroup feedVideo = new StringFilterGroup(
-                Settings.HIDE_RECOMMENDED_VIDEO,
-                "related_video_with_context.eml",
-                "search_video_with_context.eml"
-        );
         inlineShorts = new StringFilterGroup(
                 Settings.HIDE_RECOMMENDED_VIDEO,
                 "inline_shorts.eml" // vertical video with shorts label
         );
+
+        addIdentifierCallbacks(inlineShorts);
 
         // Used for home, related videos, subscriptions, and search results.
         videoLockup = new StringFilterGroup(
@@ -48,25 +43,27 @@ public final class FeedVideoFilter extends Filter {
                 "video_lockup_with_attachment.eml"
         );
 
-        addPathCallbacks(
-                homeFeedVideo,
-                feedVideo,
-                inlineShorts,
-                videoLockup
+        addPathCallbacks(videoLockup);
+
+        feedAndDrawerGroupList.addAll(
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_RECOMMENDED_VIDEO,
+                        ENDORSEMENT_FOOTER_PATH, // videos with gray descriptions
+                        "high-ptsZ" // videos for membership only
+                )
         );
 
-        bufferGroupList.addAll(
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_RECOMMENDED_VIDEO,
-                        "endorsement_header_footer" // videos with gray descriptions
-                ),
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_RECOMMENDED_VIDEO,
-                        "high-ptsZ" // videos for membership only
-                ),
+        feedOnlyGroupList.addAll(
                 new ByteArrayFilterGroup(
                         Settings.HIDE_LOW_VIEWS_VIDEO,
                         "g-highZ"  // videos with less than 1000 views
+                )
+        );
+
+        videoLockupFilterGroup.addAll(
+                new StringFilterGroup(
+                        Settings.HIDE_RECOMMENDED_VIDEO,
+                        ENDORSEMENT_FOOTER_PATH
                 )
         );
     }
@@ -75,21 +72,23 @@ public final class FeedVideoFilter extends Filter {
     public boolean isFiltered(String path, @Nullable String identifier, String allValue, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == inlineShorts) {
-            if (!RootView.isSearchBarActive()) {
-                return false;
+            if (RootView.isSearchBarActive()) {
+                return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
-        } else {
-            if (contentIndex != 0) {
-                return false;
-            }
-            if (matchedGroup == videoLockup && !feedVideoPattern.matches(allValue)) {
-                return false;
-            }
-            if (!bufferGroupList.check(protobufBufferArray).isFiltered()) {
-                return false;
+            return false;
+        } else if (matchedGroup == videoLockup) {
+            if (feedOnlyVideoPattern.matches(allValue)) {
+                if (feedOnlyGroupList.check(protobufBufferArray).isFiltered()) {
+                    return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+                } else if (videoLockupFilterGroup.check(allValue).isFiltered()) {
+                    return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+                }
+            } else {
+                if (feedAndDrawerGroupList.check(protobufBufferArray).isFiltered()) {
+                    return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+                }
             }
         }
-
-        return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+        return false;
     }
 }
