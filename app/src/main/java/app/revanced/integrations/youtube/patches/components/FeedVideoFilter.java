@@ -16,7 +16,6 @@ public final class FeedVideoFilter extends Filter {
     private static final String CONVERSATION_CONTEXT_FEED_IDENTIFIER =
             "horizontalCollectionSwipeProtector=null";
     private static final String ENDORSEMENT_FOOTER_PATH = "endorsement_header_footer";
-    private static final String REMINDER_BUTTON_PATH = "set_reminder_button";
 
     private static final StringTrieSearch feedOnlyVideoPattern = new StringTrieSearch();
     // In search results, vertical video with shorts labels mostly include videos with gray descriptions.
@@ -50,6 +49,10 @@ public final class FeedVideoFilter extends Filter {
                         Settings.HIDE_RECOMMENDED_VIDEO,
                         ENDORSEMENT_FOOTER_PATH, // videos with gray descriptions
                         "high-ptsZ" // videos for membership only
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_UPCOMING_VIDEO,
+                        "set_reminder_button" // upcoming videos
                 )
         );
 
