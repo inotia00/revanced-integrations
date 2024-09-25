@@ -261,8 +261,8 @@ public final class NavigationBar {
          * if the device back button was recently pressed.</b>
          *
          * @return The active navigation tab.
-         *         If the user is in the upload video UI, this returns tab that is still visually
-         *         selected on screen (whatever tab the user was on before tapping the upload button).
+         * If the user is in the upload video UI, this returns tab that is still visually
+         * selected on screen (whatever tab the user was on before tapping the upload button).
          */
         @Nullable
         public static NavigationButton getSelectedNavigationButton() {

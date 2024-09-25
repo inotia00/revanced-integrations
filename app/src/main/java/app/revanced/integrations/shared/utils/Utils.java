@@ -445,11 +445,11 @@ public class Utils {
 
     /**
      * @return if the text contains at least 1 number character,
-     *         including any unicode numbers such as Arabic.
+     * including any unicode numbers such as Arabic.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean containsNumber(@NonNull CharSequence text) {
-        for (int index = 0, length = text.length(); index < length;) {
+        for (int index = 0, length = text.length(); index < length; ) {
             final int codePoint = Character.codePointAt(text, index);
             if (Character.isDigit(codePoint)) {
                 return true;

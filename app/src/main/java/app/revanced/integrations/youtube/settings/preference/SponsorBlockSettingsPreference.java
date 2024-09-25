@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.settings.preference;
 
 import static android.text.Html.fromHtml;
-
 import static app.revanced.integrations.shared.utils.ResourceUtils.getLayoutIdentifier;
 import static app.revanced.integrations.shared.utils.StringRef.str;
 

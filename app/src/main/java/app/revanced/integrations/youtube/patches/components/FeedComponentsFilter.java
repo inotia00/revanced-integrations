@@ -95,6 +95,7 @@ public final class FeedComponentsFilter extends Filter {
         );
 
         // Paths.
+
         final StringFilterGroup albumCard = new StringFilterGroup(
                 Settings.HIDE_ALBUM_CARDS,
                 "browsy_bar",

@@ -458,8 +458,8 @@ public class PlayerPatch {
     public static String videoId = "";
 
     public static void disableAutoSwitchMixPlaylists(@NonNull String newlyLoadedChannelId, @NonNull String newlyLoadedChannelName,
-                                       @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
-                                       final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
+                                                     @NonNull String newlyLoadedVideoId, @NonNull String newlyLoadedVideoTitle,
+                                                     final long newlyLoadedVideoLength, boolean newlyLoadedLiveStreamValue) {
         if (!Settings.DISABLE_AUTO_SWITCH_MIX_PLAYLISTS.get()) {
             return;
         }

@@ -18,7 +18,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import java.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -40,6 +39,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -422,7 +422,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
      * Checks if a preference matches the given query.
      *
      * @param preference The preference to check.
-     * @param query The search query.
+     * @param query      The search query.
      * @return True if the preference matches the query, false otherwise.
      */
     private boolean preferenceMatches(Preference preference, String query) {
@@ -474,7 +474,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     /**
      * Recursively adds a preference and its dependencies to the set of keys to include.
      *
-     * @param preference The preference to add.
+     * @param preference    The preference to add.
      * @param keysToInclude The set of keys to include.
      */
     private void addPreferenceAndDependencies(Preference preference, Set<String> keysToInclude) {
@@ -589,8 +589,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
      * Invoke the SAF(Storage Access Framework) to export settings
      */
     private void exportActivity() {
-        @SuppressLint("SimpleDateFormat")
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         final String appName = ExtendedUtils.getApplicationLabel();
         final String versionName = ExtendedUtils.getVersionName();

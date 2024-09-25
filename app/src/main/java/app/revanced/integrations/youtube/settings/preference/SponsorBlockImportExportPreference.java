@@ -83,9 +83,9 @@ public class SponsorBlockImportExportPreference extends EditTextPreference imple
             // Show the user the settings in JSON format.
             builder.setTitle(getTitle());
             builder.setNeutralButton(str("revanced_sb_settings_copy"), (dialog, which) ->
-                    Utils.setClipboard(getEditText().getText().toString(), str("revanced_sb_share_copy_settings_success")))
+                            Utils.setClipboard(getEditText().getText().toString(), str("revanced_sb_share_copy_settings_success")))
                     .setPositiveButton(android.R.string.ok, (dialog, which) ->
-                    importSettings(getEditText().getText().toString()));
+                            importSettings(getEditText().getText().toString()));
         } catch (Exception ex) {
             Logger.printException(() -> "onPrepareDialogBuilder failure", ex);
         }

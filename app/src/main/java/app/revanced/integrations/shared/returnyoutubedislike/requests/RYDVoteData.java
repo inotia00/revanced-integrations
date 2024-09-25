@@ -32,7 +32,7 @@ public final class RYDVoteData {
      * Like count can be hidden by video creator, but RYD still tracks the number
      * of like/dislikes it received thru it's browser extension and and API.
      * The raw like/dislikes can be used to calculate a percentage.
-     *
+     * <p>
      * Raw values can be null, especially for older videos with little to no views.
      */
     @Nullable

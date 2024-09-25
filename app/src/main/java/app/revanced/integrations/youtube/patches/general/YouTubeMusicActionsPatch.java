@@ -1,14 +1,11 @@
 package app.revanced.integrations.youtube.patches.general;
 
-import static app.revanced.integrations.shared.utils.StringRef.str;
-
 import androidx.annotation.NonNull;
 
 import org.apache.commons.lang3.StringUtils;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.settings.preference.ThirdPartyYouTubeMusicPreference;
 import app.revanced.integrations.youtube.utils.ExtendedUtils;
 import app.revanced.integrations.youtube.utils.VideoUtils;
 
