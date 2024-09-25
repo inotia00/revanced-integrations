@@ -181,7 +181,8 @@ public final class ShortsButtonFilter extends Filter {
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SAVE_SOUND_BUTTON,
-                        "yt_outline_list_add_"
+                        "yt_outline_list_add_",
+                        "yt_outline_bookmark_"
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS_BUTTON,
