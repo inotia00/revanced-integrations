@@ -35,6 +35,7 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.shared.RootView;
+import app.revanced.integrations.youtube.shared.ShortsPlayerState;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 import app.revanced.integrations.youtube.utils.VideoUtils;
 
@@ -445,9 +446,7 @@ public class PlayerPatch {
         if (isLiveChatOrPlaylistPanel) {
             return true;
         }
-        // There is a bug where 'Description' does not open in the flyout menu of Shorts.
-        // Check PlayerType to fix this bug.
-        return isAutoPopupPanel && !PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized();
+        return isAutoPopupPanel && ShortsPlayerState.getCurrent().isClosed();
     }
 
     public static void setInitVideoPanel(boolean initVideoPanel) {

@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
@@ -18,18 +18,25 @@ import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
-import app.revanced.integrations.youtube.patches.utils.PlayerTypeHookPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.PlayerType;
+import app.revanced.integrations.youtube.shared.ShortsPlayerState;
 import app.revanced.integrations.youtube.utils.VideoUtils;
 
 @SuppressWarnings("unused")
 public class ShortsPatch {
     private static final boolean ENABLE_TIME_STAMP = Settings.ENABLE_TIME_STAMP.get();
+    public static final boolean HIDE_SHORTS_NAVIGATION_BAR = Settings.HIDE_SHORTS_NAVIGATION_BAR.get();
+
     private static final int META_PANEL_BOTTOM_MARGIN;
     private static final double NAVIGATION_BAR_HEIGHT_PERCENTAGE;
 
     static {
+        if (HIDE_SHORTS_NAVIGATION_BAR) {
+            ShortsPlayerState.getOnChange().addObserver((ShortsPlayerState state) -> {
+                setNavigationBarLayoutParams(state);
+                return null;
+            });
+        }
         final int bottomMargin = validateValue(
                 Settings.META_PANEL_BOTTOM_MARGIN,
                 0,
@@ -158,8 +165,6 @@ public class ShortsPatch {
         return !Settings.HIDE_SHORTS_TOOLBAR.get() && original;
     }
 
-    public static final Boolean HIDE_SHORTS_NAVIGATION_BAR = Settings.HIDE_SHORTS_NAVIGATION_BAR.get();
-
     /**
      * BottomBarContainer is the parent view of {@link PivotBar},
      * And can be hidden using {@link View#setVisibility} only when it is initialized.
@@ -189,16 +194,13 @@ public class ShortsPatch {
         }
     }
 
-    public static int overrideNavigationBarHeight(int original) {
+    public static int setNavigationBarHeight(int original) {
         return HIDE_SHORTS_NAVIGATION_BAR
                 ? (int) Math.round(original * NAVIGATION_BAR_HEIGHT_PERCENTAGE)
                 : original;
     }
 
-    private static void setNavigationBarLayoutParams(boolean visible) {
-        if (!HIDE_SHORTS_NAVIGATION_BAR) {
-            return;
-        }
+    private static void setNavigationBarLayoutParams(@NonNull ShortsPlayerState shortsPlayerState) {
         final View navigationBar = bottomBarContainerRef.get();
         if (navigationBar == null) {
             return;
@@ -207,44 +209,10 @@ public class ShortsPatch {
             return;
         }
         navigationBar.setLayoutParams(
-                visible
+                shortsPlayerState.isClosed()
                         ? originalLayoutParams
                         : zeroLayoutParams
         );
-    }
-
-    /**
-     * Add a listener to the shorts player overlay View.
-     * Triggered when a regular video view is attached or detached to Windows.
-     * <p>
-     * Here are some reasons to use {@link View.OnAttachStateChangeListener} instead of {@link PlayerType}:
-     * 1. {@link View.OnAttachStateChangeListener} is triggered before {@link PlayerTypeHookPatch#setPlayerType}.
-     * 2. {@link PlayerType} can't accurately determine if the user is in the feed or in Shorts.
-     *
-     * @param view Shorts player overlay (R.id.reel_watch_player).
-     */
-    public static void onShortsCreate(View view) {
-        if (!HIDE_SHORTS_NAVIGATION_BAR) {
-            return;
-        }
-
-        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            /**
-             * Shorts opened.
-             */
-            @Override
-            public void onViewAttachedToWindow(@Nullable View v) {
-                setNavigationBarLayoutParams(false);
-            }
-
-            /**
-             * Shorts closed.
-             */
-            @Override
-            public void onViewDetachedFromWindow(@Nullable View v) {
-                setNavigationBarLayoutParams(true);
-            }
-        });
     }
 
 }
