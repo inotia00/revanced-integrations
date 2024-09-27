@@ -16,11 +16,12 @@ public final class FeedComponentsFilter extends Filter {
     private static final String CONVERSATION_CONTEXT_SUBSCRIPTIONS_IDENTIFIER =
             "heightConstraint=null";
     private static final String INLINE_EXPANSION_PATH = "inline_expansion";
+    private static final String FEED_VIDEO_PATH = "video_lockup_with_attachment";
 
-    private static final ByteArrayFilterGroup expansion =
+    private static final ByteArrayFilterGroup inlineExpansion =
             new ByteArrayFilterGroup(
                     Settings.HIDE_EXPANDABLE_CHIP,
-                    INLINE_EXPANSION_PATH
+                    "inline_expansion"
             );
 
     private static final ByteArrayFilterGroup mixPlaylists =
@@ -38,8 +39,8 @@ public final class FeedComponentsFilter extends Filter {
 
     private final StringFilterGroup channelProfile;
     private final StringFilterGroup communityPosts;
+    private final StringFilterGroup expandableChip;
     private final ByteArrayFilterGroup visitStoreButton;
-
     private final StringFilterGroup videoLockup;
 
     private static final StringTrieSearch communityPostsFeedGroupSearch = new StringTrieSearch();
@@ -83,7 +84,7 @@ public final class FeedComponentsFilter extends Filter {
 
         videoLockup = new StringFilterGroup(
                 null,
-                "video_lockup_with_attachment.eml"
+                FEED_VIDEO_PATH
         );
 
         addIdentifierCallbacks(
@@ -124,10 +125,11 @@ public final class FeedComponentsFilter extends Filter {
                 "attribution.eml" // new layout
         );
 
-        final StringFilterGroup expandableChip = new StringFilterGroup(
+        expandableChip = new StringFilterGroup(
                 Settings.HIDE_EXPANDABLE_CHIP,
                 INLINE_EXPANSION_PATH,
-                "inline_expander"
+                "inline_expander",
+                "expandable_metadata.eml"
         );
 
         final StringFilterGroup feedSurvey = new StringFilterGroup(
@@ -240,8 +242,13 @@ public final class FeedComponentsFilter extends Filter {
             if (!communityPostsFeedGroup.check(allValue).isFiltered()) {
                 return false;
             }
+        } else if (matchedGroup == expandableChip) {
+            if (path.startsWith(FEED_VIDEO_PATH)) {
+                return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            return false;
         } else if (matchedGroup == videoLockup) {
-            if (path.startsWith("CellType|") && expansion.check(protobufBufferArray).isFiltered()) {
+            if (path.startsWith("CellType|") && inlineExpansion.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
