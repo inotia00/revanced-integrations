@@ -16,7 +16,7 @@ enum class LockModeState {
 
     companion object {
 
-        private val nameToLockModeState = values().associateBy { it.name }
+        private val nameToLockModeState = entries.associateBy { it.name }
 
         @JvmStatic
         fun setFromString(enumName: String) {

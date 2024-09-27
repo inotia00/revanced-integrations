@@ -47,7 +47,7 @@ enum class PlayerType {
 
     companion object {
 
-        private val nameToPlayerType = values().associateBy { it.name }
+        private val nameToPlayerType = entries.associateBy { it.name }
 
         @JvmStatic
         fun setFromString(enumName: String) {
@@ -129,12 +129,12 @@ enum class PlayerType {
 
     /**
      * Check if the current player type is
-     * [WATCH_WHILE_MAXIMIZED], [WATCH_WHILE_FULLSCREEN], [WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED].
+     * [WATCH_WHILE_MAXIMIZED], [WATCH_WHILE_FULLSCREEN], [WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED], [WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN].
      *
      * Useful to check if a regular video is being played.
      */
     fun isMaximizedOrFullscreenOrSliding(): Boolean {
-        return this == WATCH_WHILE_MAXIMIZED || this == WATCH_WHILE_FULLSCREEN || this == WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED
+        return this == WATCH_WHILE_MAXIMIZED || this == WATCH_WHILE_FULLSCREEN || this == WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED || this == WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN
     }
 
     /**
