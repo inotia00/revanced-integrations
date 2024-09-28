@@ -71,8 +71,8 @@ public class StreamingDataRequest {
 
     @GuardedBy("itself")
     private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
-            new LinkedHashMap<>(10) {
-                private static final int CACHE_LIMIT = 5;
+            new LinkedHashMap<>(40) {
+                private static final int CACHE_LIMIT = 20;
 
                 @Override
                 protected boolean removeEldestEntry(Entry eldest) {
