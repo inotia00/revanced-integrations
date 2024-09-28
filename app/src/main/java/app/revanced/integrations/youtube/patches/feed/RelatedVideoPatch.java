@@ -12,8 +12,10 @@ import app.revanced.integrations.youtube.shared.RootView;
 public final class RelatedVideoPatch {
     private static final boolean HIDE_RELATED_VIDEOS = Settings.HIDE_RELATED_VIDEOS.get();
 
+    private static final int OFFSET = Settings.RELATED_VIDEOS_OFFSET.get();
+
     // video title,channel bar, video action bar, comment
-    private static final int MAX_ITEM_COUNT = 4;
+    private static final int MAX_ITEM_COUNT = 4 + OFFSET;
 
     private static final AtomicBoolean engagementPanelOpen = new AtomicBoolean(false);
 
