@@ -263,7 +263,7 @@ public class Utils {
 
     public static Resources getResources() {
         if (resources == null) {
-            return getLocalizedContextAndSetResources(context).getResources();
+            return getLocalizedContextAndSetResources(getContext()).getResources();
         } else {
             return resources;
         }

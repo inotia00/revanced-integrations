@@ -1,12 +1,18 @@
 package app.revanced.integrations.shared.utils;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StringRef {
+@SuppressLint("DiscouragedApi")
+public class StringRef extends Utils {
+    private static Resources resources;
 
     // must use a thread safe map, as this class is used both on and off the main thread
     private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap<>());
@@ -20,12 +26,7 @@ public class StringRef {
      */
     @NonNull
     public static StringRef sfc(@NonNull String id) {
-        StringRef ref = strings.get(id);
-        if (ref == null) {
-            ref = new StringRef(id);
-            strings.put(id, ref);
-        }
-        return ref;
+        return strings.computeIfAbsent(id, StringRef::new);
     }
 
     /**
@@ -72,18 +73,22 @@ public class StringRef {
      */
     @NonNull
     public static StringRef constant(@NonNull String value) {
-        return new StringRef(value);
+        final StringRef ref = new StringRef(value);
+        ref.resolved = true;
+        return ref;
     }
 
     /**
      * Shorthand for <code>constant("")</code>
      * Its value always resolves to empty string
      */
+    @SuppressLint("StaticFieldLeak")
     @NonNull
     public static final StringRef empty = constant("");
 
     @NonNull
-    private final String value;
+    private String value;
+    private boolean resolved;
 
     public StringRef(@NonNull String resName) {
         this.value = resName;
@@ -92,6 +97,34 @@ public class StringRef {
     @Override
     @NonNull
     public String toString() {
-        return ResourceUtils.getString(value);
+        if (!resolved) {
+            try {
+                Context context = getContext();
+                if (resources == null) {
+                    resources = getResources();
+                }
+                if (resources != null) {
+                    value = ResourceUtils.getString(value);
+                    resolved = true;
+                    return value;
+                }
+                resources = context.getResources();
+                if (resources != null) {
+                    final String packageName = context.getPackageName();
+                    final int identifier = resources.getIdentifier(value, "string", packageName);
+                    if (identifier == 0)
+                        Logger.printException(() -> "Resource not found: " + value);
+                    else
+                        value = resources.getString(identifier);
+                    resolved = true;
+                } else {
+                    Logger.printException(() -> "Could not resolve resources!");
+                }
+            } catch (Exception ex) {
+                Logger.initializationException(StringRef.class, "Context is null!", ex);
+            }
+        }
+
+        return value;
     }
 }
