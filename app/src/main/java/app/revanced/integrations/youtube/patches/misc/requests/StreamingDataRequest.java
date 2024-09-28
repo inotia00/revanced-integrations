@@ -30,8 +30,8 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 public class StreamingDataRequest {
     private static final ClientType[] allClientTypes = {
-            ClientType.IOS,
             ClientType.ANDROID_VR,
+            ClientType.IOS,
             ClientType.ANDROID_UNPLUGGED
     };
 
@@ -62,24 +62,17 @@ public class StreamingDataRequest {
     /**
      * TCP connection and HTTP read timeout.
      */
-    private static final int HTTP_TIMEOUT_MILLISECONDS = 10 * 1000;
+    private static final int HTTP_TIMEOUT_MILLISECONDS = 5 * 1000;
 
     /**
      * Any arbitrarily large value, but must be at least twice {@link #HTTP_TIMEOUT_MILLISECONDS}
      */
-    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000;
+    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 10 * 1000;
 
     @GuardedBy("itself")
     private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
-            new LinkedHashMap<>(100) {
-                /**
-                 * Cache limit must be greater than the maximum number of videos open at once,
-                 * which theoretically is more than 4 (3 Shorts + one regular minimized video).
-                 * But instead use a much larger value, to handle if a video viewed a while ago
-                 * is somehow still referenced.  Each stream is a small array of Strings
-                 * so memory usage is not a concern.
-                 */
-                private static final int CACHE_LIMIT = 50;
+            new LinkedHashMap<>(10) {
+                private static final int CACHE_LIMIT = 5;
 
                 @Override
                 protected boolean removeEldestEntry(Entry eldest) {
