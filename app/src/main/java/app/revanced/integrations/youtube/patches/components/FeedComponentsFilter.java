@@ -82,6 +82,12 @@ public final class FeedComponentsFilter extends Filter {
                 "search_bar_entry_point"
         );
 
+        final StringFilterGroup tasteBuilder = new StringFilterGroup(
+                Settings.HIDE_FEED_SURVEY,
+                "selectable_item.eml",
+                "cell_button.eml"
+        );
+
         videoLockup = new StringFilterGroup(
                 null,
                 FEED_VIDEO_PATH
@@ -92,6 +98,7 @@ public final class FeedComponentsFilter extends Filter {
                 communityPosts,
                 expandableShelf,
                 feedSearchBar,
+                tasteBuilder,
                 videoLockup
         );
 
