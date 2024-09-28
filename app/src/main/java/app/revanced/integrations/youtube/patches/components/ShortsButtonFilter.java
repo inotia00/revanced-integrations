@@ -196,8 +196,19 @@ public final class ShortsButtonFilter extends Filter {
                         Settings.HIDE_SHORTS_USE_TEMPLATE_BUTTON,
                         "yt_outline_template_add"
                 ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_GREEN_SCREEN_BUTTON,
+                        "shorts_green_screen"
+                ),
                 useThisSoundButton
         );
+    }
+
+    private boolean isEverySuggestedActionFilterEnabled() {
+        for (ByteArrayFilterGroup group : suggestedActionsGroupList)
+            if (!group.isEnabled()) return false;
+
+        return true;
     }
 
     @Override
@@ -227,6 +238,9 @@ public final class ShortsButtonFilter extends Filter {
         }
 
         if (matchedGroup == suggestedAction) {
+            if (isEverySuggestedActionFilterEnabled()) {
+                return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
             // Suggested actions can be at the start or in the middle of a path.
             if (suggestedActionsGroupList.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
