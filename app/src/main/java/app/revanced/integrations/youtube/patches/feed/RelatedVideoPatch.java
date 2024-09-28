@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.BottomSheetState;
 import app.revanced.integrations.youtube.shared.RootView;
 
 @SuppressWarnings("unused")
@@ -28,13 +29,19 @@ public final class RelatedVideoPatch {
         if (!HIDE_RELATED_VIDEOS) {
             return itemCounts;
         }
+        if (itemCounts < MAX_ITEM_COUNT) {
+            return itemCounts;
+        }
         if (!RootView.isPlayerActive()) {
+            return itemCounts;
+        }
+        if (BottomSheetState.getCurrent().isOpen()) {
             return itemCounts;
         }
         if (engagementPanelOpen.get()) {
             return itemCounts;
         }
-        return Math.min(itemCounts, MAX_ITEM_COUNT);
+        return MAX_ITEM_COUNT;
     }
 
 }
