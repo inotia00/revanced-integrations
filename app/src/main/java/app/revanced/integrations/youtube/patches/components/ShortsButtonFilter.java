@@ -144,6 +144,10 @@ public final class ShortsButtonFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_REMIX_BUTTON,
                         "reel_remix_button"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.DISABLE_SHORTS_LIKE_BUTTON_FOUNTAIN_ANIMATION,
+                        "shorts_like_fountain"
                 )
         );
 
