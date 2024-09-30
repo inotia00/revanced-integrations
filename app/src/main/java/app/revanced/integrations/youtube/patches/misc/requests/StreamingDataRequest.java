@@ -31,8 +31,8 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class StreamingDataRequest {
     private static final ClientType[] allClientTypes = {
             ClientType.ANDROID_VR,
+            ClientType.ANDROID_UNPLUGGED,
             ClientType.IOS,
-            ClientType.ANDROID_UNPLUGGED
     };
 
     private static final ClientType[] clientTypesToUse;
@@ -60,19 +60,31 @@ public class StreamingDataRequest {
     }
 
     /**
+     * How long to keep fetches until they are expired.
+     */
+    private static final long CACHE_RETENTION_TIME_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes
+
+    /**
      * TCP connection and HTTP read timeout.
      */
-    private static final int HTTP_TIMEOUT_MILLISECONDS = 5 * 1000;
+    private static final int HTTP_TIMEOUT_MILLISECONDS = 10 * 1000;
 
     /**
      * Any arbitrarily large value, but must be at least twice {@link #HTTP_TIMEOUT_MILLISECONDS}
      */
-    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 10 * 1000;
+    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000;
 
     @GuardedBy("itself")
     private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
-            new LinkedHashMap<>(40) {
-                private static final int CACHE_LIMIT = 20;
+            new LinkedHashMap<>(30) {
+                /**
+                 * Cache limit must be greater than the maximum number of videos open at once,
+                 * which theoretically is more than 4 (3 Shorts + one regular minimized video).
+                 * But instead use a much larger value, to handle if a video viewed a while ago
+                 * is somehow still referenced.  Each stream is a small array of Strings
+                 * so memory usage is not a concern.
+                 */
+                private static final int CACHE_LIMIT = 15;
 
                 @Override
                 protected boolean removeEldestEntry(Entry eldest) {
@@ -80,14 +92,24 @@ public class StreamingDataRequest {
                 }
             });
 
-    public static void fetchRequest(String videoId, Map<String, String> fetchHeaders) {
-        // Always fetch, even if there is a existing request for the same video.
-        cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
+    public static void fetchRequest(@NonNull String videoId, Map<String, String> fetchHeaders) {
+        synchronized (cache) {
+            // Remove any expired entries.
+            final long now = System.currentTimeMillis();
+            cache.values().removeIf(request -> {
+                final boolean expired = request.isExpired(now);
+                if (expired) Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
+                return expired;
+            });
+            cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
+        }
     }
 
     @Nullable
     public static StreamingDataRequest getRequestForVideoId(@Nullable String videoId) {
-        return cache.get(videoId);
+        synchronized (cache) {
+            return cache.get(videoId);
+        }
     }
 
     private static void handleConnectionError(String toastMessage, @Nullable Exception ex) {
@@ -173,13 +195,25 @@ public class StreamingDataRequest {
         return null;
     }
 
+    private final long timeFetched;
     private final String videoId;
     private final Future<ByteBuffer> future;
 
     private StreamingDataRequest(String videoId, Map<String, String> playerHeaders) {
         Objects.requireNonNull(playerHeaders);
+        this.timeFetched = System.currentTimeMillis();
         this.videoId = videoId;
         this.future = Utils.submitOnBackgroundThread(() -> fetch(videoId, playerHeaders));
+    }
+
+    public boolean isExpired(long now) {
+        final long timeSinceCreation = now - timeFetched;
+        if (timeSinceCreation > CACHE_RETENTION_TIME_MILLISECONDS) {
+            return true;
+        }
+
+        // Only expired if the fetch failed (API null response).
+        return (fetchCompleted() && getStream() == null);
     }
 
     public boolean fetchCompleted() {
