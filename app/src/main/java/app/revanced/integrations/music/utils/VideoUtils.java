@@ -6,6 +6,7 @@ import static app.revanced.integrations.shared.utils.StringRef.str;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -68,6 +69,13 @@ public class VideoUtils extends IntentUtils {
     public static void openInYouTubeMusic(@NonNull String songId) {
         final String url = String.format("vnd.youtube.music://%s", songId);
         launchView(url, context.getPackageName());
+    }
+
+    /**
+     * Rest of the implementation added by patch.
+     */
+    public static void shuffleTracks() {
+        Log.d("Extended: VideoUtils", "Tracks are shuffled");
     }
 
     /**

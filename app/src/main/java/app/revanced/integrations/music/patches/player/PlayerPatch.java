@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.shared.VideoType;
+import app.revanced.integrations.music.utils.VideoUtils;
 
 @SuppressWarnings({"unused"})
 public class PlayerPatch {
@@ -145,14 +146,16 @@ public class PlayerPatch {
         return Settings.HIDE_FULLSCREEN_SHARE_BUTTON.get() ? 0 : original;
     }
 
-    public static void setShuffleState(int buttonState) {
+    public static void setShuffleState(Enum<?> shuffleState) {
         if (!Settings.REMEMBER_SHUFFLE_SATE.get())
             return;
-        Settings.SHUFFLE_SATE.save(buttonState);
+        Settings.ALWAYS_SHUFFLE.save(shuffleState.ordinal() == 1);
     }
 
-    public static int getShuffleState() {
-        return Settings.SHUFFLE_SATE.get();
+    public static void shuffleTracks() {
+        if (!Settings.ALWAYS_SHUFFLE.get())
+            return;
+        VideoUtils.shuffleTracks();
     }
 
     public static boolean rememberRepeatState(boolean original) {
