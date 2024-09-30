@@ -73,6 +73,14 @@ public class AppClient {
             USER_AGENT_VERSION_IOS +
             " like Mac OS X)";
 
+    // ANDROID ANDROID_CREATOR
+    private static final String CLIENT_VERSION_ANDROID_CREATOR = "24.14.10";
+    private static final String USER_AGENT_ANDROID_CREATOR = "com.google.android.apps.youtube.creator/" +
+            CLIENT_VERSION_ANDROID_CREATOR +
+            " (Linux; U; Android " +
+            OS_VERSION_ANDROID +
+            "; GB) gzip";
+
     // ANDROID VR
     /**
      * The hardcoded client version of the Android VR app used for InnerTube requests with this client.
@@ -116,13 +124,13 @@ public class AppClient {
      * The device machine id for the Chromecast with Google TV 4K.
      *
      * <p>
-     * See <a href="https://dumps.tadiphone.dev/dumps/google/sabrina">this GitLab</a> for more
+     * See <a href="https://dumps.tadiphone.dev/dumps/google/kirkwood">this GitLab</a> for more
      * information.
      * </p>
      */
-    private static final String DEVICE_MODEL_ANDROID_UNPLUGGED = "Chromecast";
-    private static final String OS_VERSION_ANDROID_UNPLUGGED = "12";
-    private static final int ANDROID_SDK_VERSION_ANDROID_UNPLUGGED = 31;
+    private static final String DEVICE_MODEL_ANDROID_UNPLUGGED = "Google TV Streamer";
+    private static final String OS_VERSION_ANDROID_UNPLUGGED = "14";
+    private static final int ANDROID_SDK_VERSION_ANDROID_UNPLUGGED = 34;
     private static final String USER_AGENT_ANDROID_UNPLUGGED = "com.google.android.apps.youtube.unplugged/" +
             CLIENT_VERSION_ANDROID_UNPLUGGED +
             " (Linux; U; Android " +
@@ -170,6 +178,15 @@ public class AppClient {
                 OS_VERSION_IOS,
                 null,
                 USER_AGENT_IOS
+        ),
+        ANDROID_CREATOR(14,
+                null,
+                DEVICE_MODEL_ANDROID,
+                CLIENT_VERSION_ANDROID_CREATOR,
+                OS_NAME_ANDROID,
+                OS_VERSION_ANDROID,
+                ANDROID_SDK_VERSION_ANDROID,
+                USER_AGENT_ANDROID_CREATOR
         ),
         ANDROID_VR(28,
                 null,
