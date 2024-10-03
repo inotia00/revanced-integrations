@@ -112,7 +112,7 @@ public class AppClient {
      * Package name for YouTube VR (Meta Quests): com.google.android.apps.youtube.vr.oculus
      * Package name for YouTube VR (ByteDance Pico 4): com.google.android.apps.youtube.vr.pico
      */
-    private static final String USER_AGENT_ANDROID_VR = "com.google.android.youtube/" +
+    private static final String USER_AGENT_ANDROID_VR = "com.google.android.apps.youtube.vr.oculus/" +
             CLIENT_VERSION_ANDROID_VR +
             " (Linux; U; Android " +
             OS_VERSION_ANDROID_VR +
