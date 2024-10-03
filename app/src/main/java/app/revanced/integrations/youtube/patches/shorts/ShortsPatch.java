@@ -157,6 +157,12 @@ public class ShortsPatch {
         return Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON.get() ? 0 : original;
     }
 
+    // YouTube 18.29.38 ~ YouTube 19.28.42
+    public static boolean hideShortsPausedHeader() {
+        return Settings.HIDE_SHORTS_PAUSED_HEADER.get();
+    }
+
+    // YouTube 19.29.42 ~
     public static boolean hideShortsPausedHeader(boolean original) {
         return Settings.HIDE_SHORTS_PAUSED_HEADER.get() || original;
     }
