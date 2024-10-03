@@ -236,28 +236,6 @@ public class GeneralPatch {
 
     // endregion
 
-    // region [Layout switch] patch
-
-    public static boolean enableTabletLayout() {
-        try {
-            return Settings.ENABLE_TABLET_LAYOUT.get();
-        } catch (Exception ex) {
-            Logger.printException(() -> "enableTabletLayout failed", ex);
-        }
-        return false;
-    }
-
-    public static int enablePhoneLayout(int original) {
-        try {
-            return Settings.ENABLE_PHONE_LAYOUT.get() ? 480 : original;
-        } catch (Exception ex) {
-            Logger.printException(() -> "getLayoutOverride failed", ex);
-        }
-        return original;
-    }
-
-    // endregion
-
     // region [Remove viewer discretion dialog] patch
 
     /**

@@ -33,6 +33,7 @@ import app.revanced.integrations.youtube.patches.alternativethumbnails.Alternati
 import app.revanced.integrations.youtube.patches.alternativethumbnails.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.general.ChangeStartPagePatch;
 import app.revanced.integrations.youtube.patches.general.ChangeStartPagePatch.StartPage;
+import app.revanced.integrations.youtube.patches.general.LayoutSwitchPatch.FormFactor;
 import app.revanced.integrations.youtube.patches.general.YouTubeMusicActionsPatch;
 import app.revanced.integrations.youtube.patches.misc.SpoofStreamingDataPatch;
 import app.revanced.integrations.youtube.patches.misc.WatchHistoryPatch.WatchHistoryType;
@@ -148,8 +149,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_SNACK_BAR = new BooleanSetting("revanced_hide_snack_bar", FALSE);
     public static final BooleanSetting REMOVE_VIEWER_DISCRETION_DIALOG = new BooleanSetting("revanced_remove_viewer_discretion_dialog", FALSE);
 
-    public static final BooleanSetting ENABLE_PHONE_LAYOUT = new BooleanSetting("revanced_enable_phone_layout", FALSE, true);
-    public static final BooleanSetting ENABLE_TABLET_LAYOUT = new BooleanSetting("revanced_enable_tablet_layout", FALSE, true);
+    public static final EnumSetting<FormFactor> CHANGE_LAYOUT = new EnumSetting<>("revanced_change_layout", FormFactor.ORIGINAL, true);
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true, "revanced_spoof_app_version_user_dialog_message");
     public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "18.17.43", true, parent(SPOOF_APP_VERSION));
 

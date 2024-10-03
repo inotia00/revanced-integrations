@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.SwitchPreference;
 
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.patches.general.LayoutSwitchPatch;
 import app.revanced.integrations.youtube.patches.general.MiniplayerPatch;
 import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.patches.utils.ReturnYouTubeDislikePatch;
@@ -97,12 +98,7 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
     private static void LayoutOverrideLinks() {
         enableDisablePreferences(
                 ExtendedUtils.isTablet(),
-                Settings.ENABLE_TABLET_LAYOUT,
                 Settings.FORCE_FULLSCREEN
-        );
-        enableDisablePreferences(
-                !ExtendedUtils.isTablet(),
-                Settings.ENABLE_PHONE_LAYOUT
         );
     }
 
@@ -110,11 +106,8 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
      * Enable/Disable Preferences not working in tablet layout
      */
     private static void TabletLayoutLinks() {
-        final boolean isTabletDevice = ExtendedUtils.isTablet() &&
-                !Settings.ENABLE_PHONE_LAYOUT.get();
-        final boolean isEnabledTabletLayout = Settings.ENABLE_TABLET_LAYOUT.get();
-
-        final boolean isTablet = isTabletDevice || isEnabledTabletLayout;
+        final boolean isTablet = ExtendedUtils.isTablet() &&
+                !LayoutSwitchPatch.phoneLayoutEnabled();
 
         enableDisablePreferences(
                 isTablet,
