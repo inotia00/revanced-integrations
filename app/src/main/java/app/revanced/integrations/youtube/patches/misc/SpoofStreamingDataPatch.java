@@ -19,7 +19,6 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class SpoofStreamingDataPatch {
     private static final boolean SPOOF_STREAMING_DATA = Settings.SPOOF_STREAMING_DATA.get();
-    private static final ClientType SPOOF_STREAMING_DATA_TYPE = Settings.SPOOF_STREAMING_DATA_TYPE.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -56,6 +55,10 @@ public class SpoofStreamingDataPatch {
      * Injection point.
      * <p>
      * Blocks /initplayback requests.
+     * <p>
+     * In some cases, blocking all URLs containing the path `initplayback`
+     * using localhost can also cause playback issues.
+     * See <a href="https://github.com/inotia00/ReVanced_Extended/issues/2416">this GitHub Issue</a>.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
         if (SPOOF_STREAMING_DATA) {
@@ -64,17 +67,9 @@ public class SpoofStreamingDataPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
-                    String replacementUriString = (SPOOF_STREAMING_DATA_TYPE == ClientType.IOS)
-                            ? UNREACHABLE_HOST_URI_STRING
-                            // TODO: Ideally, a local proxy could be setup and block
-                            //  the request the same way as Burp Suite is capable of
-                            //  because that way the request is never sent to YouTube unnecessarily.
-                            //  Just using localhost unfortunately does not work.
-                            : originalUri.buildUpon().clearQuery().build().toString();
+                    Logger.printDebug(() -> "Blocking 'initplayback' by clearing query");
 
-                    Logger.printDebug(() -> "Blocking 'initplayback' by returning unreachable url");
-
-                    return replacementUriString;
+                    return originalUri.buildUpon().clearQuery().build().toString();
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "blockInitPlaybackRequest failure", ex);
@@ -158,7 +153,7 @@ public class SpoofStreamingDataPatch {
                     String path = uri.getPath();
                     String clientNameQueryKey = "c";
                     final boolean iosClient = "IOS".equals(uri.getQueryParameter(clientNameQueryKey));
-                    if (iosClient && path != null && path.contains("videoplayback")) {
+                    if (path != null && path.contains("videoplayback")) {
                         return null;
                     }
                 }
