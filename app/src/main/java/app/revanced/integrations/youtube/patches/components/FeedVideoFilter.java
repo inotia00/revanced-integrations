@@ -25,6 +25,11 @@ public final class FeedVideoFilter extends Filter {
     private final ByteArrayFilterGroupList feedAndDrawerGroupList = new ByteArrayFilterGroupList();
     private final ByteArrayFilterGroupList feedOnlyGroupList = new ByteArrayFilterGroupList();
     private final StringFilterGroupList videoLockupFilterGroup = new StringFilterGroupList();
+    private static final ByteArrayFilterGroup relatedVideo =
+            new ByteArrayFilterGroup(
+                    Settings.HIDE_RELATED_VIDEOS,
+                    "relatedH"
+            );
 
     public FeedVideoFilter() {
         feedOnlyVideoPattern.addPattern(CONVERSATION_CONTEXT_FEED_IDENTIFIER);
@@ -80,6 +85,9 @@ public final class FeedVideoFilter extends Filter {
             }
             return false;
         } else if (matchedGroup == videoLockup) {
+            if (relatedVideo.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
             if (feedOnlyVideoPattern.matches(allValue)) {
                 if (feedOnlyGroupList.check(protobufBufferArray).isFiltered()) {
                     return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
