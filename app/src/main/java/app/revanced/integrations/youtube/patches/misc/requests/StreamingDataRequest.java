@@ -100,6 +100,12 @@ public class StreamingDataRequest {
         Logger.printInfo(() -> toastMessage, ex);
     }
 
+    private static final String[] REQUEST_HEADER_KEYS = {
+            "Authorization", // Available only to logged in users.
+            "X-GOOG-API-FORMAT-VERSION",
+            "X-Goog-Visitor-Id"
+    };
+
     @Nullable
     private static HttpURLConnection send(ClientType clientType, String videoId,
                                           Map<String, String> playerHeaders) {
@@ -116,10 +122,11 @@ public class StreamingDataRequest {
             connection.setConnectTimeout(HTTP_TIMEOUT_MILLISECONDS);
             connection.setReadTimeout(HTTP_TIMEOUT_MILLISECONDS);
 
-            String authHeader = playerHeaders.get("Authorization");
-            String visitorId = playerHeaders.get("X-Goog-Visitor-Id");
-            connection.setRequestProperty("Authorization", authHeader);
-            connection.setRequestProperty("X-Goog-Visitor-Id", visitorId);
+            for (String key : REQUEST_HEADER_KEYS) {
+                if (playerHeaders.containsKey(key)) {
+                    connection.setRequestProperty(key, playerHeaders.get(key));
+                }
+            }
 
             String innerTubeBody = PlayerRoutes.createInnertubeBody(clientType, videoId);
             byte[] requestBody = innerTubeBody.getBytes(StandardCharsets.UTF_8);
