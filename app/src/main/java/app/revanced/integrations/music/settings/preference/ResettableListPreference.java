@@ -21,11 +21,12 @@ public class ResettableListPreference {
             final String settingsKey = setting.key;
 
             final String entryKey = settingsKey + "_entries";
-            final String entryValueKey = settingsKey + "_entry_value";
+            final String entryValueKey = settingsKey + "_entry_values";
             final String[] mEntries = getStringArray(entryKey);
             final String[] mEntryValues = getStringArray(entryValueKey);
 
             final int findIndex = Arrays.binarySearch(mEntryValues, setting.get());
+            if (defaultIndex == -1) defaultIndex = mEntryValues.length - 1;
             mClickedDialogEntryIndex = findIndex >= 0 ? findIndex : defaultIndex;
 
             getDialogBuilder(mActivity)
