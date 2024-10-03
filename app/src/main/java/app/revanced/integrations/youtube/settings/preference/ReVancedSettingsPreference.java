@@ -121,7 +121,6 @@ public class ReVancedSettingsPreference extends ReVancedPreferenceFragment {
                 Settings.DISABLE_ENGAGEMENT_PANEL,
                 Settings.HIDE_COMMUNITY_POSTS_HOME_RELATED_VIDEOS,
                 Settings.HIDE_COMMUNITY_POSTS_SUBSCRIPTIONS,
-                Settings.HIDE_LATEST_VIDEOS_BUTTON,
                 Settings.HIDE_MIX_PLAYLISTS,
                 Settings.HIDE_RELATED_VIDEO_OVERLAY,
                 Settings.SHOW_VIDEO_TITLE_SECTION
