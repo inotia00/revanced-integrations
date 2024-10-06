@@ -7,7 +7,6 @@ import static app.revanced.integrations.shared.utils.Utils.isSDKAbove;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.Arrays;
 
@@ -129,13 +128,11 @@ public class PlayerPatch {
         return originalColor;
     }
 
-    public static void hideAudioVideoSwitchToggle(View view) {
-        if (!Settings.HIDE_AUDIO_VIDEO_SWITCH_TOGGLE.get())
-            return;
-
-        if (view.getParent() instanceof ViewGroup viewGroup) {
-            viewGroup.setVisibility(View.INVISIBLE);
+    public static void hideAudioVideoSwitchToggle(View view, int originalVisibility) {
+        if (Settings.HIDE_AUDIO_VIDEO_SWITCH_TOGGLE.get()) {
+            originalVisibility = View.GONE;
         }
+        view.setVisibility(originalVisibility);
     }
 
     public static void hideDoubleTapOverlayFilter(View view) {
