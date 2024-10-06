@@ -123,8 +123,9 @@ public class StreamingDataRequest {
             connection.setReadTimeout(HTTP_TIMEOUT_MILLISECONDS);
 
             for (String key : REQUEST_HEADER_KEYS) {
-                if (playerHeaders.containsKey(key)) {
-                    connection.setRequestProperty(key, playerHeaders.get(key));
+                String value = playerHeaders.get(key);
+                if (value != null) {
+                    connection.setRequestProperty(key, value);
                 }
             }
 
