@@ -482,6 +482,12 @@ public class GeneralPatch {
         }
     }
 
+    public static void hideYouTubeDoodles(ImageView imageView, Drawable drawable) {
+        if (!Settings.HIDE_YOUTUBE_DOODLES.get()) {
+            imageView.setImageDrawable(drawable);
+        }
+    }
+
     private static final int settingsDrawableId = ResourceUtils.getDrawableIdentifier("yt_outline_gear_black_24");
 
     public static int getCreateButtonDrawableId(int original) {
