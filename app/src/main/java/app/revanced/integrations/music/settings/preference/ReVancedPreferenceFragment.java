@@ -6,7 +6,6 @@ import static app.revanced.integrations.music.settings.Settings.CUSTOM_FILTER_ST
 import static app.revanced.integrations.music.settings.Settings.CUSTOM_PLAYBACK_SPEEDS;
 import static app.revanced.integrations.music.settings.Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME;
 import static app.revanced.integrations.music.settings.Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS;
-import static app.revanced.integrations.music.settings.Settings.HIDE_SETTINGS_MENU_FILTER_STRINGS;
 import static app.revanced.integrations.music.settings.Settings.OPEN_DEFAULT_APP_SETTINGS;
 import static app.revanced.integrations.music.settings.Settings.OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX;
 import static app.revanced.integrations.music.settings.Settings.SB_API_URL;
@@ -133,8 +132,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 } else if (settings.equals(BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN)
                         || settings.equals(CUSTOM_FILTER_STRINGS)
                         || settings.equals(CUSTOM_PLAYBACK_SPEEDS)
-                        || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)
-                        || settings.equals(HIDE_SETTINGS_MENU_FILTER_STRINGS)) {
+                        || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)) {
                     ResettableEditTextPreference.showDialog(mActivity, stringSetting);
                 } else if (settings.equals(EXTERNAL_DOWNLOADER_PACKAGE_NAME)) {
                     ExternalDownloaderPreference.showDialog(mActivity);
