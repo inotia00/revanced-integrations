@@ -262,6 +262,9 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             // Load and set initial preferences states
             for (Setting<?> setting : Setting.allLoadedSettings()) {
                 final Preference preference = mPreferenceManager.findPreference(setting.key);
+                if (preference != null && isSDKAbove(26)) {
+                    preference.setSingleLineTitle(false);
+                }
 
                 if (preference instanceof SwitchPreference switchPreference) {
                     BooleanSetting boolSetting = (BooleanSetting) setting;
