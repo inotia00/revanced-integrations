@@ -14,6 +14,7 @@ import app.revanced.integrations.youtube.shared.RootView;
 @SuppressWarnings("unused")
 public final class ShortsShelfFilter extends Filter {
     private static final String BROWSE_ID_HISTORY = "FEhistory";
+    private static final String BROWSE_ID_LIBRARY = "FElibrary";
     private static final String BROWSE_ID_SUBSCRIPTIONS = "FEsubscriptions";
     private static final String CONVERSATION_CONTEXT_FEED_IDENTIFIER =
             "horizontalCollectionSwipeProtector=null";
@@ -131,7 +132,7 @@ public final class ShortsShelfFilter extends Filter {
         final String browseId = RootView.getBrowseId();
         Logger.printDebug(() -> "Current browseId: " + browseId);
         switch (browseId) {
-            case BROWSE_ID_HISTORY -> {
+            case BROWSE_ID_HISTORY, BROWSE_ID_LIBRARY -> {
                 return hideHistory;
             }
             case BROWSE_ID_SUBSCRIPTIONS -> {
