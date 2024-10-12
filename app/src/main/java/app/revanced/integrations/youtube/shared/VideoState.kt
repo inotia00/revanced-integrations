@@ -22,9 +22,9 @@ enum class VideoState {
             val state = nameToVideoState[enumName]
             if (state == null) {
                 Logger.printException { "Unknown VideoState encountered: $enumName" }
-            } else if (currentVideoState != state) {
+            } else if (current != state) {
                 Logger.printDebug { "VideoState changed to: $state" }
-                currentVideoState = state
+                current = state
             }
         }
 
@@ -33,7 +33,7 @@ enum class VideoState {
          * this value may not be up to date with the actual playback state.
          */
         @JvmStatic
-        var current: VideoState?
+        var current
             get() = currentVideoState
             private set(value) {
                 currentVideoState = value

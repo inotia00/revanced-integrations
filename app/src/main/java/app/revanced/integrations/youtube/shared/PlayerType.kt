@@ -68,7 +68,7 @@ enum class PlayerType {
             get() = currentPlayerType
             private set(value) {
                 currentPlayerType = value
-                onChange(currentPlayerType)
+                onChange(value)
             }
 
         @Volatile // value is read/write from different threads

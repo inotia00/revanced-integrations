@@ -28,7 +28,7 @@ enum class ShortsPlayerState {
             get() = currentShortsPlayerState
             private set(value) {
                 currentShortsPlayerState = value
-                onChange(currentShortsPlayerState)
+                onChange(value)
             }
 
         @Volatile // value is read/write from different threads

@@ -37,7 +37,7 @@ enum class LockModeState {
             get() = currentLockModeState
             private set(value) {
                 currentLockModeState = value
-                onChange(currentLockModeState)
+                onChange(value)
             }
 
         @Volatile // value is read/write from different threads
