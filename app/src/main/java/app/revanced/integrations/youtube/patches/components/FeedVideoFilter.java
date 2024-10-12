@@ -21,7 +21,11 @@ public final class FeedVideoFilter extends Filter {
     // In search results, vertical video with shorts labels mostly include videos with gray descriptions.
     // Filters without check process.
     private final StringFilterGroup inlineShorts;
-    private final StringFilterGroup videoLockup;
+    // Used for home, related videos, subscriptions, and search results.
+    private final StringFilterGroup videoLockup = new StringFilterGroup(
+            null,
+            "video_lockup_with_attachment.eml"
+    );
     private final ByteArrayFilterGroupList feedAndDrawerGroupList = new ByteArrayFilterGroupList();
     private final ByteArrayFilterGroupList feedOnlyGroupList = new ByteArrayFilterGroupList();
     private final StringFilterGroupList videoLockupFilterGroup = new StringFilterGroupList();
@@ -41,12 +45,6 @@ public final class FeedVideoFilter extends Filter {
 
         addIdentifierCallbacks(inlineShorts);
 
-        // Used for home, related videos, subscriptions, and search results.
-        videoLockup = new StringFilterGroup(
-                null,
-                "video_lockup_with_attachment.eml"
-        );
-
         addPathCallbacks(videoLockup);
 
         feedAndDrawerGroupList.addAll(
@@ -54,10 +52,6 @@ public final class FeedVideoFilter extends Filter {
                         Settings.HIDE_RECOMMENDED_VIDEO,
                         ENDORSEMENT_FOOTER_PATH, // videos with gray descriptions
                         "high-ptsZ" // videos for membership only
-                ),
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_UPCOMING_VIDEO,
-                        "set_reminder_button" // upcoming videos
                 )
         );
 
@@ -65,6 +59,11 @@ public final class FeedVideoFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_LOW_VIEWS_VIDEO,
                         "g-highZ"  // videos with less than 1000 views
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_UPCOMING_VIDEO,
+                        "ic_play_disabled_white",
+                        "set_reminder_button" // upcoming videos
                 )
         );
 
