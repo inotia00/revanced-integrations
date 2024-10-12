@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
+import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 import app.revanced.integrations.youtube.shared.RootView;
@@ -16,6 +18,7 @@ public final class CarouselShelfFilter extends Filter {
     private static final String BROWSE_ID_HOME = "FEwhat_to_watch";
     private static final String BROWSE_ID_LIBRARY = "FElibrary";
     private static final String BROWSE_ID_NOTIFICATION = "FEactivity";
+    private static final String BROWSE_ID_NOTIFICATION_INBOX = "FEsubscriptions_inbox";
     private static final String BROWSE_ID_PLAYLIST = "VLPL";
     private static final String BROWSE_ID_SUBSCRIPTION = "FEsubscriptions";
 
@@ -24,6 +27,11 @@ public final class CarouselShelfFilter extends Filter {
             BROWSE_ID_NOTIFICATION,
             BROWSE_ID_PLAYLIST,
             BROWSE_ID_SUBSCRIPTION
+    );
+
+    private static final Supplier<Stream<String>> whitelistBrowseId = () -> Stream.of(
+            BROWSE_ID_LIBRARY,
+            BROWSE_ID_NOTIFICATION_INBOX
     );
 
     public final StringFilterGroup horizontalShelf;
@@ -53,10 +61,10 @@ public final class CarouselShelfFilter extends Filter {
             return true;
         }
         String browseId = RootView.getBrowseId();
-        if (knownBrowseId.get().anyMatch(browseId::contains)) {
+        if (knownBrowseId.get().anyMatch(browseId::equals)) {
             return true;
         }
-        if (BROWSE_ID_LIBRARY.equals(browseId)) {
+        if (whitelistBrowseId.get().anyMatch(browseId::equals)) {
             return false;
         }
         // Check NavigationBar index. If not in Library tab, then filter.
