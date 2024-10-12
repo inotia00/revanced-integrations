@@ -176,6 +176,10 @@ public class GeneralPatch {
         return Settings.SPOOF_APP_VERSION_TARGET.get();
     }
 
+    public static String getSpoofAppVersionDefault() {
+        return "6.11.52";
+    }
+
     // endregion
 
 }

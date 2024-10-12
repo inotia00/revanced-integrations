@@ -139,7 +139,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 } else if (settings.equals(SB_API_URL)) {
                     SponsorBlockApiUrlPreference.showDialog(mActivity);
                 } else if (settings.equals(SPOOF_APP_VERSION_TARGET)) {
-                    ResettableListPreference.showDialog(mActivity, stringSetting, -1);
+                    ResettableListPreference.showDialog(mActivity, stringSetting, 0);
                 } else {
                     Logger.printDebug(() -> "Failed to find the right value: " + dataString);
                 }

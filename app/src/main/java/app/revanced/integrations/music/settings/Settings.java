@@ -6,6 +6,7 @@ import static app.revanced.integrations.music.sponsorblock.objects.CategoryBehav
 
 import androidx.annotation.NonNull;
 
+import app.revanced.integrations.music.patches.general.GeneralPatch;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.FloatSetting;
@@ -103,7 +104,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting REMOVE_VIEWER_DISCRETION_DIALOG = new BooleanSetting("revanced_remove_viewer_discretion_dialog", FALSE);
     public static final BooleanSetting RESTORE_OLD_STYLE_LIBRARY_SHELF = new BooleanSetting("revanced_restore_old_style_library_shelf", FALSE, true);
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true);
-    public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "4.27.53", true);
+    public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", GeneralPatch.getSpoofAppVersionDefault(), true);
 
 
     // PreferenceScreen: Navigation bar
