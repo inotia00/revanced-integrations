@@ -2,6 +2,8 @@ package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
 
+import java.net.URLDecoder;
+
 import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
 import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroupList;
 import app.revanced.integrations.shared.patches.components.Filter;
@@ -10,7 +12,7 @@ import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.youtube.patches.utils.ReturnYouTubeChannelNamePatch;
 import app.revanced.integrations.youtube.settings.Settings;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "CharsetObjectCanBeUsed"})
 public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
     private final ByteArrayFilterGroupList shortsChannelBarAvatarFilterGroup = new ByteArrayFilterGroupList();
 
@@ -43,10 +45,11 @@ public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
 
             final String bufferString = findAsciiStrings(protobufBufferArray);
             final String splitedBufferString = channelIdIdentifierCharacter + bufferString.split(channelIdIdentifierWithDelimitingCharacter)[1];
-            final String channelId = splitedBufferString.split(delimitingCharacter)[0].replaceAll("\"", "");
-            final String handle = handleIdentifierCharacter + splitedBufferString.split(handleIdentifierWithDelimitingCharacter)[1].split(delimitingCharacter)[0];
+            final String cachedHandle = handleIdentifierCharacter + splitedBufferString.split(handleIdentifierWithDelimitingCharacter)[1].split(delimitingCharacter)[0];
+            final String channelId = splitedBufferString.split(delimitingCharacter)[0].replaceAll("\"", "").trim();
+            final String handle = URLDecoder.decode(cachedHandle, "UTF-8").trim();
 
-            ReturnYouTubeChannelNamePatch.setLastShortsChannelId(handle.trim(), channelId.trim());
+            ReturnYouTubeChannelNamePatch.setLastShortsChannelId(handle, channelId);
         } catch (Exception ex) {
             Logger.printException(() -> "setLastShortsChannelId failed", ex);
         }
