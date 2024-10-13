@@ -694,8 +694,12 @@ public class PlayerPatch {
         return Settings.HIDE_SEEKBAR.get();
     }
 
-    public static boolean hideSeekbarChapters(View view) {
-        return Settings.HIDE_SEEKBAR_CHAPTERS.get() && view.getId() == timeBarChapterViewId;
+    public static boolean disableSeekbarChapters() {
+        return Settings.DISABLE_SEEKBAR_CHAPTERS.get();
+    }
+
+    public static boolean hideSeekbarChapterLabel(View view) {
+        return Settings.HIDE_SEEKBAR_CHAPTER_LABEL.get() && view.getId() == timeBarChapterViewId;
     }
 
     public static boolean hideTimeStamp() {
