@@ -112,7 +112,7 @@ public class Whitelist {
 
         AlertDialog dialog = builder.show();
 
-        final ColorFilter cf = new PorterDuffColorFilter(ThemeUtils.getTextColor(), PorterDuff.Mode.SRC_ATOP);
+        final ColorFilter cf = new PorterDuffColorFilter(ThemeUtils.getForegroundColor(), PorterDuff.Mode.SRC_ATOP);
         Button sponsorBlockButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Button playbackSpeedButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         if (sponsorBlockButton != null && sponsorBlockDrawable != null) {

@@ -8,12 +8,14 @@ import static app.revanced.integrations.music.settings.Settings.EXTERNAL_DOWNLOA
 import static app.revanced.integrations.music.settings.Settings.HIDE_ACCOUNT_MENU_FILTER_STRINGS;
 import static app.revanced.integrations.music.settings.Settings.OPEN_DEFAULT_APP_SETTINGS;
 import static app.revanced.integrations.music.settings.Settings.OPTIONAL_SPONSOR_BLOCK_SETTINGS_PREFIX;
+import static app.revanced.integrations.music.settings.Settings.RETURN_YOUTUBE_USERNAME_ABOUT;
 import static app.revanced.integrations.music.settings.Settings.SB_API_URL;
 import static app.revanced.integrations.music.settings.Settings.SETTINGS_IMPORT_EXPORT;
 import static app.revanced.integrations.music.settings.Settings.SPOOF_APP_VERSION_TARGET;
 import static app.revanced.integrations.music.utils.ExtendedUtils.getDialogBuilder;
 import static app.revanced.integrations.music.utils.ExtendedUtils.getLayoutParams;
 import static app.revanced.integrations.music.utils.RestartUtils.showRestartDialog;
+import static app.revanced.integrations.shared.settings.BaseSettings.RETURN_YOUTUBE_USERNAME_YOUTUBE_DATA_API_V3_DEVELOPER_KEY;
 import static app.revanced.integrations.shared.settings.Setting.getSettingFromPath;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
 import static app.revanced.integrations.shared.utils.StringRef.str;
@@ -53,6 +55,7 @@ import app.revanced.integrations.music.utils.ExtendedUtils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.StringSetting;
+import app.revanced.integrations.shared.settings.preference.YouTubeDataAPIDialogBuilder;
 import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.Utils;
 
@@ -132,7 +135,8 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 } else if (settings.equals(BYPASS_IMAGE_REGION_RESTRICTIONS_DOMAIN)
                         || settings.equals(CUSTOM_FILTER_STRINGS)
                         || settings.equals(CUSTOM_PLAYBACK_SPEEDS)
-                        || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)) {
+                        || settings.equals(HIDE_ACCOUNT_MENU_FILTER_STRINGS)
+                        || settings.equals(RETURN_YOUTUBE_USERNAME_YOUTUBE_DATA_API_V3_DEVELOPER_KEY)) {
                     ResettableEditTextPreference.showDialog(mActivity, stringSetting);
                 } else if (settings.equals(EXTERNAL_DOWNLOADER_PACKAGE_NAME)) {
                     ExternalDownloaderPreference.showDialog(mActivity);
@@ -146,6 +150,8 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             } else if (settings instanceof BooleanSetting) {
                 if (settings.equals(SETTINGS_IMPORT_EXPORT)) {
                     importExportListDialogBuilder();
+                } else if (settings.equals(RETURN_YOUTUBE_USERNAME_ABOUT)) {
+                    YouTubeDataAPIDialogBuilder.showDialog(mActivity);
                 } else {
                     Logger.printDebug(() -> "Failed to find the right value: " + dataString);
                 }

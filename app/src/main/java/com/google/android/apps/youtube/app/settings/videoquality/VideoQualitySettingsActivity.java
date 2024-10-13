@@ -128,7 +128,7 @@ public class VideoQualitySettingsActivity extends Activity {
         TextView toolbarTextView = Utils.getChildView(toolbar, view -> view instanceof TextView);
         textViewRef = new WeakReference<>(toolbarTextView);
         if (toolbarTextView != null) {
-            toolbarTextView.setTextColor(ThemeUtils.getTextColor());
+            toolbarTextView.setTextColor(ThemeUtils.getForegroundColor());
         }
         toolBarParent.addView(toolbar, 0);
     }

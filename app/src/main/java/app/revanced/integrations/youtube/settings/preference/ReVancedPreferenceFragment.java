@@ -219,7 +219,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
                         TextView toolbarTextView = getChildView(toolbar, TextView.class::isInstance);
                         if (toolbarTextView != null) {
-                            toolbarTextView.setTextColor(ThemeUtils.getTextColor());
+                            toolbarTextView.setTextColor(ThemeUtils.getForegroundColor());
                         }
 
                         rootView.addView(toolbar, 0);
