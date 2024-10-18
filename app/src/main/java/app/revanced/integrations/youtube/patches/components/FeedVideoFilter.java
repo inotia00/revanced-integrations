@@ -59,11 +59,6 @@ public final class FeedVideoFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_LOW_VIEWS_VIDEO,
                         "g-highZ"  // videos with less than 1000 views
-                ),
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_UPCOMING_VIDEO,
-                        "ic_play_disabled_white",
-                        "set_reminder_button" // upcoming videos
                 )
         );
 
