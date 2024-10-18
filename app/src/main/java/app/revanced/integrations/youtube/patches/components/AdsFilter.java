@@ -38,6 +38,9 @@ public final class AdsFilter extends Filter {
                 // "carousel_footered_layout.eml"
                 "carousel_footered_layout",
 
+                // "composite_concurrent_carousel_layout"
+                "composite_concurrent_carousel_layout",
+
                 // "landscape_image_wide_button_layout.eml"
                 "landscape_image_wide_button_layout",
 
