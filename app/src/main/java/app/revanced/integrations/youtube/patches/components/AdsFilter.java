@@ -68,19 +68,6 @@ public final class AdsFilter extends Filter {
                 "_image_layout"
         );
 
-        // Unchecked keywords:
-        final StringFilterGroup generalAdsLegacyIdentifier = new StringFilterGroup(
-                Settings.HIDE_GENERAL_ADS,
-                "carousel_headered_layout",
-                "hero_promo_image",
-                "lumiere_promo_carousel",
-                "primetime_promo",
-                "product_details",
-                "text_image_button_layout",
-                "video_display_carousel_button",
-                "watch_metadata_app_promo"
-        );
-
         final StringFilterGroup merchandise = new StringFilterGroup(
                 Settings.HIDE_MERCHANDISE_SHELF,
                 "product_carousel",
@@ -112,7 +99,6 @@ public final class AdsFilter extends Filter {
         addIdentifierCallbacks(
                 alertBannerPromo,
                 generalAdsIdentifier,
-                generalAdsLegacyIdentifier,
                 merchandise,
                 paidContent,
                 selfSponsor,
@@ -125,9 +111,20 @@ public final class AdsFilter extends Filter {
         final StringFilterGroup generalAdsPath = new StringFilterGroup(
                 Settings.HIDE_GENERAL_ADS,
                 "carousel_ad",
-                "legal_disclosure"
+                "carousel_headered_layout",
+                "hero_promo_image",
+                "legal_disclosure",
+                "lumiere_promo_carousel",
+                "primetime_promo",
+                "product_details",
+                "text_image_button_layout",
+                "video_display_carousel_button",
+                "watch_metadata_app_promo"
         );
 
-        addPathCallbacks(generalAdsPath);
+        addPathCallbacks(
+                generalAdsPath,
+                viewProducts
+        );
     }
 }
