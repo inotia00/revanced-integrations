@@ -37,4 +37,9 @@ public class PatchStatus {
         return false;
     }
 
+    // Modified by a patch. Do not touch.
+    public static String RVXMusicPackageName() {
+        return "com.google.android.apps.youtube.music";
+    }
+
 }

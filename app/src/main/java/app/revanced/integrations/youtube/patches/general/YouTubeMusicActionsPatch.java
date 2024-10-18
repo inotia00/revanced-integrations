@@ -38,11 +38,6 @@ public final class YouTubeMusicActionsPatch extends VideoUtils {
         return ExtendedUtils.isPackageEnabled(PACKAGE_NAME_YOUTUBE_MUSIC);
     }
 
-    // Modified by a patch. Do not touch.
-    public static String getRVXMusicPackageName() {
-        return "com.google.android.apps.youtube.music";
-    }
-
     public static final class HookYouTubeMusicAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {

@@ -39,6 +39,7 @@ import app.revanced.integrations.youtube.patches.misc.SpoofStreamingDataPatch;
 import app.revanced.integrations.youtube.patches.misc.WatchHistoryPatch.WatchHistoryType;
 import app.revanced.integrations.youtube.patches.misc.client.AppClient.ClientType;
 import app.revanced.integrations.youtube.patches.shorts.AnimationFeedbackPatch.AnimationType;
+import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
 @SuppressWarnings("unused")
@@ -191,7 +192,7 @@ public class Settings extends BaseSettings {
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME_PLAYLIST = new StringSetting("revanced_external_downloader_package_name_playlist", "com.deniscerri.ytdl");
     public static final BooleanSetting OVERRIDE_YOUTUBE_MUSIC_BUTTON = new BooleanSetting("revanced_override_youtube_music_button", FALSE, true
             , new YouTubeMusicActionsPatch.HookYouTubeMusicAvailability());
-    public static final StringSetting THIRD_PARTY_YOUTUBE_MUSIC_PACKAGE_NAME = new StringSetting("revanced_third_party_youtube_music_package_name", YouTubeMusicActionsPatch.getRVXMusicPackageName(), true
+    public static final StringSetting THIRD_PARTY_YOUTUBE_MUSIC_PACKAGE_NAME = new StringSetting("revanced_third_party_youtube_music_package_name", PatchStatus.RVXMusicPackageName(), true
             , new YouTubeMusicActionsPatch.HookYouTubeMusicPackageNameAvailability());
 
     // PreferenceScreen: General - Settings menu
