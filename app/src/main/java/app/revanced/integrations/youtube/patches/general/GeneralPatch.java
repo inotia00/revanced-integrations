@@ -290,10 +290,9 @@ public class GeneralPatch {
     // region [Spoof app version] patch
 
     public static String getVersionOverride(String appVersion) {
-        if (!Settings.SPOOF_APP_VERSION.get())
-            return appVersion;
-
-        return Settings.SPOOF_APP_VERSION_TARGET.get();
+        return Settings.SPOOF_APP_VERSION.get()
+                ? Settings.SPOOF_APP_VERSION_TARGET.get()
+                : appVersion;
     }
 
     // endregion
@@ -488,10 +487,12 @@ public class GeneralPatch {
         }
     }
 
-    private static final int settingsDrawableId = ResourceUtils.getDrawableIdentifier("yt_outline_gear_black_24");
+    private static final int settingsDrawableId =
+            ResourceUtils.getDrawableIdentifier("yt_outline_gear_black_24");
 
     public static int getCreateButtonDrawableId(int original) {
-        return Settings.REPLACE_TOOLBAR_CREATE_BUTTON.get()
+        return Settings.REPLACE_TOOLBAR_CREATE_BUTTON.get() &&
+                settingsDrawableId != 0
                 ? settingsDrawableId
                 : original;
     }
