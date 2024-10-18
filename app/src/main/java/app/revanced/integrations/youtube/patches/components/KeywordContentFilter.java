@@ -102,11 +102,6 @@ public final class KeywordContentFilter extends Filter {
      */
     private final StringFilterGroup startsWithFilter = new StringFilterGroup(
             null, // Multiple settings are used and must be individually checked if active.
-            "home_video_with_context.eml",
-            "search_video_with_context.eml",
-            "video_with_context.eml", // Subscription tab videos.
-            "related_video_with_context.eml",
-            // A/B test for subscribed video, and sometimes when tablet layout is enabled.
             "video_lockup_with_attachment.eml",
             "compact_video.eml",
             "inline_shorts",

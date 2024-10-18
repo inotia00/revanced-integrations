@@ -204,7 +204,8 @@ public final class FeedComponentsFilter extends Filter {
                 notifyMe,
                 playables,
                 subscriptionsChannelBar,
-                ticketShelf
+                ticketShelf,
+                videoLockup
         );
 
         final StringFilterGroup communityPostsHomeAndRelatedVideos =
@@ -255,7 +256,7 @@ public final class FeedComponentsFilter extends Filter {
             }
             return false;
         } else if (matchedGroup == videoLockup) {
-            if (path.startsWith("CellType|") && inlineExpansion.check(protobufBufferArray).isFiltered()) {
+            if (contentIndex == 0 && path.startsWith("CellType|") && inlineExpansion.check(protobufBufferArray).isFiltered()) {
                 return super.isFiltered(path, identifier, allValue, protobufBufferArray, matchedGroup, contentType, contentIndex);
             }
             return false;
