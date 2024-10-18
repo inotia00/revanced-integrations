@@ -1,5 +1,6 @@
 package app.revanced.integrations.shared.returnyoutubeusername.requests;
 
+import static java.lang.Boolean.TRUE;
 import static app.revanced.integrations.shared.returnyoutubeusername.requests.ChannelRoutes.GET_CHANNEL_DETAILS;
 
 import androidx.annotation.GuardedBy;
@@ -14,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -47,9 +49,9 @@ public class ChannelRequest {
                 }
             });
 
-    public static void fetchRequestIfNeeded(@NonNull String handle, @NonNull String apiKey) {
+    public static void fetchRequestIfNeeded(@NonNull String handle, @NonNull String apiKey, Boolean userNameFirst) {
         if (!cache.containsKey(handle)) {
-            cache.put(handle, new ChannelRequest(handle, apiKey));
+            cache.put(handle, new ChannelRequest(handle, apiKey, userNameFirst));
         }
     }
 
@@ -99,15 +101,16 @@ public class ChannelRequest {
         return null;
     }
 
-    private static String fetch(@NonNull String handle, @NonNull String apiKey) {
+    private static String fetch(@NonNull String handle, @NonNull String apiKey, Boolean userNameFirst) {
         final JSONObject channelJsonObject = send(handle, apiKey);
         if (channelJsonObject != null) {
             try {
-                return channelJsonObject
+                final String userName = channelJsonObject
                         .getJSONArray("items")
                         .getJSONObject(0)
                         .getJSONObject("snippet")
                         .getString("title");
+                return authorBadgeBuilder(handle, userName, userNameFirst);
             } catch (JSONException e) {
                 Logger.printDebug(() -> "Fetch failed while processing response data for response: " + channelJsonObject);
             }
@@ -115,12 +118,29 @@ public class ChannelRequest {
         return null;
     }
 
+    private static final String AUTHOR_BADGE_FORMAT = "\u202D%s\u2009%s";
+    private static final String PARENTHESES_FORMAT = "(%s)";
+
+    private static String authorBadgeBuilder(@NonNull String handle, @NonNull String userName, Boolean userNameFirst) {
+        if (userNameFirst == null) {
+            return userName;
+        } else if (TRUE.equals(userNameFirst)) {
+            handle = String.format(Locale.ENGLISH, PARENTHESES_FORMAT, handle);
+            if (!Utils.isRightToLeftTextLayout()) {
+                return String.format(Locale.ENGLISH, AUTHOR_BADGE_FORMAT, userName, handle);
+            }
+        } else {
+            userName = String.format(Locale.ENGLISH, PARENTHESES_FORMAT, userName);
+        }
+        return String.format(Locale.ENGLISH, AUTHOR_BADGE_FORMAT, handle, userName);
+    }
+
     private final String handle;
     private final Future<String> future;
 
-    private ChannelRequest(String handle, String apiKey) {
+    private ChannelRequest(String handle, String apiKey, boolean append) {
         this.handle = handle;
-        this.future = Utils.submitOnBackgroundThread(() -> fetch(handle, apiKey));
+        this.future = Utils.submitOnBackgroundThread(() -> fetch(handle, apiKey, append));
     }
 
     @Nullable

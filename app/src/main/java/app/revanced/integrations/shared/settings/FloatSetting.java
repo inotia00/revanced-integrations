@@ -69,6 +69,12 @@ public class FloatSetting extends Setting<Float> {
         preferences.saveFloatString(key, newValue);
     }
 
+    @Override
+    public void saveValueFromString(@NonNull String newValue) {
+        setValueFromString(newValue);
+        preferences.saveString(key, newValue);
+    }
+
     @NonNull
     @Override
     public Float get() {

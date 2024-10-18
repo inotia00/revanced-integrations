@@ -103,6 +103,12 @@ public class EnumSetting<T extends Enum<?>> extends Setting<T> {
         preferences.saveEnumAsString(key, newValue);
     }
 
+    @Override
+    public void saveValueFromString(@NonNull String newValue) {
+        setValueFromString(newValue);
+        preferences.saveString(key, newValue);
+    }
+
     @NonNull
     @Override
     public T get() {

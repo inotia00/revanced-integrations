@@ -79,6 +79,12 @@ public class BooleanSetting extends Setting<Boolean> {
         preferences.saveBoolean(key, newValue);
     }
 
+    @Override
+    public void saveValueFromString(@NonNull String newValue) {
+        setValueFromString(newValue);
+        preferences.saveString(key, newValue);
+    }
+
     @NonNull
     @Override
     public Boolean get() {

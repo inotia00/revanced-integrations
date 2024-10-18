@@ -15,6 +15,7 @@ import static app.revanced.integrations.music.settings.Settings.SPOOF_APP_VERSIO
 import static app.revanced.integrations.music.utils.ExtendedUtils.getDialogBuilder;
 import static app.revanced.integrations.music.utils.ExtendedUtils.getLayoutParams;
 import static app.revanced.integrations.music.utils.RestartUtils.showRestartDialog;
+import static app.revanced.integrations.shared.settings.BaseSettings.RETURN_YOUTUBE_USERNAME_DISPLAY_FORMAT;
 import static app.revanced.integrations.shared.settings.BaseSettings.RETURN_YOUTUBE_USERNAME_YOUTUBE_DATA_API_V3_DEVELOPER_KEY;
 import static app.revanced.integrations.shared.settings.Setting.getSettingFromPath;
 import static app.revanced.integrations.shared.utils.ResourceUtils.getStringArray;
@@ -53,6 +54,7 @@ import app.revanced.integrations.music.settings.ActivityHook;
 import app.revanced.integrations.music.settings.Settings;
 import app.revanced.integrations.music.utils.ExtendedUtils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.EnumSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.shared.settings.preference.YouTubeDataAPIDialogBuilder;
@@ -154,6 +156,10 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                     YouTubeDataAPIDialogBuilder.showDialog(mActivity);
                 } else {
                     Logger.printDebug(() -> "Failed to find the right value: " + dataString);
+                }
+            } else if (settings instanceof EnumSetting<?> enumSetting) {
+                if (settings.equals(RETURN_YOUTUBE_USERNAME_DISPLAY_FORMAT)) {
+                    ResettableListPreference.showDialog(mActivity, enumSetting, 0);
                 }
             }
         } catch (Exception ex) {

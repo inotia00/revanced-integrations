@@ -305,6 +305,11 @@ public abstract class Setting<T> {
      */
     public abstract void save(@NonNull T newValue);
 
+    /**
+     * Persistently saves the value using strings.
+     */
+    public abstract void saveValueFromString(@NonNull String newValue);
+
     @NonNull
     public abstract T get();
 

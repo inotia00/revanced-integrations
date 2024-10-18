@@ -1,5 +1,8 @@
 package app.revanced.integrations.shared.patches;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import android.text.SpannableString;
 import android.text.Spanned;
 
@@ -12,6 +15,7 @@ import app.revanced.integrations.shared.utils.Logger;
 @SuppressWarnings("unused")
 public class ReturnYouTubeUsernamePatch {
     private static final boolean RETURN_YOUTUBE_USERNAME_ENABLED = BaseSettings.RETURN_YOUTUBE_USERNAME_ENABLED.get();
+    private static final Boolean RETURN_YOUTUBE_USERNAME_DISPLAY_FORMAT = BaseSettings.RETURN_YOUTUBE_USERNAME_DISPLAY_FORMAT.get().userNameFirst;
     private static final String YOUTUBE_API_KEY = BaseSettings.RETURN_YOUTUBE_USERNAME_YOUTUBE_DATA_API_V3_DEVELOPER_KEY.get();
 
     private static final String AUTHOR_BADGE_PATH = "|author_badge.eml|";
@@ -59,7 +63,7 @@ public class ReturnYouTubeUsernamePatch {
             if (fetchNeeded && !handle.equals(lastFetchedHandle)) {
                 lastFetchedHandle = handle;
                 // Get the original username using YouTube Data API v3.
-                ChannelRequest.fetchRequestIfNeeded(handle, YOUTUBE_API_KEY);
+                ChannelRequest.fetchRequestIfNeeded(handle, YOUTUBE_API_KEY, RETURN_YOUTUBE_USERNAME_DISPLAY_FORMAT);
                 return original;
             }
             // If the username is not in the cache, put it in the cache.
@@ -93,5 +97,17 @@ public class ReturnYouTubeUsernamePatch {
             return newString;
         }
         return original;
+    }
+
+    public enum DisplayFormat {
+        USERNAME_ONLY(null),
+        USERNAME_HANDLE(TRUE),
+        HANDLE_USERNAME(FALSE);
+
+        final Boolean userNameFirst;
+
+        DisplayFormat(Boolean userNameFirst) {
+            this.userNameFirst = userNameFirst;
+        }
     }
 }
