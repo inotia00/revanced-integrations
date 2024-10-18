@@ -26,7 +26,7 @@ public final class RootView {
     }
 
     public static boolean isPlayerActive() {
-        return PlayerType.getCurrent().isMaximizedOrFullscreenOrSliding();
+        return PlayerType.getCurrent().isMaximizedOrFullscreen();
     }
 
     /**
