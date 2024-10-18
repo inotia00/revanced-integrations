@@ -23,3 +23,11 @@ fun Int.applyDimension(context: Context, unit: Int): Int {
         context.resources.displayMetrics,
     ).roundToInt()
 }
+
+fun Float.applyDimension(context: Context, unit: Int): Double {
+    return TypedValue.applyDimension(
+        unit,
+        this,
+        context.resources.displayMetrics,
+    ).toDouble()
+}

@@ -22,8 +22,8 @@ abstract class BaseGestureController(
         controller.audio,
         controller.screen,
         controller.overlay,
-        10,
-        1,
+        controller.config.volumeDistance,
+        controller.config.brightnessDistance,
     ) {
 
     /**

@@ -5,6 +5,7 @@ import android.graphics.Color
 import app.revanced.integrations.youtube.settings.Settings
 import app.revanced.integrations.youtube.shared.LockModeState
 import app.revanced.integrations.youtube.shared.PlayerType
+import app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue
 
 /**
  * provider for configuration for volume and brightness swipe controls
@@ -75,6 +76,28 @@ class SwipeControlsConfigurationProvider(
      */
     val swipeMagnitudeThreshold: Int
         get() = Settings.SWIPE_MAGNITUDE_THRESHOLD.get()
+
+    /**
+     * swipe distances for brightness
+     */
+    val brightnessDistance: Float
+        get() = validateValue(
+            Settings.SWIPE_BRIGHTNESS_SENSITIVITY,
+            1,
+            1000,
+            "revanced_swipe_brightness_sensitivity_invalid_toast"
+        ).toFloat() / 100 // 1f
+
+    /**
+     * swipe distances for volume
+     */
+    val volumeDistance: Float
+        get() = validateValue(
+            Settings.SWIPE_VOLUME_SENSITIVITY,
+            1,
+            1000,
+            "revanced_swipe_volume_sensitivity_invalid_toast"
+        ).toFloat() / 100 * 10 // 10f
 
     // endregion
 
