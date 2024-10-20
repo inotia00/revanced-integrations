@@ -2,19 +2,25 @@ package app.revanced.integrations.music.patches.navigation;
 
 import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import app.revanced.integrations.music.settings.Settings;
+import app.revanced.integrations.shared.utils.ResourceUtils;
 
 @SuppressWarnings("unused")
 public class NavigationPatch {
+    private static final int colorGrey12 =
+            ResourceUtils.getColor("revanced_color_grey_12");
     public static Enum<?> lastPivotTab;
 
     public static int enableBlackNavigationBar() {
-        return Settings.ENABLE_BLACK_NAVIGATION_BAR.get() ? -16777216 : -14869219;
+        return Settings.ENABLE_BLACK_NAVIGATION_BAR.get()
+                ? Color.BLACK
+                : colorGrey12;
     }
 
     public static void hideNavigationLabel(TextView textview) {
