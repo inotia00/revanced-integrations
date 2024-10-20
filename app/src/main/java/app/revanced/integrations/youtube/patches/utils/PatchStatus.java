@@ -43,18 +43,8 @@ public class PatchStatus {
     }
 
     // Modified by a patch. Do not touch.
-    public static boolean SpoofAppVersionDefaultBoolean() {
-        return false;
-    }
-
-    // Modified by a patch. Do not touch.
     public static String SpoofAppVersionDefaultString() {
         return "18.17.43";
-    }
-
-    // Modified by a patch. Do not touch.
-    public static String SpoofAppVersionUserDialogMessage() {
-        return "revanced_spoof_app_version_user_dialog_message";
     }
 
 }
