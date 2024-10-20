@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import app.revanced.integrations.shared.patches.components.Filter;
 import app.revanced.integrations.shared.patches.components.StringFilterGroup;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 import app.revanced.integrations.youtube.shared.RootView;
 
 @SuppressWarnings("unused")
@@ -56,7 +55,7 @@ public final class CarouselShelfFilter extends Filter {
     private static boolean hideShelves() {
         // Must check player type first, as search bar can be active behind the player.
         if (RootView.isPlayerActive()) {
-            return true;
+            return false;
         }
         // Must check second, as search can be from any tab.
         if (RootView.isSearchBarActive()) {
@@ -66,11 +65,7 @@ public final class CarouselShelfFilter extends Filter {
         if (knownBrowseId.get().anyMatch(browseId::equals)) {
             return true;
         }
-        if (whitelistBrowseId.get().anyMatch(browseId::equals)) {
-            return false;
-        }
-        // Check NavigationBar index. If not in Library tab, then filter.
-        return NavigationButton.getSelectedNavigationButton() != NavigationButton.LIBRARY;
+        return whitelistBrowseId.get().noneMatch(browseId::equals);
     }
 
     @Override

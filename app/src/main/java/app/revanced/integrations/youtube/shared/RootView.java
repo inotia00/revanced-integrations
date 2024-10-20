@@ -28,7 +28,7 @@ public final class RootView {
     }
 
     public static boolean isPlayerActive() {
-        return PlayerType.getCurrent().isMaximizedOrFullscreen() || isActionBarVisible;
+        return PlayerType.getCurrent().isMaximizedOrFullscreen() || isActionBarVisible.get();
     }
 
     /**
