@@ -14,6 +14,14 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings({"unused", "CharsetObjectCanBeUsed"})
 public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
+    private static final String DELIMITING_CHARACTER = "❙";
+    private static final String CHANNEL_ID_IDENTIFIER_CHARACTER = "UC";
+    private static final String CHANNEL_ID_IDENTIFIER_WITH_DELIMITING_CHARACTER =
+            DELIMITING_CHARACTER + CHANNEL_ID_IDENTIFIER_CHARACTER;
+    private static final String HANDLE_IDENTIFIER_CHARACTER = "@";
+    private static final String HANDLE_IDENTIFIER_WITH_DELIMITING_CHARACTER =
+            HANDLE_IDENTIFIER_CHARACTER + CHANNEL_ID_IDENTIFIER_CHARACTER;
+
     private final ByteArrayFilterGroupList shortsChannelBarAvatarFilterGroup = new ByteArrayFilterGroupList();
 
     public ReturnYouTubeChannelNameFilterPatch() {
@@ -37,16 +45,27 @@ public final class ReturnYouTubeChannelNameFilterPatch extends Filter {
 
     private void setLastShortsChannelId(byte[] protobufBufferArray) {
         try {
-            final String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
-            final String channelIdIdentifierCharacter = "UC";
-            final String channelIdIdentifierWithDelimitingCharacter = "❙UC";
-            final String handleIdentifierCharacter = "@";
-            final String handleIdentifierWithDelimitingCharacter = "❙/@";
-
+            String[] splitArr;
             final String bufferString = findAsciiStrings(protobufBufferArray);
-            final String splitedBufferString = channelIdIdentifierCharacter + bufferString.split(channelIdIdentifierWithDelimitingCharacter)[1];
-            final String cachedHandle = handleIdentifierCharacter + splitedBufferString.split(handleIdentifierWithDelimitingCharacter)[1].split(delimitingCharacter)[0];
-            final String channelId = splitedBufferString.split(delimitingCharacter)[0].replaceAll("\"", "").trim();
+            splitArr = bufferString.split(CHANNEL_ID_IDENTIFIER_WITH_DELIMITING_CHARACTER);
+            if (splitArr.length < 2) {
+                return;
+            }
+            final String splitedBufferString = CHANNEL_ID_IDENTIFIER_CHARACTER + splitArr[1];
+            splitArr = splitedBufferString.split(HANDLE_IDENTIFIER_WITH_DELIMITING_CHARACTER);
+            if (splitArr.length < 2) {
+                return;
+            }
+            splitArr = splitArr[1].split(DELIMITING_CHARACTER);
+            if (splitArr.length < 1) {
+                return;
+            }
+            final String cachedHandle = HANDLE_IDENTIFIER_CHARACTER + splitArr[0];
+            splitArr = splitedBufferString.split(DELIMITING_CHARACTER);
+            if (splitArr.length < 1) {
+                return;
+            }
+            final String channelId = splitArr[0].replaceAll("\"", "").trim();
             final String handle = URLDecoder.decode(cachedHandle, "UTF-8").trim();
 
             ReturnYouTubeChannelNamePatch.setLastShortsChannelId(handle, channelId);
