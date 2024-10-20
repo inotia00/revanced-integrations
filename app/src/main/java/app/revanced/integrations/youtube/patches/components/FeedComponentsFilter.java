@@ -176,7 +176,8 @@ public final class FeedComponentsFilter extends Filter {
 
         final StringFilterGroup playables = new StringFilterGroup(
                 Settings.HIDE_PLAYABLES,
-                "horizontal_gaming_shelf.eml"
+                "horizontal_gaming_shelf.eml",
+                "mini_game_card.eml"
         );
 
         final StringFilterGroup subscriptionsChannelBar = new StringFilterGroup(
