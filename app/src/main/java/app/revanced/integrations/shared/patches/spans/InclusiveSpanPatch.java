@@ -50,22 +50,22 @@ public final class InclusiveSpanPatch {
             this.originalString = spannableString.toString();
             this.originalLength = spannableString.length();
             this.spanType = getSpanType(span);
-            this.isWord = !(start == 0 && end == originalLength -1);
+            this.isWord = !(start == 0 && end == originalLength);
         }
 
         @NonNull
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            builder.append("charSequence:'")
+            builder.append("CharSequence:'")
                     .append(originalString)
-                    .append("'\nspanType:'")
+                    .append("'\nSpanType:'")
                     .append(getSpanType(spanType, span))
-                    .append("'\nlength:'")
+                    .append("'\nLength:'")
                     .append(originalLength)
-                    .append("'\nstart:'")
+                    .append("'\nStart:'")
                     .append(start)
-                    .append("'\nend:'")
+                    .append("'\nEnd:'")
                     .append(end)
                     .append("'\nisWord:'")
                     .append(isWord)
@@ -154,18 +154,16 @@ public final class InclusiveSpanPatch {
         return original;
     }
 
-    @SuppressWarnings("unused")
     private static boolean returnEarly(SpannableString spannableString, Object span, int start, int end, int flags) {
         try {
-            String conversionContext = conversionContextThreadLocal.get();
+            final String conversionContext = conversionContextThreadLocal.get();
             if (conversionContext == null || conversionContext.isEmpty()) {
-                Logger.printDebug(() -> "Conversion context is null or empty");
-                conversionContext = "";
+                return false;
             }
 
             LithoFilterParameters parameter =
                     new LithoFilterParameters(conversionContext, spannableString, span, start, end, flags);
-            Logger.printDebug(() -> "Searching...\n\n" + parameter);
+            Logger.printDebug(() -> "Searching...\n\u200B\n" + parameter);
 
             return searchTree.matches(parameter.conversionContext, parameter);
         } catch (Exception ex) {
