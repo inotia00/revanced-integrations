@@ -87,7 +87,8 @@ public final class AdsFilter extends Filter {
         final StringFilterGroup viewProducts = new StringFilterGroup(
                 Settings.HIDE_VIEW_PRODUCTS,
                 "product_item",
-                "products_in_video"
+                "products_in_video",
+                "shopping_overlay"
         );
 
         final StringFilterGroup webSearchPanel = new StringFilterGroup(
