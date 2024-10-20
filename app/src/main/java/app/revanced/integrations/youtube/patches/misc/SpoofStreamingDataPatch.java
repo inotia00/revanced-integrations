@@ -151,8 +151,6 @@ public class SpoofStreamingDataPatch {
                 final int methodPost = 2;
                 if (method == methodPost) {
                     String path = uri.getPath();
-                    String clientNameQueryKey = "c";
-                    final boolean iosClient = "IOS".equals(uri.getQueryParameter(clientNameQueryKey));
                     if (path != null && path.contains("videoplayback")) {
                         return null;
                     }

@@ -39,6 +39,7 @@ import app.revanced.integrations.youtube.patches.utils.PatchStatus;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 import app.revanced.integrations.youtube.utils.ThemeUtils;
 
+@SuppressWarnings("deprecation")
 public class Whitelist {
     private static final String ZERO_WIDTH_SPACE_CHARACTER = "\u200B";
     private static final Map<WhitelistType, ArrayList<VideoChannel>> whitelistMap = parseWhitelist();

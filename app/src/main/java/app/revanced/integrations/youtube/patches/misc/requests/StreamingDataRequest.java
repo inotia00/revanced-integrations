@@ -166,7 +166,7 @@ public class StreamingDataRequest {
                     if (connection.getContentLength() != 0) {
                         try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
                             try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                                byte[] buffer = new byte[2048];
+                                byte[] buffer = new byte[8192];
                                 int bytesRead;
                                 while ((bytesRead = inputStream.read(buffer)) >= 0) {
                                     baos.write(buffer, 0, bytesRead);
