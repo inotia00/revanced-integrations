@@ -138,7 +138,7 @@ public class ChannelRequest {
     private final String handle;
     private final Future<String> future;
 
-    private ChannelRequest(String handle, String apiKey, boolean append) {
+    private ChannelRequest(String handle, String apiKey, Boolean append) {
         this.handle = handle;
         this.future = Utils.submitOnBackgroundThread(() -> fetch(handle, apiKey, append));
     }
