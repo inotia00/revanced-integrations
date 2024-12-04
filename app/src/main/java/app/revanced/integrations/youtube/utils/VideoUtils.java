@@ -25,13 +25,15 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.preference.ExternalDownloaderPlaylistPreference;
 import app.revanced.integrations.youtube.settings.preference.ExternalDownloaderVideoPreference;
 import app.revanced.integrations.youtube.shared.PlaylistIdPrefix;
+import app.revanced.integrations.youtube.shared.ShortsPlayerState;
 import app.revanced.integrations.youtube.shared.VideoInformation;
 
 @SuppressWarnings("unused")
 public class VideoUtils extends IntentUtils {
     private static final String PLAYLIST_URL = "https://www.youtube.com/playlist?list=";
     private static final String VIDEO_URL = "https://youtu.be/";
-    private static final String VIDEO_SCHEME_FORMAT = "https://youtu.be/%s?t=%d";
+    private static final String VIDEO_SCHEME_INTENT_FORMAT = "vnd.youtube://%s?start=%d";
+    private static final String VIDEO_SCHEME_LINK_FORMAT = "https://youtu.be/%s?t=%d";
     private static final AtomicBoolean isExternalDownloaderLaunched = new AtomicBoolean(false);
 
     private static String getPlaylistUrl(String playlistId) {
@@ -62,7 +64,12 @@ public class VideoUtils extends IntentUtils {
     }
 
     private static String getVideoScheme(String videoId) {
-        return String.format(Locale.ENGLISH, VIDEO_SCHEME_FORMAT, videoId, VideoInformation.getVideoTimeInSeconds());
+        return String.format(
+            Locale.ENGLISH,
+            ShortsPlayerState.getCurrent().isClosed() ? VIDEO_SCHEME_INTENT_FORMAT : VIDEO_SCHEME_LINK_FORMAT,
+            videoId,
+            VideoInformation.getVideoTimeInSeconds()
+        );
     }
 
     public static void copyUrl(boolean withTimestamp) {
