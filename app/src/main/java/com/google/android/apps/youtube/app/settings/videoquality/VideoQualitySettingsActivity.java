@@ -190,4 +190,13 @@ public class VideoQualitySettingsActivity extends Activity {
         // Keep a weak reference to the SearchView
         searchViewRef = new WeakReference<>(searchView);
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus || searchViewRef.get() == null) return;
+        SearchView searchView = searchViewRef.get();
+        if (searchView.getQuery().length() != 0) return;
+        searchView.clearFocus();
+    }
 }
