@@ -473,6 +473,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting COPY_URL_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_copy_link", TRUE);
     public static final BooleanSetting COPY_URL_WITH_TIMESTAMP_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_copy_link_timestamp", TRUE);
     public static final BooleanSetting DOWNLOAD_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_download_short", TRUE);
+    public static final BooleanSetting OPEN_IN_NORMAL_PLAYER_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_open_in_normal_player", TRUE);
     public static final IntegerSetting SHORTS_NAVIGATION_BAR_HEIGHT_PERCENTAGE = new IntegerSetting("revanced_shorts_navigation_bar_height_percentage", 45, true, parent(HIDE_SHORTS_NAVIGATION_BAR));
     public static final BooleanSetting REPLACE_CHANNEL_HANDLE = new BooleanSetting("revanced_replace_channel_handle", FALSE, true);
 

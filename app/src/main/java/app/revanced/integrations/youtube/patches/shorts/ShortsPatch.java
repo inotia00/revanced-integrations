@@ -103,6 +103,7 @@ public class ShortsPatch {
         String copyLink = getString("revanced_hook_more_button_option_copy_link_title");
         String copyLinkTimestamp = getString("revanced_hook_more_button_option_copy_link_timestamp_title");
         String downloadShort = getString("revanced_hook_more_button_option_download_short_title");
+        String openInNormalPlayer = getString("revanced_hook_more_button_option_open_in_normal_player_title");
 
         List<String> optionsList = new ArrayList<>();
         Map<String, Runnable> actions = new HashMap<>();
@@ -120,6 +121,11 @@ public class ShortsPatch {
         if (Settings.DOWNLOAD_SHORT_TOOLBAR_MENU.get()) {
             optionsList.add(downloadShort);
             actions.put(downloadShort, VideoUtils::launchVideoExternalDownloader);
+        }
+
+        if (Settings.OPEN_IN_NORMAL_PLAYER_SHORT_TOOLBAR_MENU.get()) {
+            optionsList.add(openInNormalPlayer);
+            actions.put(openInNormalPlayer, VideoUtils::openVideo);
         }
 
         String[] options = optionsList.toArray(new String[0]);
