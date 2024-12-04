@@ -469,6 +469,10 @@ public class Settings extends BaseSettings {
     public static final IntegerSetting META_PANEL_BOTTOM_MARGIN = new IntegerSetting("revanced_shorts_meta_panel_bottom_margin", 32, true, parent(ENABLE_TIME_STAMP));
     public static final BooleanSetting HIDE_SHORTS_TOOLBAR = new BooleanSetting("revanced_hide_shorts_toolbar", FALSE, true);
     public static final BooleanSetting HIDE_SHORTS_NAVIGATION_BAR = new BooleanSetting("revanced_hide_shorts_navigation_bar", FALSE, true);
+    public static final BooleanSetting HOOK_MORE_BUTTON = new BooleanSetting("revanced_hook_more_button", TRUE);
+    public static final BooleanSetting COPY_URL_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_copy_link", TRUE);
+    public static final BooleanSetting COPY_URL_WITH_TIMESTAMP_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_copy_link_timestamp", TRUE);
+    public static final BooleanSetting DOWNLOAD_SHORT_TOOLBAR_MENU = new BooleanSetting("revanced_hook_more_button_option_download_short", TRUE);
     public static final IntegerSetting SHORTS_NAVIGATION_BAR_HEIGHT_PERCENTAGE = new IntegerSetting("revanced_shorts_navigation_bar_height_percentage", 45, true, parent(HIDE_SHORTS_NAVIGATION_BAR));
     public static final BooleanSetting REPLACE_CHANNEL_HANDLE = new BooleanSetting("revanced_replace_channel_handle", FALSE, true);
 
