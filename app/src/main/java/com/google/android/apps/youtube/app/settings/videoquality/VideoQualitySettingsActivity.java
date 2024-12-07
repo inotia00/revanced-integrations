@@ -194,9 +194,9 @@ public class VideoQualitySettingsActivity extends Activity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus || searchViewRef.get() == null) return;
         SearchView searchView = searchViewRef.get();
-        if (searchView.getQuery().length() != 0) return;
-        searchView.clearFocus();
+        if (!hasFocus && searchView != null && searchView.getQuery().length() == 0) {
+            searchView.clearFocus();
+        }
     }
 }
