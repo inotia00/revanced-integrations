@@ -27,7 +27,6 @@ public class VideoQualitySettingsActivity extends Activity {
     private static final String rvxSettingsLabel = ResourceUtils.getString("revanced_extended_settings_title");
     private static final String searchLabel = ResourceUtils.getString("revanced_extended_settings_search_title");
     private static WeakReference<SearchView> searchViewRef = new WeakReference<>(null);
-    private static WeakReference<TextView> textViewRef = new WeakReference<>(null);
     private ReVancedPreferenceFragment fragment;
 
     private final OnQueryTextListener onQueryTextListener = new OnQueryTextListener() {
@@ -84,22 +83,6 @@ public class VideoQualitySettingsActivity extends Activity {
         }
     }
 
-    public static void setSearchViewVisibility(boolean visible) {
-        final SearchView searchView = searchViewRef.get();
-        if (searchView == null) return;
-        searchView.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    public static void setToolbarText() {
-        setToolbarText(rvxSettingsLabel);
-    }
-
-    public static void setToolbarText(CharSequence title) {
-        final TextView toolbarTextView = textViewRef.get();
-        if (toolbarTextView == null) return;
-        toolbarTextView.setText(title);
-    }
-
     private void filterPreferences(String query) {
         if (fragment == null) return;
         fragment.filterPreferences(query);
@@ -126,7 +109,6 @@ public class VideoQualitySettingsActivity extends Activity {
         toolbar.setTitleMarginStart(margin);
         toolbar.setTitleMarginEnd(margin);
         TextView toolbarTextView = Utils.getChildView(toolbar, view -> view instanceof TextView);
-        textViewRef = new WeakReference<>(toolbarTextView);
         if (toolbarTextView != null) {
             toolbarTextView.setTextColor(ThemeUtils.getForegroundColor());
         }
