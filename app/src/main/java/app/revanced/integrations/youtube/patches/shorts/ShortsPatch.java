@@ -1,26 +1,34 @@
 package app.revanced.integrations.youtube.patches.shorts;
 
-import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
-import static app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue;
-
+import android.app.AlertDialog;
+import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
-import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
-
-import java.lang.ref.WeakReference;
-
+import app.revanced.integrations.shared.utils.Logger;
 import app.revanced.integrations.shared.utils.ResourceUtils;
 import app.revanced.integrations.shared.utils.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.ShortsPlayerState;
 import app.revanced.integrations.youtube.utils.VideoUtils;
+import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static app.revanced.integrations.shared.utils.ResourceUtils.getString;
+import static app.revanced.integrations.shared.utils.Utils.getChildView;
+import static app.revanced.integrations.shared.utils.Utils.hideViewUnderCondition;
+import static app.revanced.integrations.youtube.utils.ExtendedUtils.validateValue;
 
 @SuppressWarnings("unused")
 public class ShortsPatch {
@@ -69,6 +77,81 @@ public class ShortsPatch {
 
         return currentState;
     }
+
+    /**
+     * Injection point for the "More" button in the Shorts player
+     */
+    public static void showShortsToolbarMenu(String enumString, View toolbarView) {
+        if (!Settings.HOOK_MORE_BUTTON.get())
+            return;
+        if (!isMoreButton(enumString))
+            return;
+        ImageView imageView = getChildView((ViewGroup) toolbarView, view -> view instanceof ImageView);
+        if (imageView == null)
+            return;
+
+        imageView.setOnLongClickListener(button -> {
+            showMoreButtonDialog(toolbarView.getContext());
+            return true;
+        });
+    }
+
+    private static void showMoreButtonDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString("revanced_hook_more_button_dialog_title"));
+
+        String copyLink = getString("revanced_hook_more_button_option_copy_link_title");
+        String copyLinkTimestamp = getString("revanced_hook_more_button_option_copy_link_timestamp_title");
+        String downloadShort = getString("revanced_hook_more_button_option_download_short_title");
+        String openInNormalPlayer = getString("revanced_hook_more_button_option_open_in_normal_player_title");
+
+        List<String> optionsList = new ArrayList<>();
+        Map<String, Runnable> actions = new HashMap<>();
+
+        if (Settings.COPY_URL_SHORT_TOOLBAR_MENU.get()) {
+            optionsList.add(copyLink);
+            actions.put(copyLink, () -> VideoUtils.copyUrl(false));
+        }
+
+        if (Settings.COPY_URL_WITH_TIMESTAMP_SHORT_TOOLBAR_MENU.get()) {
+            optionsList.add(copyLinkTimestamp);
+            actions.put(copyLinkTimestamp, () -> VideoUtils.copyUrl(true));
+        }
+
+        if (Settings.DOWNLOAD_SHORT_TOOLBAR_MENU.get()) {
+            optionsList.add(downloadShort);
+            actions.put(downloadShort, VideoUtils::launchVideoExternalDownloader);
+        }
+
+        if (Settings.OPEN_IN_NORMAL_PLAYER_SHORT_TOOLBAR_MENU.get()) {
+            optionsList.add(openInNormalPlayer);
+            actions.put(openInNormalPlayer, VideoUtils::openVideo);
+        }
+
+        String[] options = optionsList.toArray(new String[0]);
+        builder.setItems(options, (dialog, which) -> {
+            String selectedOption = options[which];
+            Runnable action = actions.get(selectedOption);
+            if (action != null)
+                action.run();
+            else
+                Logger.printDebug(() -> "No action found for " + selectedOption);
+        });
+
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private static boolean isMoreButton(String enumString) {
+        return StringUtils.equalsAny(
+                enumString,
+                "MORE_VERT",
+                "MORE_VERT_BOLD"
+        );
+    }
+
 
     public static boolean disableResumingStartupShortsPlayer() {
         return Settings.DISABLE_RESUMING_SHORTS_PLAYER.get();
