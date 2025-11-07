@@ -5,7 +5,7 @@ import app.revanced.integrations.reddit.settings.Settings;
 @SuppressWarnings("unused")
 public class ScreenshotPopupPatch {
 
-    public static boolean disableScreenshotPopup() {
-        return Settings.DISABLE_SCREENSHOT_POPUP.get();
+    public static Boolean disableScreenshotPopup(Boolean original) {
+        return Settings.DISABLE_SCREENSHOT_POPUP.get() ? Boolean.FALSE : original;
     }
 }

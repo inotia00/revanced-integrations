@@ -1,16 +1,32 @@
 package app.revanced.integrations.reddit.settings;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import app.revanced.integrations.reddit.settings.preference.ReVancedPreferenceFragment;
+import app.revanced.integrations.shared.utils.ResourceUtils;
 
-/**
- * @noinspection ALL
- */
+@SuppressWarnings("all")
 public class ActivityHook {
+
+    public static int getIcon() {
+        return ResourceUtils.getDrawableIdentifier("icon_ai");
+    }
+
+    public static boolean hook(Activity activity) {
+        Intent intent = activity.getIntent();
+        if ("RVX".equals(intent.getStringExtra("com.reddit.extra.initial_url"))) {
+            initialize(activity);
+            return true;
+        }
+
+        return false;
+    }
+
     public static void initialize(Activity activity) {
         SettingsStatus.load();
 
@@ -25,11 +41,23 @@ public class ActivityHook {
         linearLayout.setFitsSystemWindows(true);
         linearLayout.setTransitionGroup(true);
         linearLayout.addView(fragment);
+        linearLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         activity.setContentView(linearLayout);
 
         activity.getFragmentManager()
                 .beginTransaction()
                 .replace(fragmentId, new ReVancedPreferenceFragment())
                 .commit();
+    }
+
+    public static boolean isAcknowledgment(Enum<?> e) {
+        return e != null && "ACKNOWLEDGMENTS".equals(e.name());
+    }
+
+    public static Intent initializeByIntent(Context context) {
+        Intent intent = new Intent();
+        intent.setClassName(context, "com.reddit.webembed.browser.WebBrowserActivity");
+        intent.putExtra("com.reddit.extra.initial_url", "RVX");
+        return intent;
     }
 }

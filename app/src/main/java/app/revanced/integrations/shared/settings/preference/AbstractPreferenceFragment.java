@@ -35,16 +35,16 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     public static boolean settingImportInProgress;
 
     /**
+     * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
+     */
+    private boolean showingUserDialogMessage;
+
+    /**
      * Confirm and restart dialog button text and title.
      * Set by subclasses if Strings cannot be added as a resource.
      */
     @Nullable
-    protected static String restartDialogMessage;
-
-    /**
-     * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
-     */
-    private boolean showingUserDialogMessage;
+    protected static String restartDialogTitle, restartDialogMessage;
 
     private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
@@ -239,8 +239,12 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     public static void showRestartDialog(@NonNull final Context context, String message, long delay) {
         Utils.verifyOnMainThread();
 
-        new AlertDialog.Builder(context)
-                .setMessage(message)
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        if (restartDialogTitle != null) {
+            builder.setTitle(restartDialogTitle);
+        }
+
+        builder.setMessage(message)
                 .setPositiveButton(android.R.string.ok, (dialog, id)
                         -> Utils.runOnMainThreadDelayed(() -> Utils.restartApp(context), delay))
                 .setNegativeButton(android.R.string.cancel, null)

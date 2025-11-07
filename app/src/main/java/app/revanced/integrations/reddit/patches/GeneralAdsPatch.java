@@ -4,6 +4,7 @@ import com.reddit.domain.model.ILink;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import app.revanced.integrations.reddit.settings.Settings;
 
@@ -26,11 +27,24 @@ public final class GeneralAdsPatch {
         return Settings.HIDE_COMMENT_ADS.get();
     }
 
+    public static Object hideCommentAdMap(Map<Object, Object> map, Object key, Object value) {
+        if (!hideCommentAds()) {
+            return map.put(key, value);
+        }
+        return map;
+    }
+
     public static List<?> hideOldPostAds(List<?> list) {
         if (!Settings.HIDE_OLD_POST_ADS.get())
             return list;
 
         return filterChildren(list);
+    }
+
+    public static List<?> hideNewPostAds(List<?> list) {
+        return Settings.HIDE_NEW_POST_ADS.get()
+                ? null
+                : list;
     }
 
     public static void hideNewPostAds(ArrayList<Object> arrayList, Object object) {

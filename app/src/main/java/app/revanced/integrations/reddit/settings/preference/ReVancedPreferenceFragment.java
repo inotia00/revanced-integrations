@@ -33,7 +33,8 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
         // Currently no resources can be compiled for Reddit (fails with aapt error).
         // So all Reddit Strings are hard coded in integrations.
-        restartDialogMessage = "Refresh and restart";
+        restartDialogTitle = "Restart required";
+        restartDialogMessage = "Restart the app for this change to take effect.";
 
         PreferenceScreen preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
