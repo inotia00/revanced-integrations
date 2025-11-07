@@ -6,6 +6,7 @@ import java.util.List;
 import app.revanced.integrations.reddit.settings.Settings;
 
 @SuppressWarnings("unused")
+@Deprecated(forRemoval = true)
 public final class RecentlyVisitedShelfPatch {
 
     public static List<?> hideRecentlyVisitedShelf(List<?> list) {
