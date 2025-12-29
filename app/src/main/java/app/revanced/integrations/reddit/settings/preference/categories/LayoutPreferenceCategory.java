@@ -49,6 +49,14 @@ public class LayoutPreferenceCategory extends ConditionalPreferenceCategory {
                     Settings.HIDE_DISCOVER_BUTTON
             ));
         }
+        if (SettingsStatus.aboutShelfEnabled) {
+            addPreference(new TogglePreference(
+                    context,
+                    "Hide About shelf",
+                    "Hides the About shelf in the sidebar.",
+                    Settings.HIDE_ABOUT_SHELF
+            ));
+        }
         if (SettingsStatus.gamesOnRedditShelfEnabled) {
             addPreference(new TogglePreference(
                     context,
@@ -70,6 +78,14 @@ public class LayoutPreferenceCategory extends ConditionalPreferenceCategory {
                     context,
                     "Hide Reddit Pro shelf",
                     "Hides the Reddit Pro shelf in the sidebar.",
+                    Settings.HIDE_RESOURCES_SHELF
+            ));
+        }
+        if (SettingsStatus.resourcesShelfEnabled) {
+            addPreference(new TogglePreference(
+                    context,
+                    "Hide Resources shelf",
+                    "Hides the Resources shelf in the sidebar.",
                     Settings.HIDE_REDDIT_PRO_SHELF
             ));
         }
