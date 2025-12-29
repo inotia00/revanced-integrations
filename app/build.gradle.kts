@@ -55,6 +55,7 @@ android {
 dependencies {
     compileOnly(libs.annotation)
     compileOnly(libs.preference)
+    implementation(libs.hiddenapi)
     implementation(libs.lang3)
 
     compileOnly(project(":stub"))
